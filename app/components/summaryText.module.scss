@@ -1,0 +1,18 @@
+.summaryText {
+    margin-top : 40px;
+    font-size  : 16px;
+    font-weight: normal;
+    color      : #333333;
+    line-height: 1.5;
+    cursor     : pointer;
+    text-align : start;
+
+    &:hover {
+        text-underline-offset: 4px !important;
+        text-decoration-line : underline !important;
+        text-decoration-color: #bcc2c4 !important;
+        text-decoration-style: dashed !important;
+    }
+
+
+}

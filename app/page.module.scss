@@ -1,0 +1,57 @@
+.home {
+    width  : calc(100% - 240px);
+    padding: 20px 120px;
+    display: flex;
+
+    .home_summary {
+        width        : 50%;
+        padding-right: 40px;
+        border-right : 1px solid #F5F5F5;
+
+        .home_summary_header {
+            height         : 60px;
+            display        : flex;
+            align-items    : center;
+            justify-content: space-between;
+
+            .home_summary_header_title {
+                div:first-child {
+                    span:first-child {
+                        font-size   : 30px;
+                        font-weight : 600;
+                        color       : #333333;
+                        margin-right: 8px;
+                    }
+
+                    span:nth-child(2) {
+                        font-size  : 16px;
+                        font-weight: 600;
+                        color      : #29BC97;
+                    }
+                }
+
+                div:nth-child(2) {
+                    margin-top: 12px;
+                    font-size : 24px;
+                    color     : #7E94A6;
+                }
+            }
+
+            .home_summary_header_i18n {
+                transform  : translateY(-16px);
+                display    : flex;
+                align-items: center;
+            }
+        }
+
+        .home_summary_content {
+            margin-top: 40px;
+        }
+
+    }
+
+    .home_papers {
+        padding-left: 40px;
+        flex        : 1;
+    }
+}
