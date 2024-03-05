@@ -1,0 +1,11 @@
+.loginBtn {
+    position: absolute;
+    right   : 156px;
+    top     : 24px;
+
+    :global {
+        .ant-btn-lg {
+            border-radius: 20px !important
+        }
+    }
+}

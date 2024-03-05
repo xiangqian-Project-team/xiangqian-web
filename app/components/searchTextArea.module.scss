@@ -1,0 +1,22 @@
+.searchTextArea {
+    margin-top   : 42px;
+    box-shadow   : 0px 0px 20px 0px rgba(0, 0, 0, 0.08);
+    border-radius: 13px 13px 13px 13px;
+    position     : relative;
+
+    :global {
+        .ant-input-data-count {
+            left  : 26px;
+            bottom: 12px !important;
+            color : $default-color !important;
+        }
+    }
+
+    .searchTextArea_btn {
+        position: absolute;
+        right   : 16px;
+        bottom  : 12px;
+        z-index : 999;
+    }
+
+}

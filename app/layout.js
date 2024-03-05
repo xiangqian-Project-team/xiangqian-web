@@ -1,21 +1,21 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import Header from './components/header';
+import NprogressProvider from './components/nprogressProvider';
+
 import './globals.css';
 
 export const metadata = {
-  title: '镶嵌 1.0',
-  description: '镶嵌 1.0',
+  title: '镶嵌',
+  description: '镶嵌',
+  icons: 'favicon.ico',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body style={{ width: '100%' }}>
-        <AntdRegistry>
-          <Header />
-
-          {children}
-        </AntdRegistry>
+        <NprogressProvider>
+          <AntdRegistry>{children}</AntdRegistry>
+        </NprogressProvider>
       </body>
     </html>
   );

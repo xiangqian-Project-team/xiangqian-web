@@ -1,0 +1,275 @@
+.search {
+    height        : 100%;
+    width         : 100%;
+    background    : linear-gradient(52deg, rgba(80, 201, 140, 0.4) 0%, rgba(139, 187, 183, 0.4) 50%, rgba(132, 196, 181, 0.4) 100%);
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+
+    .search_content {
+        width   : 1128px;
+        position: relative;
+
+
+        .search_content_header {
+            width        : 100%;
+            margin-top   : 26px;
+            margin-bottom: 40px;
+
+            img {
+                cursor: pointer;
+            }
+        }
+
+        .search_content_data {
+            margin-top     : 24px;
+            margin-bottom  : 24px;
+            display        : flex;
+            justify-content: space-between;
+
+            .search_content_data_summary {
+                width        : 360px;
+                background   : #FFFFFF;
+                box-shadow   : 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
+                border-radius: 12px;
+                height       : fit-content;
+
+                .header {
+                    position               : relative;
+                    /* 设置左上角的圆角 */
+                    border-top-left-radius : 12px;
+                    /* 设置右上角的圆角 */
+                    border-top-right-radius: 12px;
+                    display                : flex;
+                    align-items            : center;
+                    padding                : 0 24px;
+                    width                  : calc(100% - 48px);
+                    height                 : 37px;
+                    background             : linear-gradient(62deg, #50C98C 0%, #8BBBB7 50%, #84C4B5 100%);
+
+                    .header_triangle {
+                        position     : absolute;
+                        right        : 24px;
+                        bottom       : 0px;
+                        width        : 0;
+                        height       : 0;
+                        border-left  : 12px solid transparent;
+                        /* 左侧透明 */
+                        border-right : 12px solid transparent;
+                        /* 右侧透明 */
+                        border-bottom: 20px solid #ffffff;
+                        /* 底边颜色为白色 */
+                    }
+                }
+
+                .content {
+                    padding: 34px 24px;
+                    width  : calc(100% - 48px);
+
+
+                    .content_summary {
+                        font-weight   : 400;
+                        font-size     : 16px;
+                        color         : #000000;
+                        line-height   : 20px;
+                        padding-bottom: 44px;
+                        border-bottom : 1px solid #005C33;
+                        font-family   : STSongti-SC-Regular, STSongti-SC-Regular;
+                    }
+
+                    .content_summaryZh {
+                        font-weight: 400;
+                        font-size  : 16px;
+                        color      : #000000;
+                        line-height: 20px;
+                        margin-top : 24px;
+                        font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+                    }
+                }
+            }
+
+
+            .search_content_data_papers {
+                width: 744px;
+
+
+                .header {
+                    width          : 100%;
+                    height         : 40px;
+                    display        : flex;
+                    align-items    : center;
+                    justify-content: space-between;
+                    margin-bottom  : 16px;
+
+                    .header_text {
+                        font-weight: 400;
+                        font-size  : 14px;
+                        color      : #000000;
+                    }
+
+                    :global {
+                        .ant-btn-lg {
+                            border-radius: 20px !important
+                        }
+                    }
+                }
+
+                .content {
+                    width: 100%;
+
+                    .content_card {
+                        width        : calc(100% - 40px);
+                        background   : #FFFFFF;
+                        border-radius: 13px;
+                        border       : 1px solid #84C4B5;
+                        margin-bottom: 16px;
+                        padding      : 16px 24px 16px 16px;
+
+                        .content_card_header {
+                            height       : 16px;
+                            margin-bottom: 6px;
+                            display      : flex;
+                            align-items  : center;
+
+
+                            img {
+                                margin-right: 8px;
+                            }
+
+                            span {
+                                font-weight : 400;
+                                font-size   : 12px;
+                                margin-right: 16px;
+                                color       : #848484;
+                            }
+                        }
+
+                        .content_card_title {
+                            font-weight  : 400;
+                            font-size    : 18px;
+                            line-height  : 20px;
+                            color        : #000000;
+                            margin-bottom: 10px;
+                            overflow     : hidden; //超出的文本隐藏
+                            text-overflow: ellipsis; //溢出用省略号显示
+                            white-space  : nowrap; //溢出不换行
+                        }
+
+                        .content_card_response {
+                            font-weight  : 400;
+                            font-size    : 16px;
+                            color        : #000000;
+                            line-height  : 24px;
+                            margin-bottom: 16px;
+                        }
+
+                        .content_card_btn {
+                            // margin-bottom: 16px;
+                            width: 100% !important;
+
+                            :global {
+                                .ant-btn-default {
+                                    width        : 100% !important;
+                                    border-radius: 24px !important
+                                }
+                            }
+                        }
+
+                        .content_card_paperAbstract {
+                            margin-top : 16px;
+                            height     : 240px;
+                            font-family: STSongti-SC-Bold, STSongti-SC-Bold;
+                            font-weight: 400;
+                            font-size  : 16px;
+                            color      : #000000;
+                            line-height: 24px;
+                            overflow-y : scroll;
+
+                            display       : flex;
+                            flex-direction: column;
+
+                            span:first-child {
+                                margin-bottom: 20px;
+                            }
+                        }
+
+                        .content_card_paperAbstract::-webkit-scrollbar {
+                            width : 6px;
+                            height: 12px;
+                        }
+
+                        .content_card_paperAbstract::-webkit-scrollbar-thumb {
+                            border-radius: 3px;
+                            box-shadow   : inset 0 0 3px rgba(0, 0, 0, 0.2);
+                            background   : $default-color;
+                        }
+
+                        .content_card_crossline {
+                            margin-top: 16px;
+                            width     : 100%;
+                            border    : 1px solid #84C4B5;
+                        }
+
+
+
+                        .content_card_footer {
+                            margin-top : 12px;
+                            height     : 16px;
+                            width      : 100%;
+                            display    : flex;
+                            align-items: center;
+                            font-family: RobotoRoman-Regular, RobotoRoman-Regular;
+                            font-weight: 400;
+                            font-size  : 12px;
+                            color      : #848484;
+                            line-height: 14px;
+
+                            img {
+                                margin-right: 4px !important;
+                            }
+
+
+                            .content_card_footer_journal {
+                                flex       : 1;
+                                height     : 16px;
+                                display    : flex;
+                                align-items: center;
+
+
+
+                                .content_card_footer_journal_text {
+                                    overflow     : hidden; //超出的文本隐藏
+                                    text-overflow: ellipsis; //溢出用省略号显示
+                                    white-space  : nowrap; //溢出不换行
+                                }
+                            }
+
+                            .content_card_footer_years {}
+
+                            .content_card_footer_years,
+                            .content_card_footer_jcr,
+                            .content_card_footer_authors {
+                                display    : flex;
+                                align-items: center;
+                            }
+
+
+                            .content_card_footer_division {
+                                width       : 0px;
+                                height      : 12px;
+                                border-right: 1px solid #848484;
+                                margin      : 0 12px;
+                            }
+
+                            .content_card_footer_url {
+                                display    : flex;
+                                align-items: center;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}

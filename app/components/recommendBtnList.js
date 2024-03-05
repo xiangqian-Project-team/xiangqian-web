@@ -1,0 +1,45 @@
+/*
+ * @Author: 何泽颖 hezeying@autowise.ai
+ * @Date: 2024-02-23 10:47:08
+ * @LastEditors: 何泽颖 hezeying@autowise.ai
+ * @LastEditTime: 2024-03-03 02:02:46
+ * @FilePath: /xiangqian-web/app/components/RecommendBtnList.js
+ * @Description:
+ */
+'use client';
+import { Button } from 'antd';
+import { useAtom } from 'jotai';
+// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
+import withTheme from '../../theme';
+import { RECOMMEND_LIST } from '../config';
+import { searchValueAtom } from '../models/search';
+import styles from './recommendBtnList.module.scss';
+
+function RecommendBtnList() {
+  const router = useRouter();
+
+  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+
+  return (
+    <div className={styles.recommendBtnList}>
+      {RECOMMEND_LIST.map((queryText) => (
+        <Button
+          key={queryText}
+          onClick={() => {
+            setSearchValue(queryText);
+            router.push(`./result?q=${queryText}`);
+          }}
+        >
+          {queryText}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+const RecommendBtnListCom = () => {
+  return withTheme(<RecommendBtnList />);
+};
+
+export default RecommendBtnListCom;
