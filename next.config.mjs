@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-23 10:19:46
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 20:12:48
+ * @LastEditTime: 2024-03-05 21:57:05
  * @FilePath: /xiangqian-web/next.config.mjs
  * @Description:
  */
@@ -10,12 +10,11 @@
 import path from 'path';
 const nextConfig = {
   output: 'export',
-  distDir: 'dist',
+  distDir: 'build',
   sassOptions: {
     includePaths: [path.join(path.dirname(import.meta.url), 'styles')],
     prependData: `@import "app/global.scss";`,
   },
-  // trailingSlash: true,
   productionBrowserSourceMaps: true,
   images: {
     path: '',

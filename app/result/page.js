@@ -2,8 +2,8 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 13:58:05
- * @FilePath: /xiangqian-web/app/search/page.js
+ * @LastEditTime: 2024-03-05 21:55:19
+ * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
 'use client';
@@ -60,7 +60,7 @@ function Search() {
       return `<a target="_blank" href="${papers[i].url}" style="text-decoration: none; color: #00A650">（ 
         ${papers[i].authors.join()} 
         ，
-        ${papers[i].years || 2000} 
+        ${papers[i].years || ''} 
         ）</a>`;
     });
 
@@ -105,12 +105,6 @@ function Search() {
                   __html: getReplacedSummary(summary),
                 }}
               />
-              {/* <div className={styles.content_summary}>
-                {getReplacedSummary(summary)}
-              </div> */}
-              {/* <div className={styles.content_summaryZh}>
-                {getReplacedSummary(summaryZh)}
-              </div> */}
             </div>
           </div>
           <div className={styles.search_content_data_papers}>
@@ -178,8 +172,7 @@ function Search() {
                     </div>
                     <div className={styles.content_card_title}>{title}</div>
                     <div className={styles.content_card_response}>
-                      {responseZh ||
-                        '这篇文章直接回答了你的问题，针对目前防护与通讯光缆在电力系统中的应用问题，进行分析、研究，提出了优化的方法及新型光缆连接组件的应用，实现光缆的“模块化、标准化”应用设计。激光热作用研究中,通常只能采用纯数值。'}
+                      {responseZh}
                     </div>
 
                     <div className={styles.content_card_btn}>
