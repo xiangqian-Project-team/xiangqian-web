@@ -1,3 +1,11 @@
+/*
+ * @Author: 何泽颖 hezeying@autowise.ai
+ * @Date: 2024-02-23 10:19:46
+ * @LastEditors: 何泽颖 hezeying@autowise.ai
+ * @LastEditTime: 2024-03-09 23:30:21
+ * @FilePath: /xiangqian-web/app/layout.js
+ * @Description:
+ */
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import NprogressProvider from './components/nprogressProvider';
 

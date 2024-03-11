@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-23 10:47:08
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 19:56:11
+ * @LastEditTime: 2024-03-09 23:41:14
  * @FilePath: /xiangqian-web/app/components/searchTextArea.js
  * @Description:
  */
@@ -25,10 +25,10 @@ function SearchTextArea() {
   return (
     <div className={styles.searchTextArea}>
       <TextArea
-        showCount
+        // showCount
         maxLength={50}
         placeholder="请输入您的问题......"
-        style={{ height: 110, width: 1128, resize: 'none' }}
+        style={{ height: 66, width: 1128, resize: 'none' }}
         value={searchValue}
         onChange={(e) => {
           setSearchValue(e.target.value);
@@ -46,6 +46,8 @@ function SearchTextArea() {
           }}
         />
       </div>
+
+      <div className={styles.searchTextArea_count}>{searchValue.length}/50</div>
     </div>
   );
 }

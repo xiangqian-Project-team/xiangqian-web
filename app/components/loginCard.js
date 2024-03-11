@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-23 10:47:08
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 18:51:45
+ * @LastEditTime: 2024-03-10 14:16:32
  * @FilePath: /xiangqian-web/app/components/loginCard.js
  * @Description:
  */

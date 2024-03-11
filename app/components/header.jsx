@@ -39,7 +39,7 @@ function PediaHeader() {
             size="large"
             onPressEnter={async (e) => {
               const { value } = e.target;
-              const params = { queryText: value };
+              const params = { q: value };
               const data = await getPediaAsync(params);
               const { papers, summary } = data;
               setSummary(summary);

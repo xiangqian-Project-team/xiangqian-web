@@ -2,26 +2,29 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 21:55:19
+ * @LastEditTime: 2024-03-10 13:50:59
  * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
 'use client';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import Icon, {
+  CloseOutlined,
+  DownOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 import { Button, ConfigProvider } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
-import ArticleIcon from '../img/article.png';
 import BookIcon from '../img/book.png';
+import EmptyIcon from '../img/empty.png';
 import LockIcon from '../img/lock.png';
-import LogoIcon from '../img/logo.png';
-import QuoteIcon from '../img/quote.png';
+import LogoIcon2 from '../img/logo2.png';
 import UserIcon from '../img/user.png';
 import {
   papersAtom,
@@ -29,40 +32,160 @@ import {
   summaryAtom,
   summaryZhAtom,
 } from '../models/search';
-import { getPedia as getPediaAsync } from '../service';
+import {
+  getPedia as getPediaAsync,
+  translate as translateAsync,
+} from '../service';
 import styles from './page.module.scss';
+
+const QuoteSvg = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="3"
+      y="4"
+      width="4"
+      height="4"
+      stroke="#00A650"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M7 8V8C7 9.22573 6.30747 10.3463 5.21115 10.8944L5 11"
+      stroke="#00A650"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <rect
+      x="9"
+      y="4"
+      width="4"
+      height="4"
+      stroke="#00A650"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M13 8V8C13 9.22573 12.3075 10.3463 11.2111 10.8944L11 11"
+      stroke="#00A650"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
 
 function Search() {
   const router = useRouter();
 
+  const timeId = useRef({ id: -1 });
+
+  const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [paperAbstractOpenList, setPaperAbstractOpenList] = useState([]);
+  const [abstractLoadingIndex, setAbstractLoadingIndex] = useState(null);
+  const [meter, setMeter] = useState(0);
 
   const searchParams = useSearchParams();
 
+  const summaryRef = useRef(null);
+
   const getPedia = async () => {
     try {
+      // 开启倒计时
+      timeId.current.id = setInterval(() => {
+        setMeter((meter) => {
+          if (meter >= 95) return 90;
+          return meter + 1;
+        });
+      }, 25);
+
       const queryText = searchParams.get('q');
       const params = { queryText };
+
       const { papers, summary, summaryZh } = await getPediaAsync(params);
+
       setPapers(papers);
       setSummary(summary);
       setSummaryZh(summaryZh);
       setSearchValue(queryText);
+
+      setTimeout(() => {
+        setLoading(false);
+        clearInterval(timeId.current.id);
+        setMeter(0);
+      }, 500);
     } catch (error) {}
   };
 
   const getReplacedSummary = (str) =>
     str.replace(/\[citation:(\d+)\]/g, function (match, i) {
-      return `<a target="_blank" href="${papers[i].url}" style="text-decoration: none; color: #00A650">（ 
-        ${papers[i].authors.join()} 
+      return `<span onclick="
+      
+      const cardList = document.getElementById('cardList');
+
+      for (let j = 0; j < cardList.childNodes.length; j++) {
+        cardList.childNodes[j].style.borderWidth= '1px';
+        cardList.childNodes[j].style.borderColor= '#84C4B5';
+      }
+
+      const index = ${i - 1}
+
+      let scrollTop = 0;
+      for (let j = 0; j < index; j++) {
+        cardList.childNodes[j].style.borderWidth= '1px';
+        cardList.childNodes[j].style.borderColor= '#84C4B5';
+        scrollTop += cardList.childNodes[j].clientHeight;
+      }
+      scrollTop += (index - 1) * 10;
+      if (cardList) cardList.scrollTop = scrollTop + 2;
+
+      cardList.childNodes[index].style.borderWidth= '2px';
+      cardList.childNodes[index].style.borderColor= '#00A650';
+
+      
+      
+      " style="text-decoration: none; color: #00A650; cursor: pointer;">（
+        ${papers[i - 1].authors.join()}
         ，
-        ${papers[i].years || ''} 
-        ）</a>`;
+        ${papers[i - 1].years || ''}
+        ）</span>`;
     });
+
+  const translate = async (queryText, i) => {
+    try {
+      if (paperAbstractOpenList.includes(i)) {
+        setPaperAbstractOpenList(
+          paperAbstractOpenList.filter((item) => item !== i)
+        );
+      } else {
+        setAbstractLoadingIndex(i);
+
+        const params = { queryText };
+
+        const { abstractZh } = await translateAsync(params);
+
+        setPapers((draft) => {
+          draft[i].paperAbstractZh = abstractZh;
+        });
+
+        setPaperAbstractOpenList([...paperAbstractOpenList, i]);
+
+        setAbstractLoadingIndex(null);
+      }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     getPedia();
@@ -70,217 +193,282 @@ function Search() {
 
   return (
     <div className={styles.search}>
-      <div className={styles.search_content}>
-        <LoginBtn right={0} />
-        <div className={styles.search_content_header}>
-          <Image
-            src={LogoIcon.src}
-            width={86}
-            height={36}
-            alt="logo"
-            onClick={() => {
-              router.push('/');
-            }}
-          />
+      <div className={styles.search_main}>
+        <div className={styles.search_main_sidebar}>
+          <div className={styles.search_main_sidebar_logo}>
+            <Image
+              src={LogoIcon2.src}
+              width={42}
+              height={52}
+              alt="logo"
+              onClick={() => {
+                router.push('/');
+              }}
+            />
+
+            <LoginBtn
+              style={{
+                left: 20,
+                bottom: 64,
+              }}
+            />
+          </div>
         </div>
 
-        <SearchTextArea />
+        <div className={styles.search_content}>
+          <SearchTextArea />
 
-        <div className={styles.search_content_data}>
-          <div className={styles.search_content_data_summary}>
-            <div className={styles.header}>
-              <div className={styles.header_triangle} />
-              总结
-            </div>
-            <div className={styles.content}>
-              <div
-                className={styles.content_summary}
-                dangerouslySetInnerHTML={{
-                  __html: getReplacedSummary(summaryZh),
-                }}
-              />
-              <div
-                className={styles.content_summaryZh}
-                dangerouslySetInnerHTML={{
-                  __html: getReplacedSummary(summary),
-                }}
-              />
-            </div>
-          </div>
-          <div className={styles.search_content_data_papers}>
-            <div className={styles.header}>
-              <div className={styles.header_text}>
-                参考文献：{papers.length}篇
+          {loading && (
+            <div className={styles.search_content_loading}>
+              <div className={styles.search_content_loading_card}>
+                <div className={styles.text}>我们正在努力寻找答案……</div>
+                <meter min="0" max="100" value={meter} />
               </div>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorPrimary: '#6F9EC1',
-                  },
-                  components: {
-                    Button: {
-                      paddingInlineLG: 24,
-                    },
-                  },
-                }}
+            </div>
+          )}
+
+          {!loading && !summary && (
+            <div className={styles.search_content_empty}>
+              <div className={styles.search_content_empty_card}>
+                <Image
+                  src={EmptyIcon.src}
+                  width={64}
+                  height={46}
+                  alt="EmptyIcon"
+                />
+
+                <div className={styles.text}>
+                  很抱歉，暂时无法找到合适的答案，请换个问题再试一次。
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!loading && summary && (
+            <div className={styles.search_content_data}>
+              <div
+                ref={summaryRef}
+                className={styles.search_content_data_summary}
               >
-                <Button
-                  size="large"
-                  type="primary"
-                  //   onClick={() => {
-                  //     router.push('/login');
-                  //   }}
-                >
-                  查看选中文献
-                </Button>
-              </ConfigProvider>
-            </div>
+                <div className={styles.header}>
+                  <div className={styles.header_triangle} />
+                  总结
+                </div>
+                <div className={styles.content}>
+                  <div
+                    className={styles.content_summary}
+                    dangerouslySetInnerHTML={{
+                      __html: getReplacedSummary(summaryZh),
+                    }}
+                  />
+                  <div
+                    className={styles.content_summaryZh}
+                    dangerouslySetInnerHTML={{
+                      __html: getReplacedSummary(summary),
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.search_content_data_papers}>
+                <div className={styles.header}>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#6F9EC1',
+                      },
+                      components: {
+                        Button: {
+                          paddingInlineLG: 24,
+                        },
+                      },
+                    }}
+                  >
+                    <Button type="primary">查看选中文献</Button>
+                  </ConfigProvider>
+                  <div className={styles.header_text}>精选8/已读220</div>
+                </div>
 
-            <div className={styles.content}>
-              {papers.map(
-                (
-                  {
-                    paperAbstractZh,
-                    paperAbstract,
-                    authors,
-                    citationCount,
-                    jcr,
-                    journal,
-                    title,
-                    url,
-                    years,
-                    responseZh,
-                  },
-                  i
-                ) => (
-                  <div key={i} className={styles.content_card}>
-                    <div className={styles.content_card_header}>
-                      <Image
-                        src={ArticleIcon.src}
-                        width={12}
-                        height={12}
-                        alt="ArticleIcon"
-                      />
-                      <span>article</span>
-                      <Image
-                        src={LockIcon.src}
-                        width={12}
-                        height={12}
-                        alt="LockIcon"
-                      />
-                      <span>open access</span>
-                    </div>
-                    <div className={styles.content_card_title}>{title}</div>
-                    <div className={styles.content_card_response}>
-                      {responseZh}
-                    </div>
-
-                    <div className={styles.content_card_btn}>
-                      <ConfigProvider
-                        theme={{
-                          token: {
-                            colorPrimary: '#00A650',
-                          },
-                          components: {
-                            Button: {
-                              defaultColor: '#00A650',
-                              defaultBg: '#F1F1F1',
-                            },
-                          },
-                        }}
-                      >
-                        <Button
-                          onClick={() => {
-                            setPaperAbstractOpenList(
-                              paperAbstractOpenList.includes(i)
-                                ? paperAbstractOpenList.filter(
-                                    (item) => item !== i
-                                  )
-                                : [...paperAbstractOpenList, i]
-                            );
-                          }}
-                        >
-                          {paperAbstractOpenList.includes(i)
-                            ? '收起'
-                            : '查看摘要'}
-
-                          {paperAbstractOpenList.includes(i) ? (
-                            <UpOutlined
-                              style={{ color: '#00A650', fontSize: '10px' }}
-                            />
-                          ) : (
-                            <DownOutlined
-                              style={{ color: '#00A650', fontSize: '10px' }}
-                            />
-                          )}
-                        </Button>
-                      </ConfigProvider>
-                    </div>
-
-                    {paperAbstractOpenList.includes(i) && (
-                      <div className={styles.content_card_paperAbstract}>
-                        <span>摘要：{paperAbstractZh || paperAbstract}</span>
-                        <span>
-                          {`摘要(原文)：`}
-                          {paperAbstract}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className={styles.content_card_crossline} />
-
-                    <div className={styles.content_card_footer}>
-                      <div className={styles.content_card_footer_journal}>
-                        <Image
-                          src={BookIcon.src}
-                          width={16}
-                          height={16}
-                          alt="BookIcon"
-                        />
-                        <div
-                          className={styles.content_card_footer_journal_text}
-                        >
-                          {journal}
+                <div className={styles.content} id="cardList">
+                  {papers.map(
+                    (
+                      {
+                        paperAbstractZh,
+                        paperAbstract,
+                        authors,
+                        citationCount,
+                        jcr,
+                        journal,
+                        title,
+                        url,
+                        years,
+                        responseZh,
+                      },
+                      i
+                    ) => (
+                      <div key={i} className={styles.content_card}>
+                        <div className={styles.content_card_title}>
+                          <span>{title}</span>
+                          <Button
+                            type="text"
+                            icon={<CloseOutlined />}
+                            size="small"
+                          />
                         </div>
+
+                        <div className={styles.content_card_footer}>
+                          <div className={styles.content_card_footer_journal}>
+                            <Image
+                              src={BookIcon.src}
+                              width={16}
+                              height={16}
+                              alt="BookIcon"
+                            />
+                            <div
+                              className={
+                                styles.content_card_footer_journal_text
+                              }
+                            >
+                              {journal}
+                            </div>
+                          </div>
+                          <div
+                            className={styles.content_card_footer_division}
+                          />
+                          <div className={styles.content_card_footer_authors}>
+                            <Image
+                              src={UserIcon.src}
+                              width={16}
+                              height={16}
+                              alt="UserIcon"
+                            />
+                            {authors[0]}等
+                          </div>
+                          <div
+                            className={styles.content_card_footer_division}
+                          />
+                          <div className={styles.content_card_footer_years}>
+                            {years || 2000}
+                          </div>
+                          <div
+                            className={styles.content_card_footer_division}
+                          />
+                          <div className={styles.content_card_footer_jcr}>
+                            JCR Q{jcr}
+                          </div>
+                          <div
+                            className={styles.content_card_footer_division}
+                          />
+                          <div
+                            className={styles.content_card_footer_citationCount}
+                          >
+                            被引{citationCount} 次
+                          </div>
+                          <div
+                            className={styles.content_card_footer_division}
+                          />
+
+                          <div
+                            className={styles.content_card_footer_openAccess}
+                          >
+                            <Image
+                              src={LockIcon.src}
+                              width={12}
+                              height={12}
+                              alt="LockIcon"
+                            />
+                            <span>open access</span>
+                          </div>
+                        </div>
+
+                        <div className={styles.content_card_crossline} />
+
+                        <div className={styles.content_card_response}>
+                          {responseZh ||
+                            '在数字时代的浪潮中，虚拟与现实交织，科技的脚步从未停歇。在这个信息爆炸的时代，每个人都是知识的追寻者，也是信息的传递者。我们漫步在这片广阔的网络世界，寻找着自己的位置，探索着未知的领域。无数的数据像繁星一般'}
+                        </div>
+
+                        <div className={styles.content_card_btn}>
+                          <ConfigProvider
+                            theme={{
+                              token: {
+                                colorPrimary: '#00A650',
+                              },
+                              components: {
+                                Button: {
+                                  paddingInlineSM: 34,
+                                  defaultColor: '#00A650',
+                                  defaultBg: '#F1F1F1',
+                                },
+                              },
+                            }}
+                          >
+                            <Button
+                              size="small"
+                              // onClick={() => { }}
+                            >
+                              <div className={styles.content_card_btn_quote}>
+                                <Icon component={QuoteSvg} />
+                                引用
+                              </div>
+                            </Button>
+                          </ConfigProvider>
+
+                          <ConfigProvider
+                            theme={{
+                              token: {
+                                colorPrimary: '#00A650',
+                              },
+                              components: {
+                                Button: {
+                                  paddingInlineSM: 48,
+                                  defaultColor: '#00A650',
+                                  defaultBg: '#F1F1F1',
+                                },
+                              },
+                            }}
+                          >
+                            <Button
+                              size="small"
+                              loading={abstractLoadingIndex === i}
+                              onClick={() => {
+                                translate(paperAbstract, i);
+                              }}
+                            >
+                              {paperAbstractOpenList.includes(i)
+                                ? '收起'
+                                : '查看摘要'}
+
+                              {paperAbstractOpenList.includes(i) ? (
+                                <UpOutlined
+                                  style={{ color: '#00A650', fontSize: '8px' }}
+                                />
+                              ) : (
+                                <DownOutlined
+                                  style={{ color: '#00A650', fontSize: '8px' }}
+                                />
+                              )}
+                            </Button>
+                          </ConfigProvider>
+                        </div>
+
+                        {paperAbstractOpenList.includes(i) && (
+                          <div className={styles.content_card_paperAbstract}>
+                            <span>
+                              摘要：{paperAbstractZh || paperAbstract}
+                            </span>
+                            <span>
+                              {`摘要(原文)：`}
+                              {paperAbstract}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      <div className={styles.content_card_footer_division} />
-                      <div className={styles.content_card_footer_authors}>
-                        <Image
-                          src={UserIcon.src}
-                          width={16}
-                          height={16}
-                          alt="UserIcon"
-                        />
-                        {authors[0]}等
-                      </div>
-                      <div className={styles.content_card_footer_division} />
-                      <div className={styles.content_card_footer_years}>
-                        {years || 2000}
-                      </div>
-                      <div className={styles.content_card_footer_division} />
-                      <div className={styles.content_card_footer_jcr}>
-                        JCR Q{jcr}
-                      </div>
-                      <div className={styles.content_card_footer_division} />
-                      <div className={styles.content_card_footer_citationCount}>
-                        被引{citationCount} 次
-                      </div>
-                      <div className={styles.content_card_footer_division} />
-                      <div className={styles.content_card_footer_url}>
-                        <Image
-                          src={QuoteIcon.src}
-                          width={16}
-                          height={16}
-                          alt="QuoteIcon"
-                        />
-                        引用
-                      </div>
-                    </div>
-                  </div>
-                )
-              )}
+                    )
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

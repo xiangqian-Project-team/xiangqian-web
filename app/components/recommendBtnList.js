@@ -23,15 +23,15 @@ function RecommendBtnList() {
 
   return (
     <div className={styles.recommendBtnList}>
-      {RECOMMEND_LIST.map((queryText) => (
+      {RECOMMEND_LIST.map((q) => (
         <Button
-          key={queryText}
+          key={q}
           onClick={() => {
-            setSearchValue(queryText);
-            router.push(`./result?q=${queryText}`);
+            setSearchValue(q);
+            router.push(`./result?q=${q}`);
           }}
         >
-          {queryText}
+          {q}
         </Button>
       ))}
     </div>

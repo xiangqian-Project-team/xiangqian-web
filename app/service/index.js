@@ -2,16 +2,18 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-02 17:01:50
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-05 20:08:31
+ * @LastEditTime: 2024-03-10 14:22:48
  * @FilePath: /xiangqian-web/app/service/index.js
  * @Description:
  */
 
 import { message } from 'antd';
+import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://47.97.101.11:8091';
 
 const request = async (url, method, params) => {
+  debugger;
   const option = {
     method,
     headers: {
@@ -19,13 +21,14 @@ const request = async (url, method, params) => {
     },
   };
 
-  // const token = getItem('token');
-  // if (token) option.headers.token = token;
+  const token = getItem('token');
+
+  if (token) option.headers.Authorization = `Bearer ${token}`;
 
   if (method === 'GET') url = `${url}?${new URLSearchParams(params)}`; // fetch不会自动把params参数拼接成查询字符串
   if (method === 'POST') option['body'] = JSON.stringify(params);
 
-  const response = await fetch(url, option);
+  const response = await fetch(url, { ...option });
 
   const { data, code, msg } = await response.json();
 
@@ -40,6 +43,11 @@ const request = async (url, method, params) => {
 //  搜索
 export const getPedia = (params) => {
   return request(`${BASE_URL}/search/query`, 'GET', params);
+};
+
+//  翻译摘要
+export const translate = (params) => {
+  return request(`${BASE_URL}/search/translate`, 'GET', params);
 };
 
 //  获取验证码
