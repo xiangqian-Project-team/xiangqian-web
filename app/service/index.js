@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-02 17:01:50
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-10 14:22:48
+ * @LastEditTime: 2024-03-11 17:32:56
  * @FilePath: /xiangqian-web/app/service/index.js
  * @Description:
  */
@@ -10,10 +10,9 @@
 import { message } from 'antd';
 import { getItem } from '../utils/storage';
 
-const BASE_URL = 'http://47.97.101.11:8091';
+const BASE_URL = 'http://121.43.97.68:8091';
 
 const request = async (url, method, params) => {
-  debugger;
   const option = {
     method,
     headers: {

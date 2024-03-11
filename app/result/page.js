@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-10 13:50:59
+ * @LastEditTime: 2024-03-11 17:33:27
  * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
@@ -106,7 +106,7 @@ function Search() {
       // 开启倒计时
       timeId.current.id = setInterval(() => {
         setMeter((meter) => {
-          if (meter >= 95) return 90;
+          if (meter >= 95) return 95;
           return meter + 1;
         });
       }, 25);
@@ -126,7 +126,11 @@ function Search() {
         clearInterval(timeId.current.id);
         setMeter(0);
       }, 500);
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      clearInterval(timeId.current.id);
+      setMeter(0);
+    }
   };
 
   const getReplacedSummary = (str) =>
