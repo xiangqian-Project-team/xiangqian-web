@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-11 17:33:27
+ * @LastEditTime: 2024-03-11 18:32:25
  * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
@@ -109,7 +109,7 @@ function Search() {
           if (meter >= 95) return 95;
           return meter + 1;
         });
-      }, 25);
+      }, 100);
 
       const queryText = searchParams.get('q');
       const params = { queryText };
@@ -332,7 +332,7 @@ function Search() {
                                 styles.content_card_footer_journal_text
                               }
                             >
-                              {journal}
+                              {journal.name}
                             </div>
                           </div>
                           <div

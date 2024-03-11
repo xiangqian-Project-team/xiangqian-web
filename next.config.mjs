@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-23 10:19:46
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-11 17:34:02
+ * @LastEditTime: 2024-03-11 18:34:24
  * @FilePath: /xiangqian-web/next.config.mjs
  * @Description:
  */

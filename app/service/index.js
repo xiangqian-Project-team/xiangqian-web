@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-02 17:01:50
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-11 17:32:56
+ * @LastEditTime: 2024-03-11 18:31:26
  * @FilePath: /xiangqian-web/app/service/index.js
  * @Description:
  */
@@ -30,6 +30,7 @@ const request = async (url, method, params) => {
   const response = await fetch(url, { ...option });
 
   const { data, code, msg } = await response.json();
+  console.log('🚀 ~ request ~ data, code, msg:', data, code, msg);
 
   if (code === 6001) {
     message.error(msg);
