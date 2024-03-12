@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-11 18:32:25
+ * @LastEditTime: 2024-03-12 21:22:35
  * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
@@ -12,7 +12,7 @@ import Icon, {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { Button, ConfigProvider } from 'antd';
+import { Button, ConfigProvider, Tooltip } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -36,6 +36,7 @@ import {
   getPedia as getPediaAsync,
   translate as translateAsync,
 } from '../service';
+import { getItem } from '../utils/storage';
 import styles from './page.module.scss';
 
 const QuoteSvg = () => (
@@ -212,8 +213,9 @@ function Search() {
 
             <LoginBtn
               style={{
-                left: 20,
-                bottom: 64,
+                position: 'absolute',
+                bottom: 24,
+                left: getItem('token') ? 20 : 8,
               }}
             />
           </div>
@@ -311,7 +313,9 @@ function Search() {
                     ) => (
                       <div key={i} className={styles.content_card}>
                         <div className={styles.content_card_title}>
-                          <span>{title}</span>
+                          <Tooltip title={title}>
+                            <span>{title}</span>
+                          </Tooltip>
                           <Button
                             type="text"
                             icon={<CloseOutlined />}
@@ -327,6 +331,9 @@ function Search() {
                               height={16}
                               alt="BookIcon"
                             />
+                          </div>
+
+                          <Tooltip title={journal.name}>
                             <div
                               className={
                                 styles.content_card_footer_journal_text
@@ -334,7 +341,8 @@ function Search() {
                             >
                               {journal.name}
                             </div>
-                          </div>
+                          </Tooltip>
+
                           <div
                             className={styles.content_card_footer_division}
                           />
@@ -473,10 +481,10 @@ function Search() {
               </div>
             </div>
           )}
+
+          <Footer />
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }

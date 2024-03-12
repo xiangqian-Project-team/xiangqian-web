@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-02 17:01:50
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-11 18:31:26
+ * @LastEditTime: 2024-03-11 19:29:55
  * @FilePath: /xiangqian-web/app/service/index.js
  * @Description:
  */
@@ -55,7 +55,7 @@ export const getMessage = (params) => {
   return request(`${BASE_URL}/public/send/message`, 'GET', params);
 };
 
-//  获取验证码
+//  登录
 export const login = (params) => {
   return request(`${BASE_URL}/public/login`, 'GET', params);
 };

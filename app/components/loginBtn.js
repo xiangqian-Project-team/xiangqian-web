@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-02-23 10:47:08
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-10 17:06:29
+ * @LastEditTime: 2024-03-12 21:19:05
  * @FilePath: /xiangqian-web/app/components/loginBtn.js
  * @Description:
  */
@@ -17,6 +17,7 @@ import styles from './loginBtn.module.scss';
 function LoginBtn(props) {
   const {
     style = {
+      position: 'absolute',
       top: 24,
       right: 156,
     },

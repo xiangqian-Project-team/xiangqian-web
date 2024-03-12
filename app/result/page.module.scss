@@ -7,14 +7,15 @@
     overflow-y    : hidden;
 
     .search_main {
-        display: flex;
-        width  : 100%;
+        display   : flex;
+        width     : 100%;
         overflow-y: hidden;
 
         .search_main_sidebar {
-            position       : relative;
+            position       : fixed;
             top            : 0;
             width          : 40px;
+            height         : 100vh;
             background     : #FFFFFF;
             padding        : 0 20px;
             display        : flex;
@@ -27,15 +28,18 @@
         }
 
         .search_content {
-            margin  : auto;
-            width   : 1128px;
-            position: relative;
+            margin-left   : 80px;
+            width         : 100%;
+            display       : flex;
+            flex-direction: column;
+            align-items   : center;
+            position      : relative;
 
 
             .search_content_loading {
                 padding-top: 24px;
                 height     : calc(100vh - 132px - 242px);
-                width      : 100%;
+                width      : 1128px;
 
                 .search_content_loading_card {
                     width         : 100%;
@@ -62,6 +66,7 @@
             }
 
             .search_content_empty {
+                width      : 1128px;
                 padding-top: 24px;
                 height     : calc(100vh - 132px - 242px);
                 width      : 100%;
@@ -96,8 +101,8 @@
                 }
             }
 
-
             .search_content_data {
+                width          : 1128px;
                 margin-top     : 24px;
                 margin-bottom  : 24px;
                 display        : flex;
@@ -223,40 +228,23 @@
                             margin-bottom: 10px;
                             padding      : 10px 20px;
 
-
-                            // .content_card_header {
-                            //     height       : 16px;
-                            //     margin-bottom: 6px;
-                            //     display      : flex;
-                            //     align-items  : center;
-
-
-                            //     img {
-                            //         margin-right: 8px;
-                            //     }
-
-                            //     span {
-                            //         font-weight : 400;
-                            //         font-size   : 12px;
-                            //         margin-right: 16px;
-                            //         color       : #848484;
-                            //     }
-                            // }
-
                             .content_card_title {
-                                font-weight  : 400;
-                                font-size    : 16px;
-                                line-height  : 18px;
-                                color        : #000000;
-                                margin-bottom: 8px;
-                                overflow     : hidden; //超出的文本隐藏
-                                text-overflow: ellipsis; //溢出用省略号显示
-                                white-space  : nowrap; //溢出不换行
-                                font-family  : STSongti-SC-Bold, STSongti-SC-Bold;
-
+                                font-weight    : 400;
+                                font-size      : 16px;
+                                line-height    : 18px;
+                                color          : #000000;
+                                margin-bottom  : 8px;
                                 display        : flex;
                                 align-items    : center;
                                 justify-content: space-between;
+
+                                span {
+                                    flex         : 1;
+                                    overflow     : hidden; //超出的文本隐藏
+                                    text-overflow: ellipsis; //溢出用省略号显示
+                                    white-space  : nowrap; //溢出不换行
+                                    font-family  : STSongti-SC-Bold, STSongti-SC-Bold;
+                                }
                             }
 
                             .content_card_response {
@@ -328,7 +316,6 @@
 
 
                             .content_card_footer {
-                                // margin-top : 12px;
                                 height     : 16px;
                                 width      : 100%;
                                 display    : flex;
@@ -338,6 +325,7 @@
                                 font-size  : 12px;
                                 color      : #848484;
                                 line-height: 14px;
+                                flex-wrap  : wrap;
 
                                 img {
                                     margin-right: 4px !important;
@@ -345,18 +333,16 @@
 
 
                                 .content_card_footer_journal {
-                                    flex       : 1;
                                     height     : 16px;
                                     display    : flex;
                                     align-items: center;
+                                }
 
-
-
-                                    .content_card_footer_journal_text {
-                                        overflow     : hidden; //超出的文本隐藏
-                                        text-overflow: ellipsis; //溢出用省略号显示
-                                        white-space  : nowrap; //溢出不换行
-                                    }
+                                .content_card_footer_journal_text {
+                                    flex         : 1;
+                                    overflow     : hidden; //超出的文本隐藏
+                                    text-overflow: ellipsis; //溢出用省略号显示
+                                    white-space  : nowrap; //溢出不换行
                                 }
 
                                 .content_card_footer_years {}
@@ -393,7 +379,5 @@
             }
         }
     }
-
-
 
 }

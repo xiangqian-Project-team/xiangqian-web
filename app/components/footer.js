@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-02 21:21:42
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-09 23:29:02
+ * @LastEditTime: 2024-03-12 20:47:51
  * @FilePath: /xiangqian-web/app/components/footer.js
  * @Description:
  */
@@ -10,9 +10,10 @@ import Image from 'next/image';
 import Logo2Icon from '../img/logo2.png';
 import styles from './footer.module.scss';
 
-export default function Footer() {
+export default function Footer(props) {
+  const { width = '100%' } = props;
   return (
-    <div className={styles.footer}>
+    <div className={styles.footer} style={{ width }}>
       <div className={styles.footer_message}>
         <div className={styles.footer_message_line} />
         <div className={styles.footer_message_content}>
