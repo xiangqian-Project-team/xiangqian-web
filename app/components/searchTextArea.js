@@ -28,7 +28,7 @@ function SearchTextArea() {
         // showCount
         maxLength={50}
         placeholder="请输入您的问题......"
-        style={{ height: 66, width: 1128, resize: 'none' }}
+        className={styles.searchTextArea_input}
         value={searchValue}
         onChange={(e) => {
           setSearchValue(e.target.value);
