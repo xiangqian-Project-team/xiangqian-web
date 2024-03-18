@@ -23,31 +23,35 @@ function SearchTextArea() {
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
 
   return (
-    <div className={styles.searchTextArea}>
-      <TextArea
-        // showCount
-        maxLength={50}
-        placeholder="请输入您的问题......"
-        className={styles.searchTextArea_input}
-        value={searchValue}
-        onChange={(e) => {
-          setSearchValue(e.target.value);
-        }}
-      />
-
-      <div className={styles.searchTextArea_btn}>
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<ArrowRightOutlined style={{ color: '#194731' }} />}
-          disabled={!searchValue}
-          onClick={() => {
-            router.push(`./result?q=${searchValue}`);
+    <div className={styles.searchContainer}>
+      <div className={styles.searchTextArea}>
+        <TextArea
+          // showCount
+          maxLength={50}
+          placeholder="请输入您的问题......"
+          className={styles.searchTextArea_input}
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
           }}
         />
-      </div>
 
-      <div className={styles.searchTextArea_count}>{searchValue.length}/50</div>
+        <div className={styles.searchTextArea_btn}>
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<ArrowRightOutlined style={{ color: '#194731' }} />}
+            disabled={!searchValue}
+            onClick={() => {
+              router.push(`./result?q=${searchValue}`);
+            }}
+          />
+        </div>
+
+        <div className={styles.searchTextArea_count}>
+          {searchValue.length}/50
+        </div>
+      </div>
     </div>
   );
 }
