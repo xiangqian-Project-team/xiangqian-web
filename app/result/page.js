@@ -12,7 +12,7 @@ import Icon, {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { Button, ConfigProvider, Tooltip } from 'antd';
+import { Button, ConfigProvider, Popover, Tooltip } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -127,7 +127,12 @@ function ContentCart(props) {
         <Tooltip title={title}>
           <span>{title}</span>
         </Tooltip>
-        <Button type="text" icon={<CloseOutlined />} size="small" />
+        <Popover
+          content={<Button danger>确认本项研究⽆关，不再显⽰</Button>}
+          trigger="click"
+        >
+          <Button type="text" icon={<CloseOutlined />} size="small" />
+        </Popover>
       </div>
 
       <div className={styles.content_card_footer}>
