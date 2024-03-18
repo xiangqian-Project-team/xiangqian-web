@@ -17,7 +17,7 @@ import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
@@ -86,7 +86,6 @@ const QuoteSvg = () => (
 
 function ContentCart(props) {
   const {
-    paperAbstractZh,
     paperAbstract,
     authors,
     citationCount,
@@ -97,7 +96,30 @@ function ContentCart(props) {
     years,
     responseZh,
   } = props.data;
-  const { abstractLoadingIndex, i, paperAbstractOpenList } = props;
+  const [paperAbstractZh, setPaperAbstractZh] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+
+  const translate = async (queryText) => {
+    try {
+      if (isDetailVisible) {
+        setIsDetailVisible(false);
+        return;
+      }
+
+      setIsLoading(true);
+
+      const params = { queryText };
+      const { abstractZh } = await translateAsync(params);
+
+      setPaperAbstractZh(abstractZh);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsDetailVisible(true);
+    }
+  };
 
   return (
     <div className={styles.content_card}>
@@ -189,14 +211,14 @@ function ContentCart(props) {
         >
           <Button
             size="small"
-            loading={abstractLoadingIndex === i}
+            loading={isLoading}
             onClick={() => {
-              translate(paperAbstract, i);
+              translate(paperAbstract);
             }}
           >
-            {paperAbstractOpenList.includes(i) ? '收起' : '查看摘要'}
+            {isDetailVisible ? '收起' : '查看摘要'}
 
-            {paperAbstractOpenList.includes(i) ? (
+            {isDetailVisible ? (
               <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
             ) : (
               <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
@@ -205,7 +227,7 @@ function ContentCart(props) {
         </ConfigProvider>
       </div>
 
-      {paperAbstractOpenList.includes(i) && (
+      {isDetailVisible && (
         <div className={styles.content_card_paperAbstract}>
           <span>摘要：{paperAbstractZh || paperAbstract}</span>
           <span>
@@ -228,13 +250,17 @@ function Search() {
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
-  const [paperAbstractOpenList, setPaperAbstractOpenList] = useState([]);
-  const [abstractLoadingIndex, setAbstractLoadingIndex] = useState(null);
+  // const [paperAbstractOpenList, setPaperAbstractOpenList] = useState([]);
+  // const [abstractLoadingIndex, setAbstractLoadingIndex] = useState(null);
   const [meter, setMeter] = useState(0);
 
   const searchParams = useSearchParams();
 
   const summaryRef = useRef(null);
+
+  const contentHeight = useMemo(() => {
+    return summaryRef?.current?.clientHeight;
+  }, [summaryRef]);
 
   const getPedia = async () => {
     try {
@@ -301,30 +327,6 @@ function Search() {
         ${papers[i - 1].years || ''}
         ）</span>`;
     });
-
-  const translate = async (queryText, i) => {
-    try {
-      if (paperAbstractOpenList.includes(i)) {
-        setPaperAbstractOpenList(
-          paperAbstractOpenList.filter((item) => item !== i)
-        );
-      } else {
-        setAbstractLoadingIndex(i);
-
-        const params = { queryText };
-
-        const { abstractZh } = await translateAsync(params);
-
-        setPapers((draft) => {
-          draft[i].paperAbstractZh = abstractZh;
-        });
-
-        setPaperAbstractOpenList([...paperAbstractOpenList, i]);
-
-        setAbstractLoadingIndex(null);
-      }
-    } catch (error) {}
-  };
 
   useEffect(() => {
     getPedia();
@@ -409,7 +411,10 @@ function Search() {
                   />
                 </div>
               </div>
-              <div className={styles.search_content_data_papers}>
+              <div
+                className={styles.search_content_data_papers}
+                style={{ maxHeight: contentHeight || 'auto' }}
+              >
                 <div className={styles.header}>
                   <ConfigProvider
                     theme={{
@@ -446,12 +451,29 @@ function Search() {
                       <ContentCart
                         key={item.title}
                         data={item}
-                        abstractLoadingIndex={abstractLoadingIndex}
-                        i={i}
-                        paperAbstractOpenList={paperAbstractOpenList}
+                        // abstractLoadingIndex={abstractLoadingIndex}
+                        // i={i}
+                        // paperAbstractOpenList={paperAbstractOpenList}
                       />
                     )
                   )}
+                </div>
+                <div className={styles.footer_mask} />
+                <div className={styles.footer}>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#6F9EC1',
+                      },
+                      components: {
+                        Button: {
+                          paddingInlineLG: 24,
+                        },
+                      },
+                    }}
+                  >
+                    <Button type="primary">查看选中文献</Button>
+                  </ConfigProvider>
                 </div>
               </div>
             </div>
