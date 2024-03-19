@@ -307,13 +307,33 @@
                 font-size: 16px;
                 color: #000000;
                 line-height: 24px;
-                overflow-y: scroll;
+                overflow-y: hidden;
+                position: relative;
 
                 display: flex;
                 flex-direction: column;
 
                 span:first-child {
                   margin-bottom: 20px;
+                }
+
+                .content_card_paperAbstract_all_button {
+                  position: absolute;
+                  bottom: 0;
+                  right: 0;
+                  color: $primary-color;
+                  border: none;
+                  font-size: 14px;
+                  text-decoration: underline;
+                  text-underline-offset: 2px;
+                  border-radius: 50px;
+                  background: white;
+                  padding: 2px 14px;
+                  box-shadow: 0 0 12px 20px white;
+                  cursor: pointer;
+                  &:hover {
+                    color: $primary-color-hover;
+                  }
                 }
               }
 

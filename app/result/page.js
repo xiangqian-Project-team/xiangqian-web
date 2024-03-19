@@ -99,11 +99,13 @@ function ContentCart(props) {
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
   const translate = async (queryText) => {
     try {
       if (isDetailVisible) {
         setIsDetailVisible(false);
+        setIsAllDetailVisible(false);
         return;
       }
 
@@ -113,11 +115,11 @@ function ContentCart(props) {
       const { abstractZh } = await translateAsync(params);
 
       setPaperAbstractZh(abstractZh);
+      setIsDetailVisible(true);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-      setIsDetailVisible(true);
     }
   };
 
@@ -233,12 +235,27 @@ function ContentCart(props) {
       </div>
 
       {isDetailVisible && (
-        <div className={styles.content_card_paperAbstract}>
+        <div
+          className={styles.content_card_paperAbstract}
+          style={{
+            height: isDetailVisible && isAllDetailVisible ? 'auto' : '',
+          }}
+        >
           <span>摘要：{paperAbstractZh || paperAbstract}</span>
           <span>
             {`摘要(原文)：`}
             {paperAbstract}
           </span>
+          {!isAllDetailVisible && (
+            <b
+              className={styles.content_card_paperAbstract_all_button}
+              onClick={() => {
+                setIsAllDetailVisible(true);
+              }}
+            >
+              查看全部
+            </b>
+          )}
         </div>
       )}
     </div>
@@ -363,7 +380,7 @@ function Search() {
         </div>
 
         <div className={styles.search_content}>
-          <SearchTextArea />
+          <SearchTextArea isLoading={loading} />
 
           {loading && (
             <div className={styles.search_content_loading}>
@@ -477,7 +494,7 @@ function Search() {
                       },
                     }}
                   >
-                    <Button type="primary">查看选中文献</Button>
+                    <Button type="primary">查看更多文献</Button>
                   </ConfigProvider>
                 </div>
               </div>

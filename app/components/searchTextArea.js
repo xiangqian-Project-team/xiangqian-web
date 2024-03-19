@@ -17,7 +17,7 @@ import { searchValueAtom } from '../models/search';
 import styles from './searchTextArea.module.scss';
 const { TextArea } = Input;
 
-function SearchTextArea() {
+function SearchTextArea(props) {
   const router = useRouter();
 
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
@@ -40,6 +40,7 @@ function SearchTextArea() {
           <Button
             type="primary"
             shape="circle"
+            loading={props.loading}
             icon={<ArrowRightOutlined style={{ color: '#194731' }} />}
             disabled={!searchValue}
             onClick={() => {
