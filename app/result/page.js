@@ -12,7 +12,7 @@ import Icon, {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { Button, ConfigProvider, Popover, Tooltip } from 'antd';
+import { Button, ConfigProvider, Modal, Popover, Tooltip } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -481,29 +481,31 @@ function Search() {
                   <div className={styles.header_text}>基于200个结果筛选</div>
                 </div>
 
-                <div className={styles.content} id="cardList">
-                  {papers.map(
-                    // {
-                    //   paperAbstractZh,
-                    //   paperAbstract,
-                    //   authors,
-                    //   citationCount,
-                    //   jcr,
-                    //   journal,
-                    //   title,
-                    //   url,
-                    //   years,
-                    //   responseZh,
-                    // }
-                    (item, i) => (
-                      <ContentCart
-                        key={item.title}
-                        data={item}
-                        checkedPapers={checkedPapers}
-                        setCheckedPapers={setCheckedPapers}
-                      />
-                    )
-                  )}
+                <div className={styles.content_scroll}>
+                  <div className={styles.content} id="cardList">
+                    {papers.map(
+                      // {
+                      //   paperAbstractZh,
+                      //   paperAbstract,
+                      //   authors,
+                      //   citationCount,
+                      //   jcr,
+                      //   journal,
+                      //   title,
+                      //   url,
+                      //   years,
+                      //   responseZh,
+                      // }
+                      (item, i) => (
+                        <ContentCart
+                          key={item.title}
+                          data={item}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      )
+                    )}
+                  </div>
                 </div>
                 <div className={styles.footer_mask} />
                 <div className={styles.footer}>
@@ -525,6 +527,10 @@ function Search() {
               </div>
             </div>
           )}
+
+          <Modal>
+            <div className={''}>11</div>
+          </Modal>
 
           <Footer />
         </div>
