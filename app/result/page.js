@@ -478,7 +478,7 @@ function Search() {
                   >
                     <Button type="primary">查看选中文献</Button>
                   </ConfigProvider>
-                  <div className={styles.header_text}>精选8/已读220</div>
+                  <div className={styles.header_text}>基于200个结果筛选</div>
                 </div>
 
                 <div className={styles.content} id="cardList">
