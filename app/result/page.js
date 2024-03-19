@@ -21,6 +21,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
+import CheckIcon from '../icons/icon_check.svg';
+import NoneCheckIcon from '../icons/icon_none_check.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import BookIcon from '../img/book.png';
 import EmptyIcon from '../img/empty.png';
@@ -127,6 +129,27 @@ function ContentCart(props) {
   return (
     <div className={styles.content_card}>
       <div className={styles.content_card_title}>
+        {props.checkedPapers.includes(title) ? (
+          <Image
+            className={styles.content_card_check}
+            src={CheckIcon}
+            onClick={() => {
+              const newCheckedPapers = props.checkedPapers.filter(
+                (item) => item !== title
+              );
+              props.setCheckedPapers(newCheckedPapers);
+            }}
+          />
+        ) : (
+          <Image
+            className={styles.content_card_check}
+            src={NoneCheckIcon}
+            onClick={() => {
+              const newCheckedPapers = [...props.checkedPapers, title];
+              props.setCheckedPapers(newCheckedPapers);
+            }}
+          />
+        )}
         <Tooltip title={title}>
           <span>{title}</span>
         </Tooltip>
@@ -273,8 +296,7 @@ function Search() {
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
-  // const [paperAbstractOpenList, setPaperAbstractOpenList] = useState([]);
-  // const [abstractLoadingIndex, setAbstractLoadingIndex] = useState(null);
+  const [checkedPapers, setCheckedPapers] = useState([]);
   const [meter, setMeter] = useState(0);
 
   const searchParams = useSearchParams();
@@ -477,9 +499,8 @@ function Search() {
                       <ContentCart
                         key={item.title}
                         data={item}
-                        // abstractLoadingIndex={abstractLoadingIndex}
-                        // i={i}
-                        // paperAbstractOpenList={paperAbstractOpenList}
+                        checkedPapers={checkedPapers}
+                        setCheckedPapers={setCheckedPapers}
                       />
                     )
                   )}
