@@ -121,6 +121,7 @@
             padding: 0 24px;
             width: calc(100% - 48px);
             height: 37px;
+            color: white;
             background: linear-gradient(
               62deg,
               #50c98c 0%,
@@ -132,14 +133,13 @@
               position: absolute;
               right: 24px;
               bottom: 0px;
-              width: 0;
-              height: 0;
-              border-left: 12px solid transparent;
-              /* 左侧透明 */
-              border-right: 12px solid transparent;
-              /* 右侧透明 */
-              border-bottom: 20px solid #ffffff;
-              /* 底边颜色为白色 */
+              color: white;
+              // border-left: 12px solid transparent;
+              // /* 左侧透明 */
+              // border-right: 12px solid transparent;
+              // /* 右侧透明 */
+              // border-bottom: 20px solid #ffffff;
+              // /* 底边颜色为白色 */
             }
           }
 

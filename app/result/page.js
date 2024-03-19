@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
+import RoundedArrow from '../icons/rounded_arrow.svg';
 import BookIcon from '../img/book.png';
 import EmptyIcon from '../img/empty.png';
 import LockIcon from '../img/lock.png';
@@ -415,7 +416,10 @@ function Search() {
                 className={styles.search_content_data_summary}
               >
                 <div className={styles.header}>
-                  <div className={styles.header_triangle} />
+                  <Image
+                    className={styles.header_triangle}
+                    src={RoundedArrow}
+                  />
                   总结
                 </div>
                 <div className={styles.content}>
