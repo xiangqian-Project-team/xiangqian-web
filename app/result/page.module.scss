@@ -440,3 +440,24 @@
     }
   }
 }
+
+.quote_title {
+  height: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(
+    52deg,
+    rgba(80, 201, 140, 0.4) 0%,
+    rgba(139, 187, 183, 0.4) 50%,
+    rgba(132, 196, 181, 0.4) 100%
+  ) !important;
+}
+.quote_body {
+  margin-top: 40px;
+}

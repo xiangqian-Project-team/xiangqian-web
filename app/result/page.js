@@ -528,7 +528,21 @@ function Search() {
             </div>
           )}
 
-          <Modal>
+          <Modal
+            open={false}
+            headerBg="red"
+            classNames={{
+              header: styles.quote_title,
+              body: styles.quote_body,
+            }}
+            title={<div>引用文章</div>}
+            cancelButtonProps={{
+              styles: {
+                top: '12px',
+              },
+            }}
+            footer={false}
+          >
             <div className={''}>11</div>
           </Modal>
 
