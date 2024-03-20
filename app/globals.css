@@ -124,7 +124,7 @@ table {
 }
 
 body {
-  font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+  /* font-family: STSongti-SC-Regular, STSongti-SC-Regular; */
 }
 
 body::-webkit-scrollbar {

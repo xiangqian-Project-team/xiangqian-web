@@ -11,6 +11,8 @@
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.0",
     "antd": "^5.14.1",
+    "bibtex-js-parser": "^1.1.6",
+    "citation-js": "^0.7.9",
     "jotai": "^2.6.5",
     "jotai-immer": "^0.3.0",
     "next": "14.1.0",

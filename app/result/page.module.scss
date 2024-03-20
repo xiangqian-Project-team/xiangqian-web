@@ -89,7 +89,7 @@
 
                     .text {
 
-                        font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+
                         font-weight: 400;
                         font-size  : 16px;
                         color      : #000000;
@@ -152,7 +152,7 @@
                             line-height   : 20px;
                             padding-bottom: 44px;
                             border-bottom : 1px solid #005C33;
-                            font-family   : STSongti-SC-Regular, STSongti-SC-Regular;
+
                         }
 
                         .content_summaryZh {
@@ -161,7 +161,7 @@
                             color      : #000000;
                             line-height: 20px;
                             margin-top : 24px;
-                            font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+
                         }
                     }
                 }
@@ -179,7 +179,7 @@
                         margin-bottom  : 10px;
 
                         .header_text {
-                            font-family   : Roboto, Roboto;
+
                             font-weight   : 400;
                             font-size     : 14px;
                             color         : #000000;
@@ -242,7 +242,7 @@
                                     overflow     : hidden; //超出的文本隐藏
                                     text-overflow: ellipsis; //溢出用省略号显示
                                     white-space  : nowrap; //溢出不换行
-                                    font-family  : STSongti-SC-Bold, STSongti-SC-Bold;
+
                                 }
                             }
 
@@ -252,7 +252,7 @@
                                 color        : #000000;
                                 line-height  : 20px;
                                 margin-bottom: 10px;
-                                font-family  : MicrosoftYaHei, MicrosoftYaHei;
+
                             }
 
                             .content_card_btn {
@@ -278,9 +278,9 @@
                             }
 
                             .content_card_paperAbstract {
-                                margin-top : 16px;
-                                height     : 240px;
-                                font-family: STSongti-SC-Bold, STSongti-SC-Bold;
+                                margin-top: 16px;
+                                height    : 240px;
+
                                 font-weight: 400;
                                 font-size  : 16px;
                                 color      : #000000;
@@ -319,7 +319,7 @@
                                 width      : 100%;
                                 display    : flex;
                                 align-items: center;
-                                font-family: RobotoRoman-Regular, RobotoRoman-Regular;
+
                                 font-weight: 400;
                                 font-size  : 12px;
                                 color      : #848484;
@@ -380,3 +380,59 @@
     }
 
 }
+
+
+
+.quoteModal {
+    :global {
+        .ant-modal {
+            border-radius: 14px;
+
+
+
+            .ant-modal-content {
+                padding: 0;
+
+                .ant-modal-header {
+                    display        : flex;
+                    align-items    : center;
+                    justify-content: center;
+                    height         : 46px;
+                    background     : linear-gradient(58deg, #50C98C 0%, #8BBBB7 50%, #84C4B5 100%);
+                    margin-bottom  : 0;
+
+                    .ant-modal-title {
+                        font-weight: 400;
+                        font-size  : 16px;
+                        color      : #000000;
+                    }
+                }
+
+                .ant-modal-body {
+                    padding        : 20px 32px;
+                    font-weight    : 400;
+                    font-size      : 16px;
+                    color          : #000000;
+                    line-height    : 24px;
+                    display        : flex;
+                    flex-direction : column;
+                    align-items    : center;
+                    justify-content: center;
+
+                    .ant-btn-lg {
+                        margin-top   : 30px;
+                        border-radius: 20px;
+                    }
+                }
+
+                .ant-modal-close {
+                    transform: translateY(-4px);
+                }
+            }
+        }
+    }
+}
+
+// width: 552px;
+// height: 46px;
+// background: linear-gradient( 58deg, #50C98C 0%, #8BBBB7 50%, #84C4B5 100%);
