@@ -7,11 +7,12 @@
  * @Description:
  */
 'use client';
-import { SettingOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider } from 'antd';
+import Image from 'next/image';
+import { getItem } from '../utils/storage';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
-import { getItem } from '../utils/storage';
+import userIcon from '../img/userIcon.png';
 import styles from './loginBtn.module.scss';
 
 function LoginBtn(props) {
@@ -50,25 +51,9 @@ function LoginBtn(props) {
           </Button>
         </ConfigProvider>
       ) : (
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#50C98C',
-            },
-            components: {
-              Button: {
-                paddingInlineLG: 24,
-              },
-            },
-          }}
-        >
-          <Button
-            size="large"
-            type="primary"
-            shape="circle"
-            icon={<SettingOutlined style={{ color: '#000000' }} />}
-          />
-        </ConfigProvider>
+        <button className={styles.loggedIcon}>
+          <Image src={userIcon} alt="userIcon" />
+        </button>
       )}
     </div>
   );
