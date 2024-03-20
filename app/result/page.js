@@ -12,15 +12,18 @@ import Icon, {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { Button, ConfigProvider, Tooltip } from 'antd';
+import { Button, ConfigProvider, Modal, Popover, Tooltip } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
+import CheckIcon from '../icons/icon_check.svg';
+import NoneCheckIcon from '../icons/icon_none_check.svg';
+import RoundedArrow from '../icons/rounded_arrow.svg';
 import BookIcon from '../img/book.png';
 import EmptyIcon from '../img/empty.png';
 import LockIcon from '../img/lock.png';
@@ -84,6 +87,315 @@ const QuoteSvg = () => (
   </svg>
 );
 
+function ContentCart(props) {
+  const {
+    paperAbstract,
+    authors,
+    citationCount,
+    jcr,
+    journal,
+    title,
+    // url,
+    years,
+    responseZh,
+  } = props.data;
+  const [paperAbstractZh, setPaperAbstractZh] = useState('');
+  const [isQuoteVisible, setIsQuoteVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
+
+  const translate = async (queryText) => {
+    try {
+      if (isDetailVisible) {
+        setIsDetailVisible(false);
+        setIsAllDetailVisible(false);
+        return;
+      }
+
+      setIsLoading(true);
+
+      const params = { queryText };
+      const { abstractZh } = await translateAsync(params);
+
+      setPaperAbstractZh(abstractZh);
+      setIsDetailVisible(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.content_card}>
+      <div className={styles.content_card_title}>
+        {props.checkedPapers.includes(title) ? (
+          <Image
+            className={styles.content_card_check}
+            src={CheckIcon}
+            onClick={() => {
+              const newCheckedPapers = props.checkedPapers.filter(
+                (item) => item !== title
+              );
+              props.setCheckedPapers(newCheckedPapers);
+            }}
+          />
+        ) : (
+          <Image
+            className={styles.content_card_check}
+            src={NoneCheckIcon}
+            onClick={() => {
+              const newCheckedPapers = [...props.checkedPapers, title];
+              props.setCheckedPapers(newCheckedPapers);
+            }}
+          />
+        )}
+        <Tooltip title={title}>
+          <span>{title}</span>
+        </Tooltip>
+        <Popover
+          content={
+            <Button
+              danger
+              onClick={() => {
+                props.setShowPapers(
+                  props.showPapers.filter((item) => item.paperId !== paperId)
+                );
+              }}
+            >
+              确认本项研究⽆关，不再显⽰
+            </Button>
+          }
+          trigger="click"
+        >
+          <Button type="text" icon={<CloseOutlined />} size="small" />
+        </Popover>
+      </div>
+
+      <div className={styles.content_card_footer}>
+        <div className={styles.content_card_footer_journal}>
+          <Image src={BookIcon.src} width={16} height={16} alt="BookIcon" />
+        </div>
+
+        <Tooltip title={journal.name}>
+          <div className={styles.content_card_footer_journal_text}>
+            {journal.name}
+          </div>
+        </Tooltip>
+
+        <div className={styles.content_card_footer_division} />
+        <div className={styles.content_card_footer_authors}>
+          <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
+          {authors[0]}等
+        </div>
+        <div className={styles.content_card_footer_division} />
+        <div className={styles.content_card_footer_years}>{years || 2000}</div>
+        <div className={styles.content_card_footer_division} />
+        <div className={styles.content_card_footer_jcr}>JCR Q{jcr}</div>
+        <div className={styles.content_card_footer_division} />
+        <div className={styles.content_card_footer_citationCount}>
+          被引{citationCount} 次
+        </div>
+        <div className={styles.content_card_footer_division} />
+
+        <div className={styles.content_card_footer_openAccess}>
+          <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
+          <span>open access</span>
+        </div>
+      </div>
+
+      <div className={styles.content_card_crossline} />
+
+      <div className={styles.content_card_response}>
+        {responseZh ||
+          '在数字时代的浪潮中，虚拟与现实交织，科技的脚步从未停歇。在这个信息爆炸的时代，每个人都是知识的追寻者，也是信息的传递者。我们漫步在这片广阔的网络世界，寻找着自己的位置，探索着未知的领域。无数的数据像繁星一般'}
+      </div>
+
+      <div className={styles.content_card_btn}>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#00A650',
+            },
+            components: {
+              Button: {
+                paddingInlineSM: 34,
+                defaultColor: '#00A650',
+                defaultBg: '#F1F1F1',
+              },
+            },
+          }}
+        >
+          <Button
+            size="small"
+            onClick={() => {
+              setIsQuoteVisible(true);
+            }}
+          >
+            <div className={styles.content_card_btn_quote}>
+              <Icon component={QuoteSvg} />
+              引用
+            </div>
+          </Button>
+        </ConfigProvider>
+
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#00A650',
+            },
+            components: {
+              Button: {
+                paddingInlineSM: 48,
+                defaultColor: '#00A650',
+                defaultBg: '#F1F1F1',
+              },
+            },
+          }}
+        >
+          <Button
+            size="small"
+            loading={isLoading}
+            onClick={() => {
+              translate(paperAbstract);
+            }}
+          >
+            {isDetailVisible ? '收起' : '查看摘要'}
+
+            {isDetailVisible ? (
+              <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+            ) : (
+              <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+            )}
+          </Button>
+        </ConfigProvider>
+      </div>
+
+      {isDetailVisible && (
+        <div
+          className={styles.content_card_paperAbstract}
+          style={{
+            height: isDetailVisible && isAllDetailVisible ? 'auto' : '',
+          }}
+        >
+          <span>摘要：{paperAbstractZh || paperAbstract}</span>
+          <span>
+            {`摘要(原文)：`}
+            {paperAbstract}
+          </span>
+          {!isAllDetailVisible && (
+            <b
+              className={styles.content_card_paperAbstract_all_button}
+              onClick={() => {
+                setIsAllDetailVisible(true);
+              }}
+            >
+              查看全部
+            </b>
+          )}
+        </div>
+      )}
+
+      <Modal
+        open={isQuoteVisible}
+        classNames={{
+          header: styles.quote_title,
+          body: styles.quote_body,
+        }}
+        title={<div>引用文章</div>}
+        onCancel={() => {
+          setIsQuoteVisible(false);
+        }}
+        footer={false}
+      >
+        <div>
+          <div className={styles.quote_check}>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="APA" />
+                <b />
+                APA
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="MLA" />
+                <b />
+                MLA
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Chicago" />
+                <b />
+                Chicago
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Harvard" />
+                <b />
+                Harvard
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Vancouver" />
+                <b />
+                Vancouver
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="BibTeX" />
+                <b />
+                BibTeX
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Ris" />
+                <b />
+                Ris
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="End Note" />
+                <b />
+                End Note
+              </label>
+            </div>
+          </div>
+          <div className={styles.quote_copy_content}>
+            {`池善庆,林财强,吴礼贵等.
+                城市人工湖营养盐与抗生素的时空分布特征及生态风险评价 [J/OL].
+                环境工程, 1-13[2024-03-01].
+                http://kns.cnki.net/kcms/detail/11.2097.x.20240229.1918.002.html.`}
+          </div>
+          <div className={styles.quote_clip}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#6F9EC1',
+                },
+                components: {
+                  Button: {
+                    paddingInlineLG: 24,
+                  },
+                },
+              }}
+            >
+              <Button type="primary">复制到剪贴板</Button>
+            </ConfigProvider>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 function Search() {
   const router = useRouter();
 
@@ -96,13 +408,16 @@ function Search() {
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
-  const [paperAbstractOpenList, setPaperAbstractOpenList] = useState([]);
-  const [abstractLoadingIndex, setAbstractLoadingIndex] = useState(null);
+  const [checkedPapers, setCheckedPapers] = useState([]);
   const [meter, setMeter] = useState(0);
 
   const searchParams = useSearchParams();
 
   const summaryRef = useRef(null);
+
+  const contentHeight = useMemo(() => {
+    return summaryRef?.current?.clientHeight;
+  }, [summaryRef]);
 
   const getPedia = async () => {
     try {
@@ -176,30 +491,6 @@ function Search() {
         ）</span>`;
     });
 
-  const translate = async (queryText, i) => {
-    try {
-      if (paperAbstractOpenList.includes(i)) {
-        setPaperAbstractOpenList(
-          paperAbstractOpenList.filter((item) => item !== i)
-        );
-      } else {
-        setAbstractLoadingIndex(i);
-
-        const params = { queryText };
-
-        const { abstractZh } = await translateAsync(params);
-
-        setPapers((draft) => {
-          draft[i].paperAbstractZh = abstractZh;
-        });
-
-        setPaperAbstractOpenList([...paperAbstractOpenList, i]);
-
-        setAbstractLoadingIndex(null);
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
     getPedia();
   }, []);
@@ -234,7 +525,7 @@ function Search() {
         </div>
 
         <div className={styles.search_content}>
-          <SearchTextArea />
+          <SearchTextArea isLoading={loading} />
 
           {loading && (
             <div className={styles.search_content_loading}>
@@ -269,7 +560,10 @@ function Search() {
                 className={styles.search_content_data_summary}
               >
                 <div className={styles.header}>
-                  <div className={styles.header_triangle} />
+                  <Image
+                    className={styles.header_triangle}
+                    src={RoundedArrow}
+                  />
                   总结
                 </div>
                 <div className={styles.content}>
@@ -287,7 +581,10 @@ function Search() {
                   />
                 </div>
               </div>
-              <div className={styles.search_content_data_papers}>
+              <div
+                className={styles.search_content_data_papers}
+                style={{ maxHeight: contentHeight || 'auto' }}
+              >
                 <div className={styles.header}>
                   <ConfigProvider
                     theme={{
@@ -303,200 +600,39 @@ function Search() {
                   >
                     <Button type="primary">查看选中文献</Button>
                   </ConfigProvider>
-                  <div className={styles.header_text}>精选8/已读220</div>
+                  <div className={styles.header_text}>基于200个结果筛选</div>
                 </div>
 
-                <div className={styles.content} id="cardList">
-                  {showPapers.map(
-                    (
-                      {
-                        paperAbstractZh,
-                        paperAbstract,
-                        authors,
-                        citationCount,
-                        jcr,
-                        journal,
-                        title,
-                        url,
-                        years,
-                        responseZh,
-                        paperId,
+                <div className={styles.content_scroll}>
+                  <div className={styles.content} id="cardList">
+                    {papers.map((item) => (
+                      <ContentCart
+                        key={item.paperId}
+                        data={item}
+                        checkedPapers={checkedPapers}
+                        setCheckedPapers={setCheckedPapers}
+                        showPapers={showPapers}
+                        setShowPapers={setShowPapers}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className={styles.footer_mask} />
+                <div className={styles.footer}>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#6F9EC1',
                       },
-                      i
-                    ) => (
-                      <div key={paperId} className={styles.content_card}>
-                        <div className={styles.content_card_title}>
-                          <Tooltip title={title}>
-                            <span>{title}</span>
-                          </Tooltip>
-                          <Button
-                            type="text"
-                            icon={<CloseOutlined />}
-                            size="small"
-                            onClick={() => {
-                              setShowPapers(
-                                showPapers.filter(
-                                  (item) => item.paperId !== paperId
-                                )
-                              );
-                            }}
-                          />
-                        </div>
-
-                        <div className={styles.content_card_footer}>
-                          <div className={styles.content_card_footer_journal}>
-                            <Image
-                              src={BookIcon.src}
-                              width={16}
-                              height={16}
-                              alt="BookIcon"
-                            />
-                          </div>
-
-                          <Tooltip title={journal.name}>
-                            <div
-                              className={
-                                styles.content_card_footer_journal_text
-                              }
-                            >
-                              {journal.name}
-                            </div>
-                          </Tooltip>
-
-                          <div
-                            className={styles.content_card_footer_division}
-                          />
-                          <div className={styles.content_card_footer_authors}>
-                            <Image
-                              src={UserIcon.src}
-                              width={16}
-                              height={16}
-                              alt="UserIcon"
-                            />
-                            {authors[0]}等
-                          </div>
-                          <div
-                            className={styles.content_card_footer_division}
-                          />
-                          <div className={styles.content_card_footer_years}>
-                            {years || 2000}
-                          </div>
-                          <div
-                            className={styles.content_card_footer_division}
-                          />
-                          <div className={styles.content_card_footer_jcr}>
-                            JCR Q{jcr}
-                          </div>
-                          <div
-                            className={styles.content_card_footer_division}
-                          />
-                          <div
-                            className={styles.content_card_footer_citationCount}
-                          >
-                            被引{citationCount} 次
-                          </div>
-                          <div
-                            className={styles.content_card_footer_division}
-                          />
-
-                          <div
-                            className={styles.content_card_footer_openAccess}
-                          >
-                            <Image
-                              src={LockIcon.src}
-                              width={12}
-                              height={12}
-                              alt="LockIcon"
-                            />
-                            <span>open access</span>
-                          </div>
-                        </div>
-
-                        <div className={styles.content_card_crossline} />
-
-                        <div className={styles.content_card_response}>
-                          {responseZh ||
-                            '在数字时代的浪潮中，虚拟与现实交织，科技的脚步从未停歇。在这个信息爆炸的时代，每个人都是知识的追寻者，也是信息的传递者。我们漫步在这片广阔的网络世界，寻找着自己的位置，探索着未知的领域。无数的数据像繁星一般'}
-                        </div>
-
-                        <div className={styles.content_card_btn}>
-                          <ConfigProvider
-                            theme={{
-                              token: {
-                                colorPrimary: '#00A650',
-                              },
-                              components: {
-                                Button: {
-                                  paddingInlineSM: 34,
-                                  defaultColor: '#00A650',
-                                  defaultBg: '#F1F1F1',
-                                },
-                              },
-                            }}
-                          >
-                            <Button
-                              size="small"
-                              // onClick={() => { }}
-                            >
-                              <div className={styles.content_card_btn_quote}>
-                                <Icon component={QuoteSvg} />
-                                引用
-                              </div>
-                            </Button>
-                          </ConfigProvider>
-
-                          <ConfigProvider
-                            theme={{
-                              token: {
-                                colorPrimary: '#00A650',
-                              },
-                              components: {
-                                Button: {
-                                  paddingInlineSM: 48,
-                                  defaultColor: '#00A650',
-                                  defaultBg: '#F1F1F1',
-                                },
-                              },
-                            }}
-                          >
-                            <Button
-                              size="small"
-                              loading={abstractLoadingIndex === i}
-                              onClick={() => {
-                                translate(paperAbstract, i);
-                              }}
-                            >
-                              {paperAbstractOpenList.includes(i)
-                                ? '收起'
-                                : '查看摘要'}
-
-                              {paperAbstractOpenList.includes(i) ? (
-                                <UpOutlined
-                                  style={{ color: '#00A650', fontSize: '8px' }}
-                                />
-                              ) : (
-                                <DownOutlined
-                                  style={{ color: '#00A650', fontSize: '8px' }}
-                                />
-                              )}
-                            </Button>
-                          </ConfigProvider>
-                        </div>
-
-                        {paperAbstractOpenList.includes(i) && (
-                          <div className={styles.content_card_paperAbstract}>
-                            <span>
-                              摘要：{paperAbstractZh || paperAbstract}
-                            </span>
-                            <span>
-                              {`摘要(原文)：`}
-                              {paperAbstract}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    )
-                  )}
+                      components: {
+                        Button: {
+                          paddingInlineLG: 24,
+                        },
+                      },
+                    }}
+                  >
+                    <Button type="primary">查看更多文献</Button>
+                  </ConfigProvider>
                 </div>
               </div>
             </div>

@@ -1,15 +1,20 @@
 .loginBtn {
-    // position   : absolute;
-    // right   : 156px;
-    // top     : 24px;
+  // position   : absolute;
+  // right   : 156px;
+  // top     : 24px;
 
-    :global {
-        .ant-btn-lg {
-            border-radius: 20px !important
-        }
-
-        .ant-btn {
-            border-radius: 20px !important
-        }
+  :global {
+    .ant-btn-lg {
+      border-radius: 20px !important;
     }
+
+    .ant-btn {
+      border-radius: 20px !important;
+    }
+  }
+  .loggedIcon {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
 }
