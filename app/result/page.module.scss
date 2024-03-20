@@ -461,3 +461,62 @@
 .quote_body {
   margin-top: 40px;
 }
+.quote_check {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  .quote_check_option {
+    width: 20%;
+    margin-bottom: 4px;
+    cursor: pointer;
+    // input:checked {
+    //   background: $primary-color;
+    // }
+    label {
+      margin: 0 4px 0 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      position: relative;
+      b {
+        display: block;
+        position: absolute;
+        top: 5px;
+        margin: 0 5px 0 0;
+        width: 14px;
+        height: 14px;
+        border: 2px solid #848484;
+        border-radius: 50%;
+        top: 1px;
+      }
+      input[type='radio'] {
+        opacity: 0;
+      }
+      input[type='radio']:checked + b {
+        border: 2px solid $primary-color;
+        &::after {
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background: $primary-color;
+          border-radius: 50%;
+          position: absolute;
+          top: 3px;
+          left: 3px;
+        }
+      }
+    }
+  }
+}
+.quote_copy_content {
+  margin-top: 20px;
+}
+.quote_clip {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  button {
+    border-radius: 20px !important;
+  }
+}

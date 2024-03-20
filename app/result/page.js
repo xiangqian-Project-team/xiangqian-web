@@ -100,6 +100,7 @@ function ContentCart(props) {
     responseZh,
   } = props.data;
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
+  const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
@@ -217,7 +218,9 @@ function ContentCart(props) {
         >
           <Button
             size="small"
-            // onClick={() => { }}
+            onClick={() => {
+              setIsQuoteVisible(true);
+            }}
           >
             <div className={styles.content_card_btn_quote}>
               <Icon component={QuoteSvg} />
@@ -282,6 +285,102 @@ function ContentCart(props) {
           )}
         </div>
       )}
+
+      <Modal
+        open={isQuoteVisible}
+        classNames={{
+          header: styles.quote_title,
+          body: styles.quote_body,
+        }}
+        title={<div>引用文章</div>}
+        onCancel={() => {
+          setIsQuoteVisible(false);
+        }}
+        footer={false}
+      >
+        <div>
+          <div className={styles.quote_check}>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="APA" />
+                <b />
+                APA
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="MLA" />
+                <b />
+                MLA
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Chicago" />
+                <b />
+                Chicago
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Harvard" />
+                <b />
+                Harvard
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Vancouver" />
+                <b />
+                Vancouver
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="BibTeX" />
+                <b />
+                BibTeX
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="Ris" />
+                <b />
+                Ris
+              </label>
+            </div>
+            <div className={styles.quote_check_option}>
+              <label>
+                <input type="radio" name="quote-check" value="End Note" />
+                <b />
+                End Note
+              </label>
+            </div>
+          </div>
+          <div className={styles.quote_copy_content}>
+            {`池善庆,林财强,吴礼贵等.
+                城市人工湖营养盐与抗生素的时空分布特征及生态风险评价 [J/OL].
+                环境工程, 1-13[2024-03-01].
+                http://kns.cnki.net/kcms/detail/11.2097.x.20240229.1918.002.html.`}
+          </div>
+          <div className={styles.quote_clip}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#6F9EC1',
+                },
+                components: {
+                  Button: {
+                    paddingInlineLG: 24,
+                  },
+                },
+              }}
+            >
+              <Button type="primary">复制到剪贴板</Button>
+            </ConfigProvider>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -527,24 +626,6 @@ function Search() {
               </div>
             </div>
           )}
-
-          <Modal
-            open={false}
-            headerBg="red"
-            classNames={{
-              header: styles.quote_title,
-              body: styles.quote_body,
-            }}
-            title={<div>引用文章</div>}
-            cancelButtonProps={{
-              styles: {
-                top: '12px',
-              },
-            }}
-            footer={false}
-          >
-            <div className={''}>11</div>
-          </Modal>
 
           <Footer />
         </div>
