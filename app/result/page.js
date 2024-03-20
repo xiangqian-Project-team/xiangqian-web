@@ -2,7 +2,7 @@
  * @Author: 何泽颖 hezeying@autowise.ai
  * @Date: 2024-03-03 01:22:56
  * @LastEditors: 何泽颖 hezeying@autowise.ai
- * @LastEditTime: 2024-03-12 21:22:35
+ * @LastEditTime: 2024-03-18 21:27:28
  * @FilePath: /xiangqian-web/app/result/page.js
  * @Description:
  */
@@ -95,7 +95,7 @@ function ContentCart(props) {
     jcr,
     journal,
     title,
-    url,
+    // url,
     years,
     responseZh,
   } = props.data;
@@ -155,7 +155,18 @@ function ContentCart(props) {
           <span>{title}</span>
         </Tooltip>
         <Popover
-          content={<Button danger>确认本项研究⽆关，不再显⽰</Button>}
+          content={
+            <Button
+              danger
+              onClick={() => {
+                props.setShowPapers(
+                  props.showPapers.filter((item) => item.paperId !== paperId)
+                );
+              }}
+            >
+              确认本项研究⽆关，不再显⽰
+            </Button>
+          }
           trigger="click"
         >
           <Button type="text" icon={<CloseOutlined />} size="small" />
@@ -391,6 +402,8 @@ function Search() {
   const timeId = useRef({ id: -1 });
 
   const [loading, setLoading] = useState(true);
+  const [showPapers, setShowPapers] = useState([]);
+
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
@@ -408,23 +421,22 @@ function Search() {
 
   const getPedia = async () => {
     try {
+      const queryText = searchParams.get('q');
+      setSearchValue(queryText);
+
       // 开启倒计时
       timeId.current.id = setInterval(() => {
         setMeter((meter) => {
-          if (meter >= 95) return 95;
-          return meter + 1;
+          if (meter >= 99.9) return 99.9;
+          return meter + 0.1;
         });
-      }, 100);
+      }, 50);
 
-      const queryText = searchParams.get('q');
-      const params = { queryText };
-
-      const { papers, summary, summaryZh } = await getPediaAsync(params);
+      const { papers, summary, summaryZh } = await getPediaAsync({ queryText });
 
       setPapers(papers);
       setSummary(summary);
       setSummaryZh(summaryZh);
-      setSearchValue(queryText);
 
       setTimeout(() => {
         setLoading(false);
@@ -439,9 +451,20 @@ function Search() {
   };
 
   const getReplacedSummary = (str) =>
-    str.replace(/\[citation:(\d+)\]/g, function (match, i) {
+    str.replace(/\[(.*?)\]/g, function (match, i) {
+      const paperId = match.replace(/^\[(.+)\]$/, '$1');
+
+      const papersIndex = papers.findIndex((item) => item.paperId === paperId);
+
+      const showpapersIndex = showPapers.findIndex(
+        (item) => item.paperId === paperId
+      );
+
+      const authors = papers[papersIndex].authors.join();
+      const years = papers[papersIndex].years || '';
+
       return `<span onclick="
-      
+
       const cardList = document.getElementById('cardList');
 
       for (let j = 0; j < cardList.childNodes.length; j++) {
@@ -449,7 +472,7 @@ function Search() {
         cardList.childNodes[j].style.borderColor= '#84C4B5';
       }
 
-      const index = ${i - 1}
+      const index = ${showpapersIndex}
 
       let scrollTop = 0;
       for (let j = 0; j < index; j++) {
@@ -463,18 +486,18 @@ function Search() {
       cardList.childNodes[index].style.borderWidth= '2px';
       cardList.childNodes[index].style.borderColor= '#00A650';
 
-      
-      
-      " style="text-decoration: none; color: #00A650; cursor: pointer;">（
-        ${papers[i - 1].authors.join()}
-        ，
-        ${papers[i - 1].years || ''}
+      "style="text-decoration: none; color: #00A650; cursor: pointer;">（
+        ${authors} ，${years}
         ）</span>`;
     });
 
   useEffect(() => {
     getPedia();
   }, []);
+
+  useEffect(() => {
+    setShowPapers(papers);
+  }, [papers]);
 
   return (
     <div className={styles.search}>
@@ -582,28 +605,16 @@ function Search() {
 
                 <div className={styles.content_scroll}>
                   <div className={styles.content} id="cardList">
-                    {papers.map(
-                      // {
-                      //   paperAbstractZh,
-                      //   paperAbstract,
-                      //   authors,
-                      //   citationCount,
-                      //   jcr,
-                      //   journal,
-                      //   title,
-                      //   url,
-                      //   years,
-                      //   responseZh,
-                      // }
-                      (item, i) => (
-                        <ContentCart
-                          key={item.title}
-                          data={item}
-                          checkedPapers={checkedPapers}
-                          setCheckedPapers={setCheckedPapers}
-                        />
-                      )
-                    )}
+                    {papers.map((item) => (
+                      <ContentCart
+                        key={item.paperId}
+                        data={item}
+                        checkedPapers={checkedPapers}
+                        setCheckedPapers={setCheckedPapers}
+                        showPapers={showPapers}
+                        setShowPapers={setShowPapers}
+                      />
+                    ))}
                   </div>
                 </div>
                 <div className={styles.footer_mask} />
