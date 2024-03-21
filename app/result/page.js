@@ -460,8 +460,8 @@ function Search() {
         (item) => item.paperId === paperId
       );
 
-      const authors = papers[papersIndex].authors.join();
-      const years = papers[papersIndex].years || '';
+      const authors = papers[papersIndex]?.authors.join();
+      const years = papers[papersIndex]?.years || '';
 
       return `<span onclick="
 
@@ -638,7 +638,7 @@ function Search() {
             </div>
           )}
 
-          <Footer />
+          <Footer isIcpHidden={true} />
         </div>
       </div>
     </div>

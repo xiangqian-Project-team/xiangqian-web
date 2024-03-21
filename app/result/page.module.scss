@@ -312,8 +312,8 @@
                 display: flex;
                 flex-direction: column;
 
-                span:first-child {
-                  margin-bottom: 20px;
+                span:not(:first-child) {
+                  margin-top: 20px;
                 }
 
                 .content_card_paperAbstract_all_button {

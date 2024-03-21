@@ -1,123 +1,124 @@
 .home {
-    width : 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    .home_search {
-        width         : 100%;
-        height        : 690px;
-        background    : linear-gradient(54deg, rgba(80, 201, 140, 0.4) 0%, rgba(139, 187, 183, 0.4) 50%, rgba(132, 196, 181, 0.4) 100%);
-        display       : flex;
+  .home_search {
+    width: 100%;
+    height: 690px;
+    background: linear-gradient(
+      54deg,
+      rgba(80, 201, 140, 0.4) 0%,
+      rgba(139, 187, 183, 0.4) 50%,
+      rgba(132, 196, 181, 0.4) 100%
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .home_search_logo {
+      margin-top: 140px;
+    }
+
+    .home_search_subheading {
+      margin-top: 30px;
+      font-weight: 400;
+      font-size: 24px;
+      color: #000000;
+      line-height: 24px;
+      font-family: 'SongtiSC' !important;
+    }
+
+    .home_search_tips {
+      margin-top: 8px;
+      width: 744px;
+      text-align: right;
+      font-weight: 400;
+      font-size: 10px;
+      color: #1b1b1b;
+      line-height: 12px;
+      text-align: right;
+    }
+  }
+
+  .home_searchGuide {
+    width: 100%;
+    height: 34px;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+
+    .home_searchGuide_content {
+      width: 724px;
+    }
+
+    .home_searchGuide_content_triangle {
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      /* 左边框宽度为一半的宽度，且透明 */
+      border-right: 18px solid transparent;
+      /* 右边框宽度为一半的宽度，且透明 */
+      border-top: 34px solid #c4e7d9;
+      /* 顶部边框作为三角形的“底部”，设置为目标高度和颜色 */
+    }
+  }
+
+  .home_why {
+    width: 100%;
+    height: 456px;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+
+    .home_why_content {
+      width: 724px;
+      display: flex;
+      margin-top: 30px;
+
+      .home_why_content_text {
+        width: 260px;
+        height: 38px;
+        font-weight: 400;
+        font-size: 32px;
+        color: #000000;
+        line-height: 37px;
+      }
+
+      .home_why_content_publicity {
+        display: flex;
         flex-direction: column;
-        align-items   : center;
+        transform: translateY(-36px);
+      }
+    }
+  }
 
-        .home_search_logo {
-            margin-top: 140px;
-        }
+  .home_university {
+    width: 100% !important;
+    height: 356px;
+    background-size: auto;
+    background-image: url('./img/universityBg.png');
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-        .home_search_subheading {
-            margin-top : 30px;
-            font-weight: 400;
-            font-size  : 24px;
-            color      : #000000;
-            line-height: 24px;
-            font-family: 'SongtiSC' !important;
-        }
-
-        .home_search_tips {
-            margin-top : 8px;
-            width      : 744px;
-            text-align : right;
-            font-weight: 400;
-            font-size  : 10px;
-            color      : #1B1B1B;
-            line-height: 12px;
-            text-align : right;
-        }
+    .home_university_text {
+      font-weight: 400;
+      font-size: 26px;
+      color: #000000;
+      margin-top: 54px;
+      visibility: hidden;
     }
 
-    .home_searchGuide {
-        width          : 100%;
-        height         : 34px;
-        background     : #FFFFFF;
-        display        : flex;
-        justify-content: center;
-
-        .home_searchGuide_content {
-            width: 724px;
-        }
-
-        .home_searchGuide_content_triangle {
-            width       : 0;
-            height      : 0;
-            border-left : 18px solid transparent;
-            /* 左边框宽度为一半的宽度，且透明 */
-            border-right: 18px solid transparent;
-            /* 右边框宽度为一半的宽度，且透明 */
-            border-top  : 34px solid #C4E7D9;
-            /* 顶部边框作为三角形的“底部”，设置为目标高度和颜色 */
-        }
-
-
+    .home_university_imgs {
+      width: calc(100% - 116px);
+      padding: 0 58px;
+      margin-top: 46px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .home_why {
-        width          : 100%;
-        height         : 456px;
-        background     : #FFFFFF;
-        display        : flex;
-        justify-content: center;
-
-        .home_why_content {
-            width     : 724px;
-            display   : flex;
-            margin-top: 30px;
-
-
-            .home_why_content_text {
-                width      : 260px;
-                height     : 38px;
-                font-weight: 400;
-                font-size  : 32px;
-                color      : #000000;
-                line-height: 37px;
-            }
-
-            .home_why_content_publicity {
-                display       : flex;
-                flex-direction: column;
-                transform     : translateY(-36px);
-            }
-        }
+    .home_university_imgs:nth-child(3) {
+      margin-top: 40px !important;
     }
-
-    .home_university {
-        width           : 100% !important;
-        height          : 356px;
-        background-size : auto;
-        background-image: url('./img/universityBg.png');
-        display         : flex;
-        flex-direction  : column;
-        align-items     : center;
-
-        .home_university_text {
-            font-weight: 400;
-            font-size  : 26px;
-            color      : #000000;
-            margin-top : 54px;
-        }
-
-        .home_university_imgs {
-            width          : calc(100% - 116px);
-            padding        : 0 58px;
-            margin-top     : 46px;
-            display        : flex;
-            justify-content: space-between;
-        }
-
-
-        .home_university_imgs:nth-child(3) {
-            margin-top: 40px !important;
-        }
-    }
-
+  }
 }
