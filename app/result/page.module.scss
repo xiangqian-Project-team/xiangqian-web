@@ -1,690 +1,677 @@
 .search {
+  width: 100%;
+  background: linear-gradient(
+    52deg,
+    rgba(80, 201, 140, 0.4) 0%,
+    rgba(139, 187, 183, 0.4) 50%,
+    rgba(132, 196, 181, 0.4) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: hidden;
+
+  .search_main {
+    display: flex;
     width: 100%;
-    background: linear-gradient(52deg,
-            rgba(80, 201, 140, 0.4) 0%,
-            rgba(139, 187, 183, 0.4) 50%,
-            rgba(132, 196, 181, 0.4) 100%);
-    display       : flex;
-    flex-direction: column;
-    align-items   : center;
-    overflow-y    : hidden;
+    overflow-y: hidden;
 
-    .search_main {
-        display   : flex;
-        width     : 100%;
-        overflow-y: hidden;
+    .search_main_sidebar {
+      position: fixed;
+      top: 0;
+      width: 40px;
+      height: 100vh;
+      background: #ffffff;
+      padding: 0 20px;
+      display: flex;
+      justify-content: center;
 
-        .search_main_sidebar {
-            position       : fixed;
-            top            : 0;
-            width          : 40px;
-            height         : 100vh;
-            background     : #ffffff;
-            padding        : 0 20px;
-            display        : flex;
-            justify-content: center;
+      .search_main_sidebar_logo {
+        margin-top: 64px;
+        cursor: pointer;
+      }
+    }
 
-            .search_main_sidebar_logo {
-                margin-top: 64px;
-                cursor    : pointer;
+    .search_content {
+      margin-left: 80px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+
+      .search_content_loading {
+        padding-top: 24px;
+        height: calc(100vh - 132px - 242px);
+        width: 1128px;
+
+        .search_content_loading_card {
+          width: 100%;
+          height: 170px;
+          background: rgba(255, 255, 255, 0.4);
+          border-radius: 13px;
+          border: 1px solid #84c4b5;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          .text {
+            opacity: 1 !important;
+            margin-top: 68px;
+          }
+
+          meter {
+            width: 614px;
+            margin-top: 16px;
+          }
+        }
+      }
+
+      .search_content_empty {
+        width: 1128px;
+        padding-top: 24px;
+        height: calc(100vh - 132px - 242px);
+
+        .search_content_empty_card {
+          width: 100%;
+          height: 170px;
+          background: rgba(255, 255, 255, 0.4);
+          border-radius: 13px;
+          border: 1px solid #84c4b5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            transform: translateY(-35%);
+            margin-right: 8px;
+          }
+
+          .text {
+            font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+            font-weight: 400;
+            font-size: 16px;
+            color: #000000;
+            line-height: 24px;
+          }
+        }
+      }
+
+      .search_content_data {
+        width: 1128px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+
+        .search_content_data_summary {
+          width: 360px;
+          background: #ffffff;
+          box-shadow: 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
+          border-radius: 12px;
+          height: fit-content;
+
+          .header {
+            position: relative;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            width: calc(100% - 48px);
+            height: 37px;
+            color: white;
+            background: linear-gradient(
+              62deg,
+              #50c98c 0%,
+              #8bbbb7 50%,
+              #84c4b5 100%
+            );
+
+            .header_triangle {
+              position: absolute;
+              right: 24px;
+              bottom: 0px;
+              color: white;
             }
+          }
+
+          .content {
+            padding: 34px 24px;
+            width: calc(100% - 48px);
+
+            .content_summary {
+              font-weight: 400;
+              font-size: 16px;
+              color: #000000;
+              line-height: 20px;
+              padding-bottom: 44px;
+              border-bottom: 1px solid #005c33;
+              font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+            }
+
+            .content_summaryZh {
+              font-weight: 400;
+              font-size: 16px;
+              color: #000000;
+              line-height: 20px;
+              margin-top: 24px;
+              font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+            }
+          }
         }
 
-        .search_content {
-            margin-left   : 80px;
-            width         : 100%;
-            display       : flex;
-            flex-direction: column;
-            align-items   : center;
-            position      : relative;
+        .search_content_data_papers {
+          width: 744px;
+          position: relative;
 
-            .search_content_loading {
-                padding-top: 24px;
-                height     : calc(100vh - 132px - 242px);
-                width      : 1128px;
+          .footer_mask {
+            width: 100%;
+            height: 60px;
+            position: absolute;
+            bottom: 40px;
+            // background: linear-gradient(
+            //   rgba(255, 255, 255, 0) 0%,
+            //   rgba(255, 255, 255, 1) 80%,
+            //   rgba(255, 255, 255, 1) 100%
+            // );
+            // background: linear-gradient(
+            //   52deg,
+            //   rgba(80, 201, 140, 0.4) 0%,
+            //   rgba(139, 187, 183, 0.4) 50%,
+            //   rgba(132, 196, 181, 0.4) 100%
+            // );
+          }
 
-                .search_content_loading_card {
-                    width         : 100%;
-                    height        : 170px;
-                    background    : rgba(255, 255, 255, 0.4);
-                    border-radius : 13px;
-                    border        : 1px solid #84c4b5;
-                    display       : flex;
-                    flex-direction: column;
-                    align-items   : center;
+          .header,
+          .footer {
+            width: 100%;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
 
-                    .text {
-                        opacity   : 1 !important;
-                        margin-top: 68px;
-                    }
-
-                    meter {
-                        width     : 614px;
-                        margin-top: 16px;
-                    }
-                }
+            .header_text {
+              font-family: Roboto, Roboto;
+              font-weight: 400;
+              font-size: 14px;
+              color: #000000;
+              line-height: 20px;
+              text-align: center;
+              font-style: normal;
+              text-transform: none;
             }
 
-            .search_content_empty {
-                width      : 1128px;
-                padding-top: 24px;
-                height     : calc(100vh - 132px - 242px);
+            :global {
+              .ant-btn {
+                border-radius: 20px !important;
+              }
 
-                .search_content_empty_card {
-                    width          : 100%;
-                    height         : 170px;
-                    background     : rgba(255, 255, 255, 0.4);
-                    border-radius  : 13px;
-                    border         : 1px solid #84c4b5;
-                    display        : flex;
-                    justify-content: center;
-                    align-items    : center;
+              .ant-btn-lg {
+                border-radius: 20px !important;
+              }
+            }
+          }
 
-                    img {
-                        transform   : translateY(-35%);
-                        margin-right: 8px;
-                    }
+          .footer {
+            margin: 10px 0 0;
+          }
 
-                    .text {
-                        font-family: STSongti-SC-Regular, STSongti-SC-Regular;
-                        font-weight: 400;
-                        font-size  : 16px;
-                        color      : #000000;
-                        line-height: 24px;
-                    }
-                }
+          .content_scroll {
+            // height: 100%;
+            height: calc(100% - 80px);
+            position: relative;
+            overflow-y: scroll;
+
+            &::-webkit-scrollbar {
+              width: 2px;
+              height: 12px;
             }
 
-            .search_content_data {
-                width          : 1128px;
-                margin-top     : 24px;
-                margin-bottom  : 24px;
-                display        : flex;
+            &::-webkit-scrollbar-thumb {
+              border-radius: 2px;
+              box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+              background: $default-color;
+            }
+          }
+
+          .content {
+            width: 100%;
+            position: absolute;
+            padding-bottom: 40px;
+
+            .content_card {
+              width: calc(100% - 44px);
+              background: #ffffff;
+              border-radius: 13px;
+              border: 1px solid #84c4b5;
+              margin-bottom: 10px;
+              padding: 10px 20px;
+
+              .content_card_title {
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 18px;
+                color: #000000;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
                 justify-content: space-between;
 
-                .search_content_data_summary {
-                    width        : 360px;
-                    background   : #ffffff;
-                    box-shadow   : 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
-                    border-radius: 12px;
-                    height       : fit-content;
-
-                    .header {
-                        position               : relative;
-                        border-top-left-radius : 12px;
-                        border-top-right-radius: 12px;
-                        display                : flex;
-                        align-items            : center;
-                        padding                : 0 24px;
-                        width                  : calc(100% - 48px);
-                        height                 : 37px;
-                        color                  : white;
-                        background             : linear-gradient(62deg,
-                                #50c98c 0%,
-                                #8bbbb7 50%,
-                                #84c4b5 100%);
-
-                        .header_triangle {
-                            position: absolute;
-                            right   : 24px;
-                            bottom  : 0px;
-                            color   : white;
-                        }
-                    }
-
-                    .content {
-                        padding: 34px 24px;
-                        width  : calc(100% - 48px);
-
-                        .content_summary {
-                            font-weight   : 400;
-                            font-size     : 16px;
-                            color         : #000000;
-                            line-height   : 20px;
-                            padding-bottom: 44px;
-                            border-bottom : 1px solid #005c33;
-                            font-family   : STSongti-SC-Regular, STSongti-SC-Regular;
-                        }
-
-                        .content_summaryZh {
-                            font-weight: 400;
-                            font-size  : 16px;
-                            color      : #000000;
-                            line-height: 20px;
-                            margin-top : 24px;
-                            font-family: STSongti-SC-Regular, STSongti-SC-Regular;
-                        }
-                    }
+                span {
+                  flex: 1;
+                  overflow: hidden; //超出的文本隐藏
+                  text-overflow: ellipsis; //溢出用省略号显示
+                  white-space: nowrap; //溢出不换行
+                  font-family: STSongti-SC-Bold, STSongti-SC-Bold;
                 }
 
-                .search_content_data_papers {
-                    width   : 744px;
-                    position: relative;
-
-                    .footer_mask {
-                        width        : 100%;
-                        height       : 60px;
-                        position     : absolute;
-                        bottom       : 40px;
-                        // background: linear-gradient(
-                        //   rgba(255, 255, 255, 0) 0%,
-                        //   rgba(255, 255, 255, 1) 80%,
-                        //   rgba(255, 255, 255, 1) 100%
-                        // );
-                        // background: linear-gradient(
-                        //   52deg,
-                        //   rgba(80, 201, 140, 0.4) 0%,
-                        //   rgba(139, 187, 183, 0.4) 50%,
-                        //   rgba(132, 196, 181, 0.4) 100%
-                        // );
-                    }
-
-                    .header,
-                    .footer {
-                        width          : 100%;
-                        height         : 30px;
-                        display        : flex;
-                        align-items    : center;
-                        justify-content: space-between;
-                        margin-bottom  : 10px;
-
-                        .header_text {
-                            font-family   : Roboto, Roboto;
-                            font-weight   : 400;
-                            font-size     : 14px;
-                            color         : #000000;
-                            line-height   : 20px;
-                            text-align    : center;
-                            font-style    : normal;
-                            text-transform: none;
-                        }
-
-                        :global {
-                            .ant-btn {
-                                border-radius: 20px !important;
-                            }
-
-                            .ant-btn-lg {
-                                border-radius: 20px !important;
-                            }
-                        }
-                    }
-
-                    .footer {
-                        margin: 10px 0 0;
-                    }
-
-                    .content_scroll {
-                        // height: 100%;
-                        height    : calc(100% - 80px);
-                        position  : relative;
-                        overflow-y: scroll;
-
-                        &::-webkit-scrollbar {
-                            width : 2px;
-                            height: 12px;
-                        }
-
-                        &::-webkit-scrollbar-thumb {
-                            border-radius: 2px;
-                            box-shadow   : inset 0 0 2px rgba(0, 0, 0, 0.2);
-                            background   : $default-color;
-                        }
-                    }
-
-                    .content {
-                        width         : 100%;
-                        position      : absolute;
-                        padding-bottom: 40px;
-
-                        .content_card {
-                            width        : calc(100% - 44px);
-                            background   : #ffffff;
-                            border-radius: 13px;
-                            border       : 1px solid #84c4b5;
-                            margin-bottom: 10px;
-                            padding      : 10px 20px;
-
-                            .content_card_title {
-                                font-weight    : 400;
-                                font-size      : 16px;
-                                line-height    : 18px;
-                                color          : #000000;
-                                margin-bottom  : 8px;
-                                display        : flex;
-                                align-items    : center;
-                                justify-content: space-between;
-
-                                span {
-                                    flex         : 1;
-                                    overflow     : hidden; //超出的文本隐藏
-                                    text-overflow: ellipsis; //溢出用省略号显示
-                                    white-space  : nowrap; //溢出不换行
-                                    font-family  : STSongti-SC-Bold, STSongti-SC-Bold;
-                                }
-
-                                .content_card_check {
-                                    display     : block;
-                                    margin-right: 4px;
-                                    cursor      : pointer;
-                                }
-                            }
-
-                            .content_card_response {
-                                font-weight  : 400;
-                                font-size    : 14px;
-                                color        : #000000;
-                                line-height  : 20px;
-                                margin-bottom: 10px;
-                                font-family  : MicrosoftYaHei, MicrosoftYaHei;
-                            }
-
-                            .content_card_btn {
-                                .content_card_btn_quote {
-                                    svg {
-                                        transform   : translateY(2px) !important;
-                                        margin-right: 4px;
-                                    }
-                                }
-
-
-                                font-weight: 400;
-                                font-size  : 16px;
-                                color      : #000000;
-                                line-height: 24px;
-
-                                svg {
-                                    transform: translateY(-2px);
-                                }
-                            }
-                        }
-                    }
-
-                    .content_card_paperAbstract {
-                        margin-top : 16px;
-                        height     : 240px;
-                        font-family: STSongti-SC-Bold, STSongti-SC-Bold;
-                        font-weight: 400;
-                        font-size  : 16px;
-                        color      : #000000;
-                        line-height: 24px;
-                        overflow-y : hidden;
-                        position   : relative;
-
-                        display       : flex;
-                        flex-direction: column;
-
-                        span:first-child {
-                            margin-bottom: 20px;
-                        }
-
-                        .content_card_paperAbstract_all_button {
-                            position             : absolute;
-                            bottom               : 0;
-                            right                : 0;
-                            color                : $primary-color;
-                            border               : none;
-                            font-size            : 14px;
-                            text-decoration      : underline;
-                            text-underline-offset: 2px;
-                            border-radius        : 50px;
-                            background           : white;
-                            padding              : 2px 14px;
-                            box-shadow           : 0 0 12px 20px white;
-                            cursor               : pointer;
-
-                            &:hover {
-                                color: $primary-color-hover;
-                            }
-                        }
-                    }
-
-                    .content_card_paperAbstract::-webkit-scrollbar {
-                        width : 6px;
-                        height: 12px;
-                    }
-
-                    .content_card_paperAbstract::-webkit-scrollbar-thumb {
-                        border-radius: 3px;
-                        box-shadow   : inset 0 0 3px rgba(0, 0, 0, 0.2);
-                        background   : $default-color;
-                    }
-
-                    .content_card_crossline {
-                        margin    : 4px 0px;
-                        width     : 100%;
-                        border-top: 1px solid #84c4b5;
-                    }
-
-                    .content_card_footer {
-                        height     : 16px;
-                        width      : 100%;
-                        display    : flex;
-                        align-items: center;
-                        font-family: RobotoRoman-Regular, RobotoRoman-Regular;
-                        font-weight: 400;
-                        font-size  : 12px;
-                        color      : #848484;
-                        line-height: 14px;
-                        flex-wrap  : wrap;
-
-                        img {
-                            margin-right: 4px !important;
-                        }
-
-                        .content_card_footer_journal {
-                            height     : 16px;
-                            display    : flex;
-                            align-items: center;
-                        }
-
-                        .content_card_footer_journal_text {
-                            flex         : 1;
-                            overflow     : hidden; //超出的文本隐藏
-                            text-overflow: ellipsis; //溢出用省略号显示
-                            white-space  : nowrap; //溢出不换行
-                        }
-
-                        .content {
-                            padding: 34px 24px;
-                            width  : calc(100% - 48px);
-
-
-                            .content_summary {
-                                font-weight   : 400;
-                                font-size     : 16px;
-                                color         : #000000;
-                                line-height   : 20px;
-                                padding-bottom: 44px;
-                                border-bottom : 1px solid #005C33;
-
-                            }
-
-                            .content_summaryZh {
-                                font-weight: 400;
-                                font-size  : 16px;
-                                color      : #000000;
-                                line-height: 20px;
-                                margin-top : 24px;
-
-                            }
-                        }
-                    }
-
-                    .content_card_footer_division {
-                        width       : 0px;
-                        height      : 12px;
-                        border-right: 1px solid #848484;
-                        margin      : 0 12px;
-                    }
-
-                    .search_content_data_papers {
-                        width: 744px;
-
-                        .header {
-                            width          : 100%;
-                            height         : 30px;
-                            display        : flex;
-                            align-items    : center;
-                            justify-content: space-between;
-                            margin-bottom  : 10px;
-
-                            .header_text {
-
-                                font-weight   : 400;
-                                font-size     : 14px;
-                                color         : #000000;
-                                line-height   : 20px;
-                                text-align    : center;
-                                font-style    : normal;
-                                text-transform: none;
-                            }
-
-                            :global {
-                                .ant-btn {
-                                    border-radius: 20px !important
-                                }
-
-                                .ant-btn-lg {
-                                    border-radius: 20px !important
-                                }
-                            }
-                        }
-
-                        .content {
-                            width: 100%;
-
-                            height    : 120vh;
-                            overflow-y: auto;
-
-                            &::-webkit-scrollbar {
-                                width : 2px;
-                                height: 12px;
-                            }
-
-                            &::-webkit-scrollbar-thumb {
-                                border-radius: 2px;
-                                box-shadow   : inset 0 0 2px rgba(0, 0, 0, 0.2);
-                                background   : $default-color;
-                            }
-
-
-
-                            .content_card {
-                                width        : calc(100% - 44px);
-                                background   : #FFFFFF;
-                                border-radius: 13px;
-                                border       : 1px solid #84C4B5;
-                                margin-bottom: 10px;
-                                padding      : 10px 20px;
-
-                                .content_card_title {
-                                    font-weight    : 400;
-                                    font-size      : 16px;
-                                    line-height    : 18px;
-                                    color          : #000000;
-                                    margin-bottom  : 8px;
-                                    display        : flex;
-                                    align-items    : center;
-                                    justify-content: space-between;
-
-                                    span {
-                                        flex         : 1;
-                                        overflow     : hidden; //超出的文本隐藏
-                                        text-overflow: ellipsis; //溢出用省略号显示
-                                        white-space  : nowrap; //溢出不换行
-
-                                    }
-                                }
-
-                                .content_card_response {
-                                    font-weight  : 400;
-                                    font-size    : 14px;
-                                    color        : #000000;
-                                    line-height  : 20px;
-                                    margin-bottom: 10px;
-
-                                }
-
-                                .content_card_btn {
-
-                                    .content_card_btn_quote {
-
-                                        svg {
-                                            transform   : translateY(2px) !important;
-                                            margin-right: 4px;
-                                        }
-                                    }
-
-                                    :global {
-                                        .ant-btn-default {
-                                            border-radius: 24px !important;
-                                            margin-right : 10px;
-
-                                            svg {
-                                                transform: translateY(-2px);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                .content_card_paperAbstract {
-                                    margin-top: 16px;
-                                    height    : 240px;
-
-                                    font-weight: 400;
-                                    font-size  : 16px;
-                                    color      : #000000;
-                                    line-height: 24px;
-                                    overflow-y : scroll;
-
-                                    display       : flex;
-                                    flex-direction: column;
-
-                                    span:first-child {
-                                        margin-bottom: 20px;
-                                    }
-                                }
-
-                                .content_card_paperAbstract::-webkit-scrollbar {
-                                    width : 6px;
-                                    height: 12px;
-                                }
-
-                                .content_card_paperAbstract::-webkit-scrollbar-thumb {
-                                    border-radius: 3px;
-                                    box-shadow   : inset 0 0 3px rgba(0, 0, 0, 0.2);
-                                    background   : $default-color;
-                                }
-
-                                .content_card_crossline {
-                                    margin    : 4px 0px;
-                                    width     : 100%;
-                                    border-top: 1px solid #84C4B5;
-                                }
-
-
-
-                                .content_card_footer {
-                                    height     : 16px;
-                                    width      : 100%;
-                                    display    : flex;
-                                    align-items: center;
-
-                                    font-weight: 400;
-                                    font-size  : 12px;
-                                    color      : #848484;
-                                    line-height: 14px;
-                                    flex-wrap  : wrap;
-
-                                    img {
-                                        margin-right: 4px !important;
-                                    }
-
-
-                                    .content_card_footer_journal {
-                                        height     : 16px;
-                                        display    : flex;
-                                        align-items: center;
-                                    }
-
-                                    .content_card_footer_journal_text {
-                                        flex         : 1;
-                                        overflow     : hidden; //超出的文本隐藏
-                                        text-overflow: ellipsis; //溢出用省略号显示
-                                        white-space  : nowrap; //溢出不换行
-                                    }
-
-                                    .content_card_footer_years {}
-
-                                    .content_card_footer_years,
-                                    .content_card_footer_jcr,
-                                    .content_card_footer_authors {
-                                        display    : flex;
-                                        align-items: center;
-                                    }
-
-
-                                    .content_card_footer_division {
-                                        width       : 0px;
-                                        height      : 12px;
-                                        border-right: 1px solid #848484;
-                                        margin      : 0 12px;
-                                    }
-
-                                    .content_card_footer_url {
-                                        display    : flex;
-                                        align-items: center;
-                                    }
-
-                                    .content_card_footer_openAccess {
-                                        display    : flex;
-                                        align-items: center;
-                                    }
-                                }
-
-                            }
-                        }
-                    }
+                .content_card_check {
+                  display: block;
+                  margin-right: 4px;
+                  cursor: pointer;
                 }
+              }
+
+              .content_card_response {
+                font-weight: 400;
+                font-size: 14px;
+                color: #000000;
+                line-height: 20px;
+                margin-bottom: 10px;
+                font-family: MicrosoftYaHei, MicrosoftYaHei;
+              }
+
+              .content_card_btn {
+                .content_card_btn_quote {
+                  svg {
+                    transform: translateY(2px) !important;
+                    margin-right: 4px;
+                  }
+                }
+
+                font-weight: 400;
+                font-size: 16px;
+                color: #000000;
+                line-height: 24px;
+
+                svg {
+                  transform: translateY(-2px);
+                }
+              }
             }
+          }
+
+          .content_card_paperAbstract {
+            margin-top: 16px;
+            height: 240px;
+            font-family: STSongti-SC-Bold, STSongti-SC-Bold;
+            font-weight: 400;
+            font-size: 16px;
+            color: #000000;
+            line-height: 24px;
+            overflow-y: hidden;
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+
+            span:first-child {
+              margin-bottom: 20px;
+            }
+
+            .content_card_paperAbstract_all_button {
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              color: $primary-color;
+              border: none;
+              font-size: 14px;
+              text-decoration: underline;
+              text-underline-offset: 2px;
+              border-radius: 50px;
+              background: white;
+              padding: 2px 14px;
+              box-shadow: 0 0 12px 20px white;
+              cursor: pointer;
+
+              &:hover {
+                color: $primary-color-hover;
+              }
+            }
+          }
+
+          .content_card_paperAbstract::-webkit-scrollbar {
+            width: 6px;
+            height: 12px;
+          }
+
+          .content_card_paperAbstract::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+            background: $default-color;
+          }
+
+          .content_card_crossline {
+            margin: 4px 0px;
+            width: 100%;
+            border-top: 1px solid #84c4b5;
+          }
+
+          .content_card_footer {
+            height: 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            font-family: RobotoRoman-Regular, RobotoRoman-Regular;
+            font-weight: 400;
+            font-size: 12px;
+            color: #848484;
+            line-height: 14px;
+            flex-wrap: wrap;
+
+            img {
+              margin-right: 4px !important;
+            }
+
+            .content_card_footer_journal {
+              height: 16px;
+              display: flex;
+              align-items: center;
+            }
+
+            .content_card_footer_journal_text {
+              flex: 1;
+              overflow: hidden; //超出的文本隐藏
+              text-overflow: ellipsis; //溢出用省略号显示
+              white-space: nowrap; //溢出不换行
+            }
+
+            .content {
+              padding: 34px 24px;
+              width: calc(100% - 48px);
+
+              .content_summary {
+                font-weight: 400;
+                font-size: 16px;
+                color: #000000;
+                line-height: 20px;
+                padding-bottom: 44px;
+                border-bottom: 1px solid #005c33;
+              }
+
+              .content_summaryZh {
+                font-weight: 400;
+                font-size: 16px;
+                color: #000000;
+                line-height: 20px;
+                margin-top: 24px;
+              }
+            }
+          }
+
+          .content_card_footer_division {
+            width: 0px;
+            height: 12px;
+            border-right: 1px solid #848484;
+            margin: 0 12px;
+          }
+
+          .search_content_data_papers {
+            width: 744px;
+
+            .header {
+              width: 100%;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-bottom: 10px;
+
+              .header_text {
+                font-weight: 400;
+                font-size: 14px;
+                color: #000000;
+                line-height: 20px;
+                text-align: center;
+                font-style: normal;
+                text-transform: none;
+              }
+
+              :global {
+                .ant-btn {
+                  border-radius: 20px !important;
+                }
+
+                .ant-btn-lg {
+                  border-radius: 20px !important;
+                }
+              }
+            }
+
+            .content {
+              width: 100%;
+
+              height: 120vh;
+              overflow-y: auto;
+
+              &::-webkit-scrollbar {
+                width: 2px;
+                height: 12px;
+              }
+
+              &::-webkit-scrollbar-thumb {
+                border-radius: 2px;
+                box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+                background: $default-color;
+              }
+
+              .content_card {
+                width: calc(100% - 44px);
+                background: #ffffff;
+                border-radius: 13px;
+                border: 1px solid #84c4b5;
+                margin-bottom: 10px;
+                padding: 10px 20px;
+
+                .content_card_title {
+                  font-weight: 400;
+                  font-size: 16px;
+                  line-height: 18px;
+                  color: #000000;
+                  margin-bottom: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+
+                  span {
+                    flex: 1;
+                    overflow: hidden; //超出的文本隐藏
+                    text-overflow: ellipsis; //溢出用省略号显示
+                    white-space: nowrap; //溢出不换行
+                  }
+                }
+
+                .content_card_response {
+                  font-weight: 400;
+                  font-size: 14px;
+                  color: #000000;
+                  line-height: 20px;
+                  margin-bottom: 10px;
+                }
+
+                .content_card_btn {
+                  .content_card_btn_quote {
+                    svg {
+                      transform: translateY(2px) !important;
+                      margin-right: 4px;
+                    }
+                  }
+
+                  :global {
+                    .ant-btn-default {
+                      border-radius: 24px !important;
+                      margin-right: 10px;
+
+                      svg {
+                        transform: translateY(-2px);
+                      }
+                    }
+                  }
+                }
+
+                .content_card_paperAbstract {
+                  margin-top: 16px;
+                  height: 240px;
+
+                  font-weight: 400;
+                  font-size: 16px;
+                  color: #000000;
+                  line-height: 24px;
+                  overflow-y: scroll;
+
+                  display: flex;
+                  flex-direction: column;
+
+                  span:first-child {
+                    margin-bottom: 20px;
+                  }
+                }
+
+                .content_card_paperAbstract::-webkit-scrollbar {
+                  width: 6px;
+                  height: 12px;
+                }
+
+                .content_card_paperAbstract::-webkit-scrollbar-thumb {
+                  border-radius: 3px;
+                  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+                  background: $default-color;
+                }
+
+                .content_card_crossline {
+                  margin: 4px 0px;
+                  width: 100%;
+                  border-top: 1px solid #84c4b5;
+                }
+
+                .content_card_footer {
+                  height: 16px;
+                  width: 100%;
+                  display: flex;
+                  align-items: center;
+
+                  font-weight: 400;
+                  font-size: 12px;
+                  color: #848484;
+                  line-height: 14px;
+                  flex-wrap: wrap;
+
+                  img {
+                    margin-right: 4px !important;
+                  }
+
+                  .content_card_footer_journal {
+                    height: 16px;
+                    display: flex;
+                    align-items: center;
+                  }
+
+                  .content_card_footer_journal_text {
+                    flex: 1;
+                    overflow: hidden; //超出的文本隐藏
+                    text-overflow: ellipsis; //溢出用省略号显示
+                    white-space: nowrap; //溢出不换行
+                  }
+
+                  .content_card_footer_years {
+                  }
+
+                  .content_card_footer_years,
+                  .content_card_footer_jcr,
+                  .content_card_footer_authors {
+                    display: flex;
+                    align-items: center;
+                  }
+
+                  .content_card_footer_division {
+                    width: 0px;
+                    height: 12px;
+                    border-right: 1px solid #848484;
+                    margin: 0 12px;
+                  }
+
+                  .content_card_footer_url {
+                    display: flex;
+                    align-items: center;
+                  }
+
+                  .content_card_footer_openAccess {
+                    display: flex;
+                    align-items: center;
+                  }
+                }
+              }
+            }
+          }
         }
+      }
     }
+  }
 }
-}
-
-}
-
-
 
 .quoteModal {
-    :global {
-        .ant-modal {
-            border-radius: 14px;
+  :global {
+    .ant-modal {
+      border-radius: 14px;
 
+      .ant-modal-content {
+        padding: 0;
 
+        .ant-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 46px;
+          background: linear-gradient(
+            58deg,
+            #50c98c 0%,
+            #8bbbb7 50%,
+            #84c4b5 100%
+          );
+          margin-bottom: 0;
 
-            .ant-modal-content {
-                padding: 0;
-
-                .ant-modal-header {
-                    display        : flex;
-                    align-items    : center;
-                    justify-content: center;
-                    height         : 46px;
-                    background     : linear-gradient(58deg, #50C98C 0%, #8BBBB7 50%, #84C4B5 100%);
-                    margin-bottom  : 0;
-
-                    .ant-modal-title {
-                        font-weight: 400;
-                        font-size  : 16px;
-                        color      : #000000;
-                    }
-                }
-
-                .ant-modal-body {
-                    padding        : 20px 32px;
-                    font-weight    : 400;
-                    font-size      : 16px;
-                    color          : #000000;
-                    line-height    : 24px;
-                    display        : flex;
-                    flex-direction : column;
-                    align-items    : center;
-                    justify-content: center;
-
-                    .ant-btn-lg {
-                        margin-top   : 30px;
-                        border-radius: 20px;
-                    }
-                }
-
-                .ant-modal-close {
-                    transform: translateY(-4px);
-                }
-            }
+          .ant-modal-title {
+            font-weight: 400;
+            font-size: 16px;
+            color: #000000;
+          }
         }
+
+        .ant-modal-body {
+          padding: 20px 32px;
+          font-weight: 400;
+          font-size: 16px;
+          color: #000000;
+          line-height: 24px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          .ant-btn-lg {
+            margin-top: 30px;
+            border-radius: 20px;
+          }
+        }
+
+        .ant-modal-close {
+          transform: translateY(-4px);
+        }
+      }
     }
+  }
 }
 
 // width: 552px;
