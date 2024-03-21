@@ -590,7 +590,6 @@ function Search() {
             </div>
           )}
 
-          <Footer isIcpHidden={true} />
         </div>
       </div>
     </div>
