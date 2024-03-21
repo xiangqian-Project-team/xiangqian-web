@@ -7,7 +7,6 @@
  * @Description:
  */
 'use client';
-import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import { getItem } from '../utils/storage';
 // import { useRouter } from 'next/navigation';
@@ -27,7 +26,7 @@ function LoginBtn(props) {
 
   return (
     <div className={styles.loginBtn} style={style}>
-      {!getItem('token') ? (
+      {/* {!getItem('token') ? (
         <ConfigProvider
           theme={{
             token: {
@@ -50,11 +49,19 @@ function LoginBtn(props) {
             登录
           </Button>
         </ConfigProvider>
-      ) : (
-        <button className={styles.loggedIcon}>
-          <Image src={userIcon} alt="userIcon" />
-        </button>
-      )}
+      ) : ( */}
+      <button
+        className={styles.loggedIcon}
+        onClick={() => {
+          if (getItem('token')) {
+            return;
+          }
+          router.push('/login');
+        }}
+      >
+        <Image src={userIcon} alt="userIcon" />
+      </button>
+      {/* )} */}
     </div>
   );
 }

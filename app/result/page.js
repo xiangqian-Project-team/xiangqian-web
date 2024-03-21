@@ -678,7 +678,7 @@ function Search() {
             </div>
           )}
 
-          <Footer />
+          <Footer isIcpHidden={true} />
         </div>
       </div>
 
