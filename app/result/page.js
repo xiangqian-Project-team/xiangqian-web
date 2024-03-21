@@ -92,7 +92,6 @@ const QuoteSvg = () => (
 
 function ContentCart(props) {
   const {
-    // paperAbstractZh,
     paperAbstract,
     authors,
     citationCount,
@@ -110,6 +109,11 @@ function ContentCart(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
+
+  const bibtexDataText = useMemo(() => {
+    const bibtexData = BibtexParser.parseToJSON(bibtex);
+    return `${bibtexData[0]?.author}.${bibtexData[0]?.booktitle}.${bibtexData[0]?.journal}.${bibtexData[0]?.title}.${bibtexData[0]?.volume}.${bibtexData[0]?.year}`;
+  }, [bibtex]);
 
   const translate = async (queryText) => {
     try {
@@ -306,98 +310,35 @@ function ContentCart(props) {
       )}
 
       <Modal
+        title="引用文章"
         open={isQuoteVisible}
-        classNames={{
-          header: styles.quote_title,
-          body: styles.quote_body,
-        }}
-        title={<div>引用文章</div>}
         onCancel={() => {
           setIsQuoteVisible(false);
         }}
-        footer={false}
+        footer={null}
+        width={552}
+        wrapClassName={styles.quoteModal}
       >
+        {bibtexDataText}
+
         <div>
-          <div className={styles.quote_check}>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="APA" />
-                <b />
-                APA
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="MLA" />
-                <b />
-                MLA
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="Chicago" />
-                <b />
-                Chicago
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="Harvard" />
-                <b />
-                Harvard
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="Vancouver" />
-                <b />
-                Vancouver
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="BibTeX" />
-                <b />
-                BibTeX
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="Ris" />
-                <b />
-                Ris
-              </label>
-            </div>
-            <div className={styles.quote_check_option}>
-              <label>
-                <input type="radio" name="quote-check" value="End Note" />
-                <b />
-                End Note
-              </label>
-            </div>
-          </div>
-          <div className={styles.quote_copy_content}>
-            {`池善庆,林财强,吴礼贵等.
-                城市人工湖营养盐与抗生素的时空分布特征及生态风险评价 [J/OL].
-                环境工程, 1-13[2024-03-01].
-                http://kns.cnki.net/kcms/detail/11.2097.x.20240229.1918.002.html.`}
-          </div>
-          <div className={styles.quote_clip}>
-            <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: '#6F9EC1',
-                },
-                components: {
-                  Button: {
-                    paddingInlineLG: 24,
-                  },
-                },
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#6F9EC1',
+              },
+            }}
+          >
+            <Button
+              type="primary"
+              onClick={() => {
+                textCopy(bibtexDataText, '复制成功！！！');
               }}
+              size="large"
             >
-              <Button type="primary">复制到剪贴板</Button>
-            </ConfigProvider>
-          </div>
+              复制到剪贴板
+            </Button>
+          </ConfigProvider>
         </div>
       </Modal>
     </div>
@@ -411,9 +352,6 @@ function Search() {
 
   const [loading, setLoading] = useState(true);
   const [showPapers, setShowPapers] = useState([]);
-  const [quoteOpen, setQuoteOpen] = useState(false);
-  const [bibtexDataText, setBibtexDataText] = useState(null);
-
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
@@ -428,33 +366,6 @@ function Search() {
   const contentHeight = useMemo(() => {
     return summaryRef?.current?.clientHeight;
   }, [summaryRef]);
-
-  const showQuoteModal = (bibtex) => {
-    const bibtexData = BibtexParser.parseToJSON(bibtex);
-
-    setBibtexDataText(
-      bibtexData[0]?.author +
-        '.' +
-        bibtexData[0]?.booktitle +
-        '.' +
-        bibtexData[0]?.journal +
-        '.' +
-        bibtexData[0]?.title +
-        '.' +
-        bibtexData[0]?.volume +
-        '.' +
-        bibtexData[0]?.year
-    );
-    setQuoteOpen(true);
-  };
-
-  const handleOk = () => {
-    setQuoteOpen(false);
-  };
-
-  const handleCancel = () => {
-    setQuoteOpen(false);
-  };
 
   const getPedia = async () => {
     try {
@@ -602,6 +513,7 @@ function Search() {
               >
                 <div className={styles.header}>
                   <Image
+                    alt=""
                     className={styles.header_triangle}
                     src={RoundedArrow}
                   />
@@ -652,6 +564,7 @@ function Search() {
                           key={item.paperId}
                           data={item}
                           checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
                         />
                       );
                     })}
@@ -681,38 +594,6 @@ function Search() {
           <Footer isIcpHidden={true} />
         </div>
       </div>
-
-      <Modal
-        title="引用文章"
-        open={quoteOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={null}
-        width={552}
-        wrapClassName={styles.quoteModal}
-      >
-        {bibtexDataText}
-
-        <div>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#6F9EC1',
-              },
-            }}
-          >
-            <Button
-              type="primary"
-              onClick={() => {
-                textCopy(bibtexDataText, '复制成功！！！');
-              }}
-              size="large"
-            >
-              复制到剪贴板
-            </Button>
-          </ConfigProvider>
-        </div>
-      </Modal>
     </div>
   );
 }
