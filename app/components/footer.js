@@ -11,7 +11,7 @@ import Logo2Icon from '../img/logo2.png';
 import styles from './footer.module.scss';
 
 export default function Footer(props) {
-  const { width = '100%', isIcpHidden } = props;
+  const { width = '100%' } = props;
   return (
     <div className={styles.footer} style={{ width }}>
       <div className={styles.footer_message}>
@@ -33,13 +33,11 @@ export default function Footer(props) {
         </div>
       </div>
 
-      {!isIcpHidden && (
-        <div className={styles.footer_footer}>
-          <span>Copyright © 2023-2024 GEMMED有限公司</span>
-          <span>All Rights Reserved</span>
-          <span>京ICP备234294309</span>
-        </div>
-      )}
+      <div className={styles.footer_footer}>
+        <span>Copyright © 2023-2024 GEMMED有限公司</span>
+        <span>All Rights Reserved</span>
+        <span>京ICP备234294309</span>
+      </div>
     </div>
   );
 }

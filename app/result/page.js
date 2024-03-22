@@ -20,16 +20,16 @@ import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
 import CheckIcon from '../icons/icon_check.svg';
 import NoneCheckIcon from '../icons/icon_none_check.svg';
+import LogoIcon2 from '../icons/logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
+import userExpendIcon from '../icons/user_expend_icon.svg';
 import BookIcon from '../img/book.png';
 import EmptyIcon from '../img/empty.png';
 import LockIcon from '../img/lock.png';
-import LogoIcon2 from '../img/logo2.png';
 import UserIcon from '../img/user.png';
 import {
   papersAtom,
@@ -41,7 +41,6 @@ import {
   getPedia as getPediaAsync,
   translate as translateAsync,
 } from '../service';
-import { getItem } from '../utils/storage';
 import textCopy from '../utils/textCopy';
 import styles from './page.module.scss';
 
@@ -357,6 +356,7 @@ function Search() {
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [meter, setMeter] = useState(0);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
   const searchParams = useSearchParams();
 
@@ -383,7 +383,9 @@ function Search() {
         });
       }, 50);
 
-      const { papers, summary, summaryZh } = await getPediaAsync({ queryText });
+      const { papers, summary, summaryZh, BltptsZh } = await getPediaAsync({
+        queryText,
+      });
 
       setPapers(papers);
       setSummary(summary);
@@ -453,12 +455,16 @@ function Search() {
   return (
     <div className={styles.search}>
       <div className={styles.search_main}>
-        <div className={styles.search_main_sidebar}>
-          <div className={styles.search_main_sidebar_logo}>
+        <div
+          className={styles.search_main_sidebar}
+          style={{ width: isSideBarOpen ? 310 : 80 }}
+        >
+          <div className={styles.search_main_sidebar_logo_container}>
             <Image
+              className={styles.search_main_sidebar_logo}
               src={LogoIcon2.src}
-              width={42}
-              height={52}
+              width={60}
+              height={26.5}
               alt="logo"
               onClick={() => {
                 router.push('/');
@@ -467,11 +473,38 @@ function Search() {
 
             <LoginBtn
               style={{
-                position: 'absolute',
-                bottom: 24,
-                left: getItem('token') ? 20 : 8,
+                marginTop: 30,
+                // position: 'absolute',
+                // bottom: 24,
+                // left: getItem('token') ? 20 : 8,
               }}
+              isOpen={isSideBarOpen}
+              // style={{
+              //   position: 'absolute',
+              //   bottom: 24,
+              //   left: getItem('token') ? 20 : 8,
+              // }}
             />
+            {isSideBarOpen && (
+              <button
+                className={styles.closeButton}
+                onClick={() => {
+                  setIsSideBarOpen(!isSideBarOpen);
+                }}
+              >
+                <Image src={userExpendIcon} alt="userIcon" />
+              </button>
+            )}
+            {!isSideBarOpen && (
+              <button
+                className={styles.openButton}
+                onClick={() => {
+                  setIsSideBarOpen(!isSideBarOpen);
+                }}
+              >
+                <Image src={userExpendIcon} alt="userIcon" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -522,12 +555,14 @@ function Search() {
                   <div
                     className={styles.content_summary}
                     dangerouslySetInnerHTML={{
+                      // __html: getReplacedSummary(answerZh),
                       __html: getReplacedSummary(summaryZh),
                     }}
                   />
                   <div
                     className={styles.content_summaryZh}
                     dangerouslySetInnerHTML={{
+                      // __html: getReplacedSummary(BltptsZh),
                       __html: getReplacedSummary(summary),
                     }}
                   />
@@ -589,7 +624,6 @@ function Search() {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>

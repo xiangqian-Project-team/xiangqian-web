@@ -12,9 +12,57 @@
       border-radius: 20px !important;
     }
   }
-  .loggedIcon {
+  .loggedInIcon,
+  .loggedOutIcon {
     border: none;
     background: none;
+    margin: 0 10px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .userMobile,
+  .loggedOutText {
+    margin-left: 10px;
+  }
+  .loggedOutButtons {
+    display: flex;
+    align-items: center;
+    margin: 0 15px 0;
+    flex-direction: column;
+    margin-top: 20px;
+    button {
+      margin: 10px 0;
+    }
+    .loggedOutButtonRegister,
+    .loggedOutButtonLogin {
+      width: 260px;
+    }
+  }
+  .subscribeButton {
+    display: flex;
+    width: 280px;
+    height: 56px;
+    background: #c4e7d9;
+    border: none;
+    border-radius: 30px;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    padding: 0 20px;
+    margin: 35px 15px 0;
+    cursor: pointer;
+    .subscribeDesc {
+      padding: 0 130px 0 10px;
+    }
+  }
+  .quitButton {
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    margin: 0 15px 0;
+    cursor: pointer;
+    padding: 20px 0;
   }
 }
