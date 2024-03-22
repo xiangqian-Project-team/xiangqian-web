@@ -57,8 +57,8 @@ function SearchTextArea(props) {
   );
 }
 
-const SearchTextAreaCom = () => {
-  return withTheme(<SearchTextArea />);
+const SearchTextAreaCom = (props) => {
+  return withTheme(<SearchTextArea loading={props.isLoading} />);
 };
 
 export default SearchTextAreaCom;

@@ -20,7 +20,6 @@ import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Footer from '../components/footer';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
 import CheckIcon from '../icons/icon_check.svg';
@@ -487,22 +486,26 @@ function Search() {
               //   left: getItem('token') ? 20 : 8,
               // }}
             />
-            <button
-              className={`${styles.closeButton} ${!isSideBarOpen ? styles.closeButtonActive : ''}`}
-              onClick={() => {
-                setIsSideBarOpen(!isSideBarOpen);
-              }}
-            >
-              <Image src={userExpendIcon} alt="userIcon" />
-            </button>
-            <button
-              className={`${styles.openButton} ${isSideBarOpen ? styles.openButtonActive : ''}`}
-              onClick={() => {
-                setIsSideBarOpen(!isSideBarOpen);
-              }}
-            >
-              <Image src={userExpendIcon} alt="userIcon" />
-            </button>
+            {isSideBarOpen && (
+              <button
+                className={styles.closeButton}
+                onClick={() => {
+                  setIsSideBarOpen(!isSideBarOpen);
+                }}
+              >
+                <Image src={userExpendIcon} alt="userIcon" />
+              </button>
+            )}
+            {!isSideBarOpen && (
+              <button
+                className={styles.openButton}
+                onClick={() => {
+                  setIsSideBarOpen(!isSideBarOpen);
+                }}
+              >
+                <Image src={userExpendIcon} alt="userIcon" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -622,8 +625,6 @@ function Search() {
               </div>
             </div>
           )}
-
-          <Footer isIcpHidden={true} />
         </div>
       </div>
     </div>
