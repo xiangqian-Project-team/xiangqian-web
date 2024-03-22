@@ -118,6 +118,7 @@
 
       .search_content_data {
         width: 1128px;
+        height: 100%;
         margin-top: 24px;
         margin-bottom: 24px;
         display: flex;
@@ -238,7 +239,7 @@
           }
 
           .content_scroll {
-            // height: 100%;
+            height: 100%;
             height: calc(100% - 80px);
             position: relative;
             overflow-y: scroll;
@@ -439,6 +440,7 @@
 
           .search_content_data_papers {
             width: 744px;
+            height: 100%;
 
             .header {
               width: 100%;

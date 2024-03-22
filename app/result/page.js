@@ -360,12 +360,6 @@ function Search() {
 
   const searchParams = useSearchParams();
 
-  const summaryRef = useRef(null);
-
-  const contentHeight = useMemo(() => {
-    return summaryRef?.current?.clientHeight;
-  }, [summaryRef]);
-
   const getPedia = async () => {
     try {
       setSummary('');
@@ -383,13 +377,15 @@ function Search() {
         });
       }, 50);
 
-      const { papers, summary, summaryZh, BltptsZh } = await getPediaAsync({
-        queryText,
-      });
+      // mark summary and summaryZh will be useful later, do not remove
+      const { papers, summary, summaryZh, answerZh, bltptsZh } =
+        await getPediaAsync({
+          queryText,
+        });
 
       setPapers(papers);
-      setSummary(summary);
-      setSummaryZh(summaryZh);
+      setSummary(bltptsZh);
+      setSummaryZh(answerZh);
 
       setTimeout(() => {
         setLoading(false);
@@ -539,10 +535,7 @@ function Search() {
 
           {!loading && summary && (
             <div className={styles.search_content_data}>
-              <div
-                ref={summaryRef}
-                className={styles.search_content_data_summary}
-              >
+              <div className={styles.search_content_data_summary}>
                 <div className={styles.header}>
                   <Image
                     alt=""
@@ -568,10 +561,7 @@ function Search() {
                   />
                 </div>
               </div>
-              <div
-                className={styles.search_content_data_papers}
-                style={{ maxHeight: contentHeight || 'auto' }}
-              >
+              <div className={styles.search_content_data_papers}>
                 <div className={styles.header}>
                   <ConfigProvider
                     theme={{
