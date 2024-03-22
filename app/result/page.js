@@ -94,7 +94,6 @@ function ContentCart(props) {
     paperAbstract,
     authors,
     citationCount,
-    jcr,
     journal,
     journalRank,
     title,
@@ -203,10 +202,10 @@ function ContentCart(props) {
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_years}>{years || 2000}</div>
         <div className={styles.content_card_footer_division} />
-        <div className={styles.content_card_footer_jcr}>JCR Q{journalRank}</div>
+        <div className={styles.content_card_footer_jcr}>{journalRank}</div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_citationCount}>
-          被引{citationCount} 次
+          被引{citationCount}次
         </div>
         <div className={styles.content_card_footer_division} />
 
