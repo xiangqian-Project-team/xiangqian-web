@@ -19,16 +19,37 @@
     .search_main_sidebar {
       position: fixed;
       top: 0;
-      width: 40px;
+      width: 80px;
       height: 100vh;
       background: #ffffff;
-      padding: 0 20px;
-      display: flex;
-      justify-content: center;
+      z-index: 100;
 
+      .search_main_sidebar_logo_container {
+        padding-top: 20px;
+      }
       .search_main_sidebar_logo {
-        margin-top: 64px;
+        margin: 0 8px;
+      }
+      .openButton {
+        padding: 0 30px;
+        border: none;
+        background: none;
         cursor: pointer;
+        margin-top: 30px;
+      }
+      .closeButton {
+        padding: 0 30px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        transform: rotate(180deg);
+        position: absolute;
+        top: 18px;
+        right: -22px;
+      }
+      .closeButtonActive,
+      .openButtonActive {
+        display: none;
       }
     }
 
