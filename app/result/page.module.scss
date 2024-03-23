@@ -168,6 +168,9 @@
               padding-bottom: 44px;
               border-bottom: 1px solid #005c33;
               font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+              pre {
+                white-space: pre-wrap;
+              }
             }
 
             .content_summaryZh {
@@ -177,6 +180,9 @@
               line-height: 20px;
               margin-top: 24px;
               font-family: STSongti-SC-Regular, STSongti-SC-Regular;
+              pre {
+                white-space: pre-wrap;
+              }
             }
           }
         }

@@ -19,7 +19,7 @@ import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
 import CheckIcon from '../icons/icon_check.svg';
@@ -109,8 +109,12 @@ function ContentCart(props) {
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
   const bibtexDataText = useMemo(() => {
-    const bibtexData = BibtexParser.parseToJSON(bibtex);
-    return `${bibtexData[0]?.author}.${bibtexData[0]?.booktitle}.${bibtexData[0]?.journal}.${bibtexData[0]?.title}.${bibtexData[0]?.volume}.${bibtexData[0]?.year}`;
+    try {
+      const bibtexData = BibtexParser.parseToJSON(bibtex);
+      return `${bibtexData[0]?.author}.${bibtexData[0]?.booktitle}.${bibtexData[0]?.journal}.${bibtexData[0]?.title}.${bibtexData[0]?.volume}.${bibtexData[0]?.year}`;
+    } catch (error) {
+      console.error(error);
+    }
   }, [bibtex]);
 
   const translate = async (queryText) => {
@@ -399,20 +403,23 @@ function Search() {
     }
   };
 
-  const getReplacedSummary = (str) =>
-    str.replace(/\[(.*?)\]/g, function (match, i) {
-      const paperId = match.replace(/^\[(.+)\]$/, '$1');
+  const getReplacedSummary = useCallback(
+    (str) => {
+      const formattedStr = str.replace(/\[(.*?)\]/g, function (match, i) {
+        const paperId = match.replace(/^\[(.+)\]$/, '$1');
 
-      const papersIndex = papers.findIndex((item) => item.paperId === paperId);
+        const papersIndex = papers.findIndex(
+          (item) => item.paperId === paperId
+        );
 
-      const showpapersIndex = showPapers.findIndex(
-        (item) => item.paperId === paperId
-      );
+        const showpapersIndex = showPapers.findIndex(
+          (item) => item.paperId === paperId
+        );
 
-      const authors = papers[papersIndex]?.authors[0] || '';
-      const year = papers[papersIndex]?.year || '';
+        const authors = papers[papersIndex]?.authors[0] || '';
+        const year = papers[papersIndex]?.year || '';
 
-      return `<span onclick="
+        return `<span onclick="
 
       const cardList = document.getElementById('cardList');
 
@@ -435,10 +442,13 @@ function Search() {
       cardList.childNodes[index].style.borderWidth= '2px';
       cardList.childNodes[index].style.borderColor= '#00A650';
 
-      "style="text-decoration: none; color: #00A650; cursor: pointer;">（
-        ${authors} ，${year}
-        ）</span>`;
-    });
+      "style="text-decoration: none; color: #00A650; cursor: pointer;">（${authors} ，${year}）</span>`;
+      });
+
+      return `<pre>${formattedStr}</pre>`;
+    },
+    [summary, summaryZh]
+  );
 
   useEffect(() => {
     getPedia();
