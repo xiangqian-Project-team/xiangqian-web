@@ -367,13 +367,10 @@ function Search() {
   useEffect(() => {
     const queryText = searchParams.get('q');
     setSearchValue(queryText);
+    getPedia(queryText);
   }, [searchParams]);
 
-  useEffect(() => {
-    getPedia();
-  }, [searchValue]);
-
-  const getPedia = async () => {
+  const getPedia = async (queryText) => {
     if (loading) return;
     try {
       setSummary('');
@@ -392,7 +389,7 @@ function Search() {
       // mark summary and summaryZh will be useful later, do not remove
       const { papers, summary, summaryZh, answerZh, bltptsZh } =
         await getPediaAsync({
-          queryText: searchValue,
+          queryText,
         });
 
       setPapers(papers);
