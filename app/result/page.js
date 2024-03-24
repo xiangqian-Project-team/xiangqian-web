@@ -389,7 +389,7 @@ function Search() {
       // mark summary and summaryZh will be useful later, do not remove
       const { papers, summary, summaryZh, answerZh, bltptsZh } =
         await getPediaAsync({
-          queryText,
+          queryText
         });
 
       setPapers(papers);
@@ -402,6 +402,7 @@ function Search() {
         setMeter(0);
       }, 500);
     } catch (error) {
+      console.log(error)
       setLoading(false);
       clearInterval(timeId.current.id);
       setMeter(0);

@@ -6,7 +6,6 @@
  * @FilePath: /xiangqian-web/app/service/index.js
  * @Description:
  */
-
 import { message } from 'antd';
 import { getItem } from '../utils/storage';
 
@@ -24,8 +23,9 @@ const request = async (url, method, params) => {
 
   if (token) option.headers.Authorization = `Bearer ${token}`;
 
-  if (method === 'GET') url = `${url}?${new URLSearchParams(params)}`; // fetch不会自动把params参数拼接成查询字符串
+  if (method === 'GET') url = `${url}?${new URLSearchParams(params).toString()}`; // fetch不会自动把params参数拼接成查询字符串
   if (method === 'POST') option['body'] = JSON.stringify(params);
+  console.log(url)
 
   const response = await fetch(url, { ...option });
 

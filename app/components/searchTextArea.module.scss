@@ -1,4 +1,6 @@
 .searchContainer {
+    width          : 90%;
+    max-width      : 1600px;
     margin-top     : 42px;
     box-shadow     : 0px 0px 20px 0px rgba(0, 0, 0, 0.08);
     border-radius  : 13px 13px 13px 13px;
@@ -9,7 +11,7 @@
     z-index        : 100;
 
     .searchTextArea {
-        position              : fixed;
+        width: 100%;
         // :global {
         //     .ant-input-data-count {
         //         // position: absolute !important;
@@ -23,7 +25,7 @@
             -ms-overflow-style: none;
             scrollbar-width   : none;
             height            : 66px;
-            width             : 1530px;
+            width             : 100%;
             resize            : none;
         }
 
