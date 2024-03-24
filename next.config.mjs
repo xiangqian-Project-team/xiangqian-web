@@ -15,6 +15,7 @@ const nextConfig = {
     includePaths: [path.join(path.dirname(import.meta.url), 'styles')],
     prependData: `@import "app/global.scss";`,
   },
+  reactStrictMode: false,
   productionBrowserSourceMaps: true,
   images: {
     path: '',

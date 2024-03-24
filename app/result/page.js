@@ -19,7 +19,7 @@ import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
 import CheckIcon from '../icons/icon_check.svg';
@@ -352,7 +352,7 @@ function Search() {
 
   const timeId = useRef({ id: -1 });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showPapers, setShowPapers] = useState([]);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
@@ -364,14 +364,22 @@ function Search() {
 
   const searchParams = useSearchParams();
 
+  useEffect(() => {
+    const queryText = searchParams.get('q');
+    setSearchValue(queryText);
+  }, [searchParams]);
+
+  useEffect(() => {
+    getPedia();
+  }, [searchValue]);
+
   const getPedia = async () => {
+    if (loading) return;
     try {
       setSummary('');
       setSummaryZh('');
       setPapers([]);
       setLoading(true);
-      const queryText = searchParams.get('q');
-      setSearchValue(queryText);
 
       // 开启倒计时
       timeId.current.id = setInterval(() => {
@@ -384,7 +392,7 @@ function Search() {
       // mark summary and summaryZh will be useful later, do not remove
       const { papers, summary, summaryZh, answerZh, bltptsZh } =
         await getPediaAsync({
-          queryText,
+          queryText: searchValue,
         });
 
       setPapers(papers);
@@ -403,23 +411,20 @@ function Search() {
     }
   };
 
-  const getReplacedSummary = useCallback(
-    (str) => {
-      const formattedStr = str.replace(/\[(.*?)\]/g, function (match, i) {
-        const paperId = match.replace(/^\[(.+)\]$/, '$1');
+  const getReplacedSummary = (str) => {
+    const formattedStr = str.replace(/\[(.*?)\]/g, function (match, i) {
+      const paperId = match.replace(/^\[(.+)\]$/, '$1');
 
-        const papersIndex = papers.findIndex(
-          (item) => item.paperId === paperId
-        );
+      const papersIndex = papers.findIndex((item) => item.paperId === paperId);
 
-        const showpapersIndex = showPapers.findIndex(
-          (item) => item.paperId === paperId
-        );
+      const showpapersIndex = showPapers.findIndex(
+        (item) => item.paperId === paperId
+      );
 
-        const authors = papers[papersIndex]?.authors[0] || '';
-        const year = papers[papersIndex]?.year || '';
+      const authors = papers[papersIndex]?.authors[0] || '';
+      const year = papers[papersIndex]?.year || '';
 
-        return `<span onclick="
+      return `<span onclick="
 
       const cardList = document.getElementById('cardList');
 
@@ -443,16 +448,10 @@ function Search() {
       cardList.childNodes[index].style.borderColor= '#00A650';
 
       "style="text-decoration: none; color: #00A650; cursor: pointer;">（${authors} ，${year}）</span>`;
-      });
+    });
 
-      return `<pre>${formattedStr}</pre>`;
-    },
-    [summary, summaryZh]
-  );
-
-  useEffect(() => {
-    getPedia();
-  }, [searchParams]);
+    return `<pre>${formattedStr}</pre>`;
+  };
 
   useEffect(() => {
     setShowPapers(papers);
