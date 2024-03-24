@@ -64,7 +64,7 @@
         padding-top: 24px;
         height: calc(100vh - 132px - 242px);
         width: 90%;
-        max-width: 1600px;
+        max-width: 1440px;
 
         .search_content_loading_card {
           width: 100%;
@@ -90,7 +90,7 @@
 
       .search_content_empty {
         width: 90%;
-        max-width: 1600px;
+        max-width: 1440px;
         padding-top: 24px;
         height: calc(100vh - 132px - 242px);
 
@@ -121,15 +121,15 @@
 
       .search_content_data {
         width: 90%;
-        max-width: 1600px;
+        max-width: 1440px;
         height: 100%;
         margin-top: 24px;
-        margin-bottom: 24px;
+        // margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
 
         .search_content_data_summary {
-          width: 25%;
+          width: 35%;
           background: #ffffff;
           box-shadow: 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
           border-radius: 12px;
@@ -192,7 +192,7 @@
         }
 
         .search_content_data_papers {
-          width: 73%;
+          width: 63%;
           position: relative;
 
           .footer_mask {
@@ -250,7 +250,6 @@
 
           .content_scroll {
             height: 100%;
-            height: calc(100% - 80px);
             position: relative;
             overflow-y: scroll;
 
