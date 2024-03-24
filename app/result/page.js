@@ -601,23 +601,6 @@ function Search() {
                     })}
                   </div>
                 </div>
-                <div className={styles.footer_mask} />
-                <div className={styles.footer}>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: '#6F9EC1',
-                      },
-                      components: {
-                        Button: {
-                          paddingInlineLG: 24,
-                        },
-                      },
-                    }}
-                  >
-                    <Button type="primary">查看更多文献</Button>
-                  </ConfigProvider>
-                </div>
               </div>
             </div>
           )}
