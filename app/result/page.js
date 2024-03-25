@@ -98,8 +98,9 @@ function ContentCart(props) {
     journalRank,
     title,
     paperId,
-    years,
+    year,
     responseZh,
+    isOpenAccess,
     bibtex,
   } = props.data;
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
@@ -199,12 +200,15 @@ function ContentCart(props) {
         </Tooltip>
 
         <div className={styles.content_card_footer_division} />
-        <div className={styles.content_card_footer_authors}>
+        <div
+          className={styles.content_card_footer_authors}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
           {authors[0]}等
         </div>
         <div className={styles.content_card_footer_division} />
-        <div className={styles.content_card_footer_years}>{years || 2000}</div>
+        <div className={styles.content_card_footer_years}>{year || 2000}</div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_jcr}>{journalRank}</div>
         <div className={styles.content_card_footer_division} />
@@ -213,10 +217,12 @@ function ContentCart(props) {
         </div>
         <div className={styles.content_card_footer_division} />
 
-        <div className={styles.content_card_footer_openAccess}>
-          <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
-          <span>open access</span>
-        </div>
+        {isOpenAccess && (
+          <div className={styles.content_card_footer_openAccess}>
+            <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
+            <span>open access</span>
+          </div>
+        )}
       </div>
 
       <div className={styles.content_card_crossline} />
@@ -389,7 +395,7 @@ function Search() {
       // mark summary and summaryZh will be useful later, do not remove
       const { papers, summary, summaryZh, answerZh, bltptsZh } =
         await getPediaAsync({
-          queryText
+          queryText,
         });
 
       setPapers(papers);
@@ -402,7 +408,7 @@ function Search() {
         setMeter(0);
       }, 500);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setLoading(false);
       clearInterval(timeId.current.id);
       setMeter(0);

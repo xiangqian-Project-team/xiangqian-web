@@ -95,6 +95,7 @@ function LoginCard() {
         <Form form={form} name="phone" style={{ width: '100%' }}>
           <Form.Item
             name="phone"
+            validateTrigger="onBlur"
             rules={[
               {
                 required: true,

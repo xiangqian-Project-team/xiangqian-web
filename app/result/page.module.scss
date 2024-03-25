@@ -314,6 +314,9 @@
               }
 
               .content_card_btn {
+                button { 
+                  margin-right: 8px;
+                }
                 .content_card_btn_quote {
                   svg {
                     transform: translateY(2px) !important;
