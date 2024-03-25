@@ -396,12 +396,11 @@
             width: 100%;
             display: flex;
             align-items: center;
-            font-family: RobotoRoman-Regular, RobotoRoman-Regular;
             font-weight: 400;
             font-size: 12px;
             color: #848484;
             line-height: 14px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
 
             img {
               margin-right: 4px !important;
@@ -414,10 +413,20 @@
             }
 
             .content_card_footer_journal_text {
-              flex: 1;
               overflow: hidden; //超出的文本隐藏
               text-overflow: ellipsis; //溢出用省略号显示
               white-space: nowrap; //溢出不换行
+            }
+
+            .content_card_footer_years,
+            .content_card_footer_jcr,
+            .content_card_footer_authors,
+            .content_card_footer_citationCount,
+            .content_card_footer_openAccess {
+              display: flex;
+              flex-wrap: nowrap;
+              align-items: center;
+              white-space: nowrap;
             }
 
             .content {
@@ -589,59 +598,62 @@
                   border-top: 1px solid #84c4b5;
                 }
 
-                .content_card_footer {
-                  height: 16px;
-                  width: 100%;
-                  display: flex;
-                  align-items: center;
+                // .content_card_footer {
+                //   height: 16px;
+                //   width: 100%;
+                //   display: flex;
+                //   align-items: center;
 
-                  font-weight: 400;
-                  font-size: 12px;
-                  color: #848484;
-                  line-height: 14px;
-                  flex-wrap: wrap;
+                //   font-weight: 400;
+                //   font-size: 12px;
+                //   color: #848484;
+                //   line-height: 14px;
+                //   flex-wrap: nowrap;
 
-                  img {
-                    margin-right: 4px !important;
-                  }
+                //   img {
+                //     margin-right: 4px !important;
+                //   }
 
-                  .content_card_footer_journal {
-                    height: 16px;
-                    display: flex;
-                    align-items: center;
-                  }
+                //   .content_card_footer_journal {
+                //     height: 16px;
+                //     display: flex;
+                //     align-items: center;
+                //   }
 
-                  .content_card_footer_journal_text {
-                    flex: 1;
-                    overflow: hidden; //超出的文本隐藏
-                    text-overflow: ellipsis; //溢出用省略号显示
-                    white-space: nowrap; //溢出不换行
-                  }
+                //   .content_card_footer_journal_text {
+                //     overflow: hidden; //超出的文本隐藏
+                //     text-overflow: ellipsis; //溢出用省略号显示
+                //     white-space: nowrap; //溢出不换行
+                //   }
 
-                  .content_card_footer_years,
-                  .content_card_footer_jcr,
-                  .content_card_footer_authors {
-                    display: flex;
-                    align-items: center;
-                  }
+                //   .content_card_footer_years,
+                //   .content_card_footer_jcr,
+                //   .content_card_footer_authors {
+                //     display: flex;
+                //     align-items: center;
+                //   }
 
-                  .content_card_footer_division {
-                    width: 0px;
-                    height: 12px;
-                    border-right: 1px solid #848484;
-                    margin: 0 12px;
-                  }
+                //   .content_card_footer_division {
+                //     width: 0px;
+                //     height: 12px;
+                //     border-right: 1px solid #848484;
+                //     margin: 0 12px;
+                //   }
 
-                  .content_card_footer_url {
-                    display: flex;
-                    align-items: center;
-                  }
+                //   .content_card_footer_url {
+                //     display: flex;
+                //     white-space: nowrap;
+                //     align-items: center;
+                //   }
 
-                  .content_card_footer_openAccess {
-                    display: flex;
-                    align-items: center;
-                  }
-                }
+                //   .content_card_footer_citationCount {
+                //     display: flex;
+                //     white-space: nowrap;
+                //     align-items: center;
+                //   }
+
+                
+                // }
               }
             }
           }

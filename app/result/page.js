@@ -202,7 +202,6 @@ function ContentCart(props) {
         <div className={styles.content_card_footer_division} />
         <div
           className={styles.content_card_footer_authors}
-          style={{ display: 'flex', alignItems: 'center' }}
         >
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
           {authors[0]}等
@@ -215,13 +214,15 @@ function ContentCart(props) {
         <div className={styles.content_card_footer_citationCount}>
           被引{citationCount}次
         </div>
+        {isOpenAccess && (
+          <>
         <div className={styles.content_card_footer_division} />
 
-        {isOpenAccess && (
+        
           <div className={styles.content_card_footer_openAccess}>
             <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
             <span>open access</span>
-          </div>
+          </div></>
         )}
       </div>
 
