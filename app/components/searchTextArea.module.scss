@@ -1,50 +1,50 @@
 .searchContainer {
-    width          : 90%;
-    max-width      : 1600px;
-    margin-top     : 42px;
-    box-shadow     : 0px 0px 20px 0px rgba(0, 0, 0, 0.08);
-    border-radius  : 13px 13px 13px 13px;
-    position       : relative;
-    height         : 66px;
-    display        : flex;
-    justify-content: center;
-    z-index        : 100;
+  width: 90%;
+  max-width: 1440px;
+  margin-top: 42px;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 13px 13px 13px 13px;
+  position: relative;
+  height: 66px;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
 
-    .searchTextArea {
-        width: 100%;
-        // :global {
-        //     .ant-input-data-count {
-        //         // position: absolute !important;
-        //         left  : 26px;
-        //         bottom: 12px !important;
-        //         color : $default-color !important;
-        //     }
-        // }
+  .searchTextArea {
+    width: 100%;
+    // :global {
+    //     .ant-input-data-count {
+    //         // position: absolute !important;
+    //         left  : 26px;
+    //         bottom: 12px !important;
+    //         color : $default-color !important;
+    //     }
+    // }
 
-        .searchTextArea_input {
-            -ms-overflow-style: none;
-            scrollbar-width   : none;
-            height            : 66px;
-            width             : 100%;
-            resize            : none;
-        }
-
-        .searchTextArea_btn {
-            position: absolute;
-            right   : 24px;
-            bottom  : 18px;
-            z-index : 999;
-        }
-
-        .searchTextArea_count {
-            position: absolute;
-            right   : 26px;
-            bottom  : 4px;
-            z-index : 999;
-            color   : $primary-color !important;
-
-            font-weight: 400;
-            font-size  : 12px;
-        }
+    .searchTextArea_input {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      height: 66px;
+      width: 100%;
+      resize: none;
     }
+
+    .searchTextArea_btn {
+      position: absolute;
+      right: 24px;
+      bottom: 18px;
+      z-index: 999;
+    }
+
+    .searchTextArea_count {
+      position: absolute;
+      right: 26px;
+      bottom: 4px;
+      z-index: 999;
+      color: $primary-color !important;
+
+      font-weight: 400;
+      font-size: 12px;
+    }
+  }
 }
