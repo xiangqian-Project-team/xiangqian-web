@@ -6,15 +6,14 @@ import Icon, {
   UpOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Popover, Tooltip } from 'antd';
-import Cite from 'citation-js';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import CheckIcon from '../icons/icon_check.svg';
 import NoneCheckIcon from '../icons/icon_none_check.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
-import textCopy from '../utils/textCopy';
+import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
 const QuoteSvg = () => (
@@ -81,22 +80,6 @@ export default function ResultPaperItem(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
-
-  const bibtexDataText = useMemo(() => {
-    try {
-      const citation = new Cite(bibtex);
-
-      const output = citation.format('bibliography', {
-        format: 'html', // 修改为 'html' 以获取带有HTML标签的格式
-        template: 'apa',
-        lang: 'en-US',
-      });
-
-      return <div dangerouslySetInnerHTML={{ __html: output }} />;
-    } catch (error) {
-      console.error(error);
-    }
-  }, [bibtex]);
 
   const translate = async (queryText) => {
     try {
@@ -306,27 +289,12 @@ export default function ResultPaperItem(props) {
         width={552}
         wrapClassName={styles.quoteModal}
       >
-        {bibtexDataText}
-
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#6F9EC1',
-              },
-            }}
-          >
-            <Button
-              type="primary"
-              onClick={() => {
-                textCopy(bibtexDataText, '复制成功！！！');
-              }}
-              size="large"
-            >
-              复制到剪贴板
-            </Button>
-          </ConfigProvider>
-        </div>
+        <CitationText bibtex={bibtex} template="vancouver" />
+        <CitationText bibtex={bibtex} template="apa" />
+        <CitationText
+          bibtex={bibtex}
+          template="chicago-author-date-16th-edition"
+        />
       </Modal>
     </div>
   );
