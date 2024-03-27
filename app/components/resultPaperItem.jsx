@@ -6,7 +6,7 @@ import Icon, {
   UpOutlined,
 } from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Popover, Tooltip } from 'antd';
-import { BibtexParser } from 'bibtex-js-parser';
+import Cite from 'citation-js';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import CheckIcon from '../icons/icon_check.svg';
@@ -82,41 +82,17 @@ export default function ResultPaperItem(props) {
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
-  function capitalizeWords(str) {
-    return str.replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
-
-  function formatAuthors(authorsString) {
-    return authorsString
-      .split(' and ')
-      .map((name) => {
-        const [lastName, firstName] = name.split(' ');
-        return `${lastName}, ${firstName.charAt(0)}.`;
-      })
-      .join(' & ');
-  }
-
   const bibtexDataText = useMemo(() => {
     try {
-      const bibtexData = BibtexParser.parseToJSON(bibtex)[0];
-      const authorsFormatted = formatAuthors(bibtexData.author);
-      const title = bibtexData.title;
-      const journal = capitalizeWords(bibtexData.journal);
-      const year = bibtexData.year;
-      const volume = bibtexData.volume;
-      const number = bibtexData.number ? `(${bibtexData.number})` : '';
-      const pages = bibtexData.pages;
-      return (
-        <>
-          {authorsFormatted} ({year}). {title}.{' '}
-          <span style={{ fontStyle: 'italic' }}>
-            {journal}, {volume}
-          </span>
-          {number ? `(${number})` : ''}, {pages}.
-        </>
-      );
+      const citation = new Cite(bibtex);
+
+      const output = citation.format('bibliography', {
+        format: 'html', // 修改为 'html' 以获取带有HTML标签的格式
+        template: 'apa',
+        lang: 'en-US',
+      });
+
+      return <div dangerouslySetInnerHTML={{ __html: output }} />;
     } catch (error) {
       console.error(error);
     }

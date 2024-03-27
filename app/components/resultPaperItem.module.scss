@@ -221,7 +221,9 @@
           line-height: 24px;
           align-items: center;
           justify-content: center;
-
+          i {
+            font-style: italic;
+          }
           .ant-btn-lg {
             margin-top: 30px;
             border-radius: 20px;
