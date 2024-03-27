@@ -323,7 +323,7 @@
               }
 
               .content_card_btn {
-                button { 
+                button {
                   margin-right: 8px;
                 }
                 .content_card_btn_quote {
@@ -662,7 +662,6 @@
                 //     align-items: center;
                 //   }
 
-                
                 // }
               }
             }
@@ -704,11 +703,9 @@
         .ant-modal-body {
           padding: 20px 32px;
           font-weight: 400;
-          font-size: 16px;
+          font-size: 12px;
           color: #000000;
           line-height: 24px;
-          display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
 

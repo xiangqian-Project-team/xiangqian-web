@@ -28,7 +28,7 @@ function HomeTextArea() {
       <TextArea
         showCount
         maxLength={50}
-        placeholder="请输入您的问题......"
+        placeholder="输入概念、观点、或是问题，文献一眼便知......"
         style={{ height: 138, width: 744, resize: 'none' }}
         value={searchValue}
         onChange={(e) => {

@@ -109,10 +109,41 @@ function ContentCart(props) {
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
+  function capitalizeWords(str) {
+    return str.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  function formatAuthors(authorsString) {
+    return authorsString
+      .split(' and ')
+      .map((name) => {
+        const [lastName, firstName] = name.split(' ');
+        return `${lastName}, ${firstName.charAt(0)}.`;
+      })
+      .join(' & ');
+  }
+
   const bibtexDataText = useMemo(() => {
     try {
-      const bibtexData = BibtexParser.parseToJSON(bibtex);
-      return `${bibtexData[0]?.author}.${bibtexData[0]?.booktitle}.${bibtexData[0]?.journal}.${bibtexData[0]?.title}.${bibtexData[0]?.volume}.${bibtexData[0]?.year}`;
+      const bibtexData = BibtexParser.parseToJSON(bibtex)[0];
+      const authorsFormatted = formatAuthors(bibtexData.author);
+      const title = bibtexData.title;
+      const journal = capitalizeWords(bibtexData.journal);
+      const year = bibtexData.year;
+      const volume = bibtexData.volume;
+      const number = bibtexData.number ? `(${bibtexData.number})` : '';
+      const pages = bibtexData.pages;
+      return (
+        <>
+          {authorsFormatted} ({year}). {title}.{' '}
+          <span style={{ fontStyle: 'italic' }}>
+            {journal}, {volume}
+          </span>
+          {number ? `(${number})` : ''}, {pages}.
+        </>
+      );
     } catch (error) {
       console.error(error);
     }
@@ -200,9 +231,7 @@ function ContentCart(props) {
         </Tooltip>
 
         <div className={styles.content_card_footer_division} />
-        <div
-          className={styles.content_card_footer_authors}
-        >
+        <div className={styles.content_card_footer_authors}>
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
           {authors[0]}等
         </div>
@@ -216,13 +245,13 @@ function ContentCart(props) {
         </div>
         {isOpenAccess && (
           <>
-        <div className={styles.content_card_footer_division} />
+            <div className={styles.content_card_footer_division} />
 
-        
-          <div className={styles.content_card_footer_openAccess}>
-            <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
-            <span>open access</span>
-          </div></>
+            <div className={styles.content_card_footer_openAccess}>
+              <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
+              <span>open access</span>
+            </div>
+          </>
         )}
       </div>
 
