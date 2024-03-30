@@ -70,10 +70,17 @@ function Search() {
       }, 50);
 
       // mark summary and summaryZh will be useful later, do not remove
+      // const { papers, summary, summaryZh, answerZh, bltptsZh } =
+      //   await getPediaAsync({
+      //     q: queryText,
+      //   });
+
+      const res = await getPediaAsync({ q: queryText });
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
       const { papers, summary, summaryZh, answerZh, bltptsZh } =
-        await getPediaAsync({
-          queryText,
-        });
+        await res.json();
 
       setPapers(papers);
       setSummary(bltptsZh);

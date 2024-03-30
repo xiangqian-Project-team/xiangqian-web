@@ -10,6 +10,8 @@ import { message } from 'antd';
 import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://121.43.97.68:8091';
+const FUNCTION_BASE_URL =
+  'https://gemmed-wlpv-serverllication-tbxrqccqpt.us-west-1.fcapp.run';
 
 const request = async (url, method, params) => {
   const option = {
@@ -23,9 +25,10 @@ const request = async (url, method, params) => {
 
   if (token) option.headers.Authorization = `Bearer ${token}`;
 
-  if (method === 'GET') url = `${url}?${new URLSearchParams(params).toString()}`; // fetch不会自动把params参数拼接成查询字符串
+  if (method === 'GET')
+    url = `${url}?${new URLSearchParams(params).toString()}`; // fetch不会自动把params参数拼接成查询字符串
   if (method === 'POST') option['body'] = JSON.stringify(params);
-  console.log(url)
+  console.log(url);
 
   const response = await fetch(url, { ...option });
 
@@ -41,8 +44,18 @@ const request = async (url, method, params) => {
 };
 
 //  搜索
-export const getPedia = (params) => {
-  return request(`${BASE_URL}/search/query`, 'GET', params);
+export const getPedia = async (params) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) option.headers.Authorization = `Bearer ${token}`;
+  return fetch(`${FUNCTION_BASE_URL}/search`, option);
+  // return request(`${FUNCTION_BASE_URL}/search`, 'POST', params);
 };
 
 //  翻译摘要
