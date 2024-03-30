@@ -34,6 +34,15 @@ function SearchTextArea(props) {
           onChange={(e) => {
             setSearchValue(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.code === 'Enter') {
+              e.preventDefault();
+              if (props.loading) {
+                return;
+              }
+              router.push(`./result?q=${searchValue}`);
+            }
+          }}
         />
 
         <div className={styles.searchTextArea_btn}>
