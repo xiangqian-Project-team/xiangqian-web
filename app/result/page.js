@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Button, ConfigProvider } from 'antd';
+import { ConfigProvider } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -271,10 +271,7 @@ function Search() {
                         },
                       },
                     }}
-                  >
-                    <Button type="primary">查看选中文献</Button>
-                  </ConfigProvider>
-                  <div className={styles.header_text}>基于200个结果筛选</div>
+                  ></ConfigProvider>
                 </div>
 
                 <div className={styles.content_scroll}>
