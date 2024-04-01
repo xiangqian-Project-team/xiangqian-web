@@ -34,6 +34,12 @@ function HomeTextArea() {
         onChange={(e) => {
           setSearchValue(e.target.value);
         }}
+        onKeyDown={(e) => {
+          if (e.code === 'Enter') {
+            e.preventDefault();
+            router.push(`./result?q=${searchValue}`);
+          }
+        }}
       />
 
       <div className={styles.homeTextArea_btn}>
