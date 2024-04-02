@@ -22,7 +22,7 @@ export default function Home() {
           <Image src={LogoIcon.src} width={190} height={80} alt="logo" />
         </div>
         <div className={styles.home_search_subheading}>
-          AI驱动的社科文献调研
+          文献和启发，一并送达
         </div>
         <HomeTextArea />
         <div className={styles.home_search_tips}>

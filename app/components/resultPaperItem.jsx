@@ -169,8 +169,7 @@ export default function ResultPaperItem(props) {
       <div className={styles.content_card_crossline} />
 
       <div className={styles.content_card_response}>
-        {responseZh ||
-          '在数字时代的浪潮中，虚拟与现实交织，科技的脚步从未停歇。在这个信息爆炸的时代，每个人都是知识的追寻者，也是信息的传递者。我们漫步在这片广阔的网络世界，寻找着自己的位置，探索着未知的领域。无数的数据像繁星一般'}
+        {responseZh || '升级你的账户，查看更多信息。'}
       </div>
 
       <div className={styles.content_card_btn}>
@@ -268,12 +267,7 @@ export default function ResultPaperItem(props) {
         width={552}
         wrapClassName={styles.quoteModal}
       >
-        <CitationText bibtex={bibtex} template="vancouver" />
         <CitationText bibtex={bibtex} template="apa" />
-        <CitationText
-          bibtex={bibtex}
-          template="chicago-author-date-16th-edition"
-        />
       </Modal>
     </div>
   );
