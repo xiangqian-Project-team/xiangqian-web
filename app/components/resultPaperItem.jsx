@@ -1,11 +1,7 @@
 'use client';
 
-import Icon, {
-  CloseOutlined,
-  DownOutlined,
-  UpOutlined,
-} from '@ant-design/icons';
-import { Button, ConfigProvider, Modal, Popover, Tooltip } from 'antd';
+import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { Button, ConfigProvider, Modal, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import CheckIcon from '../icons/icon_check.svg';
@@ -132,23 +128,6 @@ export default function ResultPaperItem(props) {
         <Tooltip title={title}>
           <span>{title}</span>
         </Tooltip>
-        <Popover
-          content={
-            <Button
-              danger
-              onClick={() => {
-                props.setShowPapers(
-                  props.showPapers.filter((item) => item.paperId !== paperId)
-                );
-              }}
-            >
-              确认本项研究⽆关，不再显⽰
-            </Button>
-          }
-          trigger="click"
-        >
-          <Button type="text" icon={<CloseOutlined />} size="small" />
-        </Popover>
       </div>
 
       <div className={styles.content_card_footer}>

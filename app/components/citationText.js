@@ -1,4 +1,5 @@
 import Cite from 'citation-js';
+import { useMemo } from 'react';
 
 const CitationText = ({ bibtex, template }) => {
   const formattedCitation = useMemo(() => {
