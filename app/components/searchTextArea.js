@@ -27,7 +27,7 @@ function SearchTextArea(props) {
       <div className={styles.searchTextArea}>
         <TextArea
           // showCount
-          maxLength={50}
+          maxLength={150}
           placeholder="请输入您的问题......"
           className={styles.searchTextArea_input}
           value={searchValue}

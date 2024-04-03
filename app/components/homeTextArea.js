@@ -27,7 +27,7 @@ function HomeTextArea() {
     <div className={styles.homeTextArea}>
       <TextArea
         showCount
-        maxLength={50}
+        maxLength={150}
         placeholder="输入概念、观点、或是问题，文献一眼便知......"
         style={{ height: 138, width: 744, resize: 'none' }}
         value={searchValue}
