@@ -58,6 +58,23 @@ export const getPedia = async (params) => {
   // return request(`${FUNCTION_BASE_URL}/search`, 'POST', params);
 };
 
+export const fetchAbstract = async (paperId) => {
+  // Assuming the token is stored and should be included in the request if available
+  const token = getItem('token');
+  const apiUrl = `${FUNCTION_BASE_URL}/abstract?paperId=${encodeURIComponent(paperId)}`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (token) {
+    options.headers.Authorization = `Bearer ${token}`;
+  }
+  return fetch(apiUrl, options);
+};
+
 //  翻译摘要
 export const translate = (params) => {
   return request(`${BASE_URL}/search/translate`, 'GET', params);

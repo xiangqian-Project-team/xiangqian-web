@@ -9,6 +9,7 @@ import NoneCheckIcon from '../icons/icon_none_check.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
+import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
@@ -59,7 +60,6 @@ const QuoteSvg = () => (
 
 export default function ResultPaperItem(props) {
   const {
-    paperAbstract,
     authors,
     citationCount,
     journal,
@@ -72,13 +72,15 @@ export default function ResultPaperItem(props) {
     bibtex,
     doi,
   } = props.data;
+
+  const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
-  const translate = async (queryText) => {
+  const getAbstract = async (paperId) => {
     try {
       if (isDetailVisible) {
         setIsDetailVisible(false);
@@ -88,9 +90,12 @@ export default function ResultPaperItem(props) {
 
       setIsLoading(true);
 
-      const params = { queryText };
-      const { abstractZh } = await translateAsync(params);
-
+      const res = await fetchAbstractAsync(paperId);
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
+      const { abstract, abstractZh } = await res.json();
+      setPaperAbstract(abstract);
       setPaperAbstractZh(abstractZh);
       setIsDetailVisible(true);
     } catch (error) {
@@ -218,7 +223,7 @@ export default function ResultPaperItem(props) {
             size="small"
             loading={isLoading}
             onClick={() => {
-              translate(paperAbstract);
+              getAbstract(paperId);
             }}
           >
             {isDetailVisible ? '收起' : '查看摘要'}
