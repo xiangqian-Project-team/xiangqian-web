@@ -124,7 +124,8 @@ table {
 }
 
 body {
-  /* font-family: STSongti-SC-Regular, STSongti-SC-Regular; */
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica,
+    Arial, sans-serif;
 }
 
 body::-webkit-scrollbar {
