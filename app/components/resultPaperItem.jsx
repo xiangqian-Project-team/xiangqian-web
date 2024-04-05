@@ -87,6 +87,10 @@ export default function ResultPaperItem(props) {
         setIsAllDetailVisible(false);
         return;
       }
+      if (paperAbstract) {
+        setIsDetailVisible(true);
+        return;
+      }
 
       setIsLoading(true);
 
