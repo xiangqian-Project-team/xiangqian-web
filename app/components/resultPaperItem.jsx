@@ -70,6 +70,7 @@ export default function ResultPaperItem(props) {
     responseZh,
     isOpenAccess,
     bibtex,
+    doi,
   } = props.data;
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
@@ -207,7 +208,6 @@ export default function ResultPaperItem(props) {
             },
             components: {
               Button: {
-                paddingInlineSM: 48,
                 defaultColor: '#00A650',
                 defaultBg: '#F1F1F1',
               },
@@ -228,6 +228,19 @@ export default function ResultPaperItem(props) {
             ) : (
               <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
             )}
+          </Button>
+
+          <Button
+            size="small"
+            onClick={() => {
+              if (doi) {
+                window.open(`https://doi.org/${doi}`, '_blank');
+              } else {
+                alert('本文暂不支持查看原文');
+              }
+            }}
+          >
+            {'查看原文'}
           </Button>
         </ConfigProvider>
       </div>

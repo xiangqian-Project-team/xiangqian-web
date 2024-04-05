@@ -43,6 +43,9 @@
   .content_card_btn {
     button {
       margin-right: 8px;
+      width: 120px;
+      text-align: center; /* 使文字水平居中 */
+      justify-content: center; /* 通过flex使内容水平居中 */
     }
     .content_card_btn_quote {
       svg {
