@@ -144,6 +144,19 @@
           box-shadow: 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
           border-radius: 12px;
           height: fit-content;
+          max-height: 1000px; /* 或者你需要的具体高度 */
+          overflow-y: auto; /* 在内容超出高度时显示垂直滚动条 */
+          // padding: 10px;
+          &::-webkit-scrollbar {
+            width: 2px;
+            height: 12px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 2px;
+            box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+            background: $default-color;
+          }
 
           .header {
             position: relative;
@@ -179,7 +192,7 @@
               font-size: 16px;
               color: #000000;
               line-height: 20px;
-              padding-bottom: 44px;
+              padding-bottom: 24px;
               border-bottom: 1px solid #005c33;
               font-family: STSongti-SC-Regular, STSongti-SC-Regular;
               pre {
