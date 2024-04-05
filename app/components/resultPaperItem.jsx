@@ -162,7 +162,8 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_footer_jcr}>{journalRank}</div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_citationCount}>
-          被引{citationCount}次
+          被引
+          <span className={styles.b}>{citationCount}</span>次
         </div>
         {isOpenAccess && (
           <>
