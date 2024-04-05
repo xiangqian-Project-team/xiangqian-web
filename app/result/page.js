@@ -8,7 +8,6 @@
  */
 'use client';
 
-import { ConfigProvider } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -259,21 +258,6 @@ function Search() {
                 </div>
               </div>
               <div className={styles.search_content_data_papers}>
-                <div className={styles.header}>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: '#6F9EC1',
-                      },
-                      components: {
-                        Button: {
-                          paddingInlineLG: 24,
-                        },
-                      },
-                    }}
-                  ></ConfigProvider>
-                </div>
-
                 <div className={styles.content_scroll}>
                   <div className={styles.content} id="cardList">
                     {showPapers.map((item) => {
