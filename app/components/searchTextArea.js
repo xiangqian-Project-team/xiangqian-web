@@ -26,7 +26,6 @@ function SearchTextArea(props) {
     <div className={styles.searchContainer}>
       <div className={styles.searchTextArea}>
         <TextArea
-          // showCount
           maxLength={150}
           placeholder="请输入您的问题......"
           className={styles.searchTextArea_input}
@@ -56,10 +55,6 @@ function SearchTextArea(props) {
               router.push(`./result?q=${searchValue}`);
             }}
           />
-        </div>
-
-        <div className={styles.searchTextArea_count}>
-          {searchValue.length}/50
         </div>
       </div>
     </div>
