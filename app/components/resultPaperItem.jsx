@@ -78,13 +78,11 @@ export default function ResultPaperItem(props) {
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
-  const [isAllDetailVisible, setIsAllDetailVisible] = useState(false);
 
   const getAbstract = async (paperId) => {
     try {
       if (isDetailVisible) {
         setIsDetailVisible(false);
-        setIsAllDetailVisible(false);
         return;
       }
       if (paperAbstract) {
@@ -259,24 +257,11 @@ export default function ResultPaperItem(props) {
         <div
           className={styles.content_card_paperAbstract}
           style={{
-            height: isDetailVisible && isAllDetailVisible ? 'auto' : '',
+            height: isDetailVisible ? 'auto' : '',
           }}
         >
-          <span>摘要：{paperAbstractZh || paperAbstract}</span>
-          <span>
-            {`摘要(原文)：`}
-            {paperAbstract}
-          </span>
-          {!isAllDetailVisible && (
-            <b
-              className={styles.content_card_paperAbstract_all_button}
-              onClick={() => {
-                setIsAllDetailVisible(true);
-              }}
-            >
-              查看全部
-            </b>
-          )}
+          <span>摘要：{paperAbstractZh}</span>
+          <span>摘要原文：{paperAbstract}</span>
         </div>
       )}
 

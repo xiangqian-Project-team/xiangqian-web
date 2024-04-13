@@ -79,26 +79,6 @@
   span:not(:first-child) {
     margin-top: 20px;
   }
-
-  .content_card_paperAbstract_all_button {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    color: $primary-color;
-    border: none;
-    font-size: 14px;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    border-radius: 50px;
-    background: white;
-    padding: 2px 14px;
-    box-shadow: 0 0 12px 20px white;
-    cursor: pointer;
-
-    &:hover {
-      color: $primary-color-hover;
-    }
-  }
 }
 
 .content_card_paperAbstract::-webkit-scrollbar {
