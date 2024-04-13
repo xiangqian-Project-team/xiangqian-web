@@ -97,7 +97,7 @@ export default function ResultPaperItem(props) {
         throw new Error('Failed search');
       }
       const { abstract, abstractZh } = await res.json();
-      setPaperAbstract(abstract);
+      setPaperAbstract(abstract || 'No abstract');
       setPaperAbstractZh(abstractZh);
       setIsDetailVisible(true);
     } catch (error) {
@@ -254,14 +254,17 @@ export default function ResultPaperItem(props) {
       </div>
 
       {isDetailVisible && (
-        <div
-          className={styles.content_card_paperAbstract}
-          style={{
-            height: isDetailVisible ? 'auto' : '',
-          }}
-        >
-          <span>摘要：{paperAbstractZh}</span>
-          <span>摘要原文：{paperAbstract}</span>
+        <div className={styles.content_card_paperAbstract}>
+          {paperAbstract != 'No abstract' ? (
+            <>
+              <span>摘要：{paperAbstractZh}</span>
+              <span>摘要原文：{paperAbstract}</span>
+            </>
+          ) : (
+            <span>
+              由于版权问题，我们无法提供本文的摘要，请点击「查看原文」前往官网查看。
+            </span>
+          )}
         </div>
       )}
 
