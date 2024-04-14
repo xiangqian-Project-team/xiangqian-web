@@ -8,6 +8,7 @@
  */
 'use client';
 
+import { Button } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -259,7 +260,7 @@ function Search() {
               </div>
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_scroll}>
-                  <div className={styles.content} id="cardList">
+                  <div className={styles.content}>
                     {showPapers.map((item) => {
                       return (
                         <ResultPaperItem
@@ -270,6 +271,7 @@ function Search() {
                         />
                       );
                     })}
+                    <Button type="primary">查看更多</Button>
                   </div>
                 </div>
               </div>
