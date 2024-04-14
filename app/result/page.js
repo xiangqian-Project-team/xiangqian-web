@@ -44,6 +44,7 @@ function Search() {
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [meter, setMeter] = useState(0);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const searchParams = useSearchParams();
 
@@ -53,6 +54,10 @@ function Search() {
     getPedia(queryText);
   }, [searchParams]);
 
+  const showMoreItems = () => {
+    setVisibleCount((prevCount) => Math.min(prevCount + 5), papers.length);
+  };
+
   const getPedia = async (queryText) => {
     if (loading) return;
     try {
@@ -60,7 +65,7 @@ function Search() {
       setSummaryZh('');
       setPapers([]);
       setLoading(true);
-
+      setVisibleCount(10);
       // 开启倒计时
       timeId.current.id = setInterval(() => {
         setMeter((meter) => {
@@ -142,8 +147,8 @@ function Search() {
   };
 
   useEffect(() => {
-    setShowPapers(papers);
-  }, [papers]);
+    setShowPapers(papers.slice(0, visibleCount));
+  }, [papers, visibleCount]);
 
   return (
     <div className={styles.search}>
@@ -271,7 +276,14 @@ function Search() {
                         />
                       );
                     })}
-                    <Button type="primary">查看更多</Button>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        showMoreItems();
+                      }}
+                    >
+                      查看更多
+                    </Button>
                   </div>
                 </div>
               </div>
