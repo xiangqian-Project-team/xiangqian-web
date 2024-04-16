@@ -75,6 +75,22 @@ export const fetchAbstract = async (paperId) => {
   return fetch(apiUrl, options);
 };
 
+export const fetchReferences = async (paperId) => {
+  const token = getItem('token');
+  const apiUrl = `${FUNCTION_BASE_URL}/paper_references?paperId=${encodeURIComponent(paperId)}`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (token) {
+    options.headers.Authorization = `Bearer ${token}`;
+  }
+  return fetch(apiUrl, options);
+};
+
 //  翻译摘要
 export const translate = (params) => {
   return request(`${BASE_URL}/search/translate`, 'GET', params);
