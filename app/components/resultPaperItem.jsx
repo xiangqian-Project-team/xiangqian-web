@@ -77,16 +77,16 @@ export default function ResultPaperItem(props) {
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [contentStatus, setContentStatus] = useState('closed');
 
   const getAbstract = async (paperId) => {
     try {
-      if (isDetailVisible) {
-        setIsDetailVisible(false);
+      if (contentStatus === 'abstract') {
+        setContentStatus('closed');
         return;
       }
       if (paperAbstract) {
-        setIsDetailVisible(true);
+        setContentStatus('abstract');
         return;
       }
 
@@ -99,7 +99,7 @@ export default function ResultPaperItem(props) {
       const { abstract, abstractZh } = await res.json();
       setPaperAbstract(abstract || 'No abstract');
       setPaperAbstractZh(abstractZh);
-      setIsDetailVisible(true);
+      setContentStatus('abstract');
     } catch (error) {
       console.error(error);
     } finally {
@@ -229,12 +229,16 @@ export default function ResultPaperItem(props) {
               getAbstract(paperId);
             }}
           >
-            {isDetailVisible ? '收起' : '查看摘要'}
-
-            {isDetailVisible ? (
-              <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+            {contentStatus == 'abstract' ? (
+              <>
+                收起
+                <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+              </>
             ) : (
-              <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+              <>
+                查看摘要
+                <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+              </>
             )}
           </Button>
 
@@ -253,7 +257,7 @@ export default function ResultPaperItem(props) {
         </ConfigProvider>
       </div>
 
-      {isDetailVisible && (
+      {contentStatus == 'abstract' && (
         <div className={styles.content_card_paperAbstract}>
           {paperAbstract != 'No abstract' ? (
             <>
