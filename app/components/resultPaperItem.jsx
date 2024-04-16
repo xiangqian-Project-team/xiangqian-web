@@ -9,7 +9,10 @@ import NoneCheckIcon from '../icons/icon_none_check.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
-import { fetchAbstract as fetchAbstractAsync } from '../service';
+import {
+  fetchAbstract as fetchAbstractAsync,
+  fetchReferences as fetchReferencesAsync,
+} from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
@@ -75,11 +78,13 @@ export default function ResultPaperItem(props) {
 
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
+  const [references, setReferences] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAbstractLoading, setIsAbstractLoading] = useState(false);
+  const [isReferencesLoading, setIsReferencesLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
-  const getAbstract = async (paperId) => {
+  const toggleAbstract = async (paperId) => {
     try {
       if (contentStatus === 'abstract') {
         setContentStatus('closed');
@@ -90,7 +95,7 @@ export default function ResultPaperItem(props) {
         return;
       }
 
-      setIsLoading(true);
+      setIsAbstractLoading(true);
 
       const res = await fetchAbstractAsync(paperId);
       if (!res.ok) {
@@ -103,7 +108,34 @@ export default function ResultPaperItem(props) {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false);
+      setIsAbstractLoading(false);
+    }
+  };
+
+  const toggleReferences = async (paperId) => {
+    try {
+      if (contentStatus === 'references') {
+        setContentStatus('closed');
+        return;
+      }
+      if (references) {
+        setContentStatus('references');
+        return;
+      }
+
+      setIsReferencesLoading(true);
+
+      const res = await fetchReferencesAsync(paperId);
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
+      const { references: refs } = await res.json();
+      setReferences(refs);
+      setContentStatus('references');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsReferencesLoading(false);
     }
   };
 
@@ -224,12 +256,31 @@ export default function ResultPaperItem(props) {
         >
           <Button
             size="small"
-            loading={isLoading}
+            loading={isReferencesLoading}
             onClick={() => {
-              getAbstract(paperId);
+              toggleReferences(paperId);
             }}
           >
-            {contentStatus == 'abstract' ? (
+            {contentStatus === 'references' ? (
+              <>
+                收起
+                <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+              </>
+            ) : (
+              <>
+                参考文献
+                <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+              </>
+            )}
+          </Button>
+          <Button
+            size="small"
+            loading={isAbstractLoading}
+            onClick={() => {
+              toggleAbstract(paperId);
+            }}
+          >
+            {contentStatus === 'abstract' ? (
               <>
                 收起
                 <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
@@ -241,14 +292,13 @@ export default function ResultPaperItem(props) {
               </>
             )}
           </Button>
-
           <Button
             size="small"
             onClick={() => {
               if (doi) {
                 window.open(`https://doi.org/${doi}`, '_blank');
               } else {
-                alert('本文暂不支持查看原文');
+                alert('由于版权原因，本文暂不支持查看原文');
               }
             }}
           >
@@ -257,7 +307,7 @@ export default function ResultPaperItem(props) {
         </ConfigProvider>
       </div>
 
-      {contentStatus == 'abstract' && (
+      {contentStatus === 'abstract' && (
         <div className={styles.content_card_paperAbstract}>
           {paperAbstract != 'No abstract' ? (
             <>
@@ -270,6 +320,10 @@ export default function ResultPaperItem(props) {
             </span>
           )}
         </div>
+      )}
+
+      {contentStatus === 'references' && (
+        <div className={styles.content_card_paperAbstract}>{references}</div>
       )}
 
       <Modal
