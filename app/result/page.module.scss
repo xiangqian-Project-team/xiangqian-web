@@ -143,7 +143,7 @@
           box-shadow: 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
           border-radius: 12px;
           height: fit-content;
-          max-height: 85%; /* 或者你需要的具体高度 */
+          max-height: 80%; /* 或者你需要的具体高度 */
           overflow-y: auto; /* 在内容超出高度时显示垂直滚动条 */
 
           &::-webkit-scrollbar {
