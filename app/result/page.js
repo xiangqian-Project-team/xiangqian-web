@@ -27,7 +27,10 @@ import {
   summaryAtom,
   summaryZhAtom,
 } from '../models/search';
-import { getPedia as getPediaAsync } from '../service';
+import {
+  fetchResponses as fetchResponsesAsync,
+  getPedia as getPediaAsync,
+} from '../service';
 import styles from './page.module.scss';
 
 function Search() {
@@ -45,7 +48,7 @@ function Search() {
   const [meter, setMeter] = useState(0);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
-
+  const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -54,8 +57,37 @@ function Search() {
     getPedia(queryText);
   }, [searchParams]);
 
-  const showMoreItems = () => {
-    setVisibleCount((prevCount) => Math.min(prevCount + 5), papers.length);
+  const showMoreItems = async () => {
+    const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
+    const papersToShow = papers.slice(visibleCount, nextVisibleCount);
+    setIsLoadingMorePapers(true);
+    let requireFetchResponse = false;
+    for (const paper of papersToShow) {
+      if (!paper.responseZh) {
+        requireFetchResponse = true;
+        break;
+      }
+    }
+    if (requireFetchResponse) {
+      try {
+        const res = await fetchResponsesAsync({ papers: papersToShow });
+        if (!res.ok) {
+          throw new Error('Failed search');
+        }
+        const { papers: processedPapers } = await res.json();
+        setPapers((papers) => [
+          ...papers.slice(0, visibleCount),
+          ...processedPapers,
+          ...papers.slice(nextVisibleCount),
+        ]);
+      } catch (error) {
+        setIsLoadingMorePapers(false);
+        console.log(error);
+      }
+    }
+
+    setVisibleCount(nextVisibleCount);
+    setIsLoadingMorePapers(false);
   };
 
   const getPedia = async (queryText) => {
@@ -279,6 +311,7 @@ function Search() {
                     <Button
                       type="primary"
                       size="large"
+                      loading={isLoadingMorePapers}
                       onClick={() => {
                         showMoreItems();
                       }}
