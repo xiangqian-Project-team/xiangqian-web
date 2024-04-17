@@ -323,7 +323,9 @@ export default function ResultPaperItem(props) {
       )}
 
       {contentStatus === 'references' && (
-        <div className={styles.content_card_paperAbstract}>{references}</div>
+        <div className={styles.content_card_paperAbstract}>
+          <span>{references}</span>
+        </div>
       )}
 
       <Modal
