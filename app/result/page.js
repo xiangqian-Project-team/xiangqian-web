@@ -265,19 +265,20 @@ function Search() {
               </div>
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_scroll}>
-                  <div className={styles.content}>
-                    {showPapers.map((item) => {
-                      return (
-                        <ResultPaperItem
-                          key={item.paperId}
-                          data={item}
-                          checkedPapers={checkedPapers}
-                          setCheckedPapers={setCheckedPapers}
-                        />
-                      );
-                    })}
+                  {showPapers.map((item) => {
+                    return (
+                      <ResultPaperItem
+                        key={item.paperId}
+                        data={item}
+                        checkedPapers={checkedPapers}
+                        setCheckedPapers={setCheckedPapers}
+                      />
+                    );
+                  })}
+                  <div className={styles.content_button}>
                     <Button
                       type="primary"
+                      size="large"
                       onClick={() => {
                         showMoreItems();
                       }}

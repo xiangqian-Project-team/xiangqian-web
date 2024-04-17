@@ -216,13 +216,14 @@
           position: relative;
 
           .content_scroll {
-            height: 85%;
+            height: 80%;
             position: relative;
             overflow-y: scroll;
 
-            .content {
-              width: 100%;
-              padding-bottom: 40px;
+            .content_button {
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
 
             &::-webkit-scrollbar {
