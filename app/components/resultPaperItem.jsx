@@ -72,6 +72,7 @@ export default function ResultPaperItem(props) {
     year,
     responseZh,
     isOpenAccess,
+    openAccessPdf,
     bibtex,
     doi,
   } = props.data;
@@ -295,14 +296,16 @@ export default function ResultPaperItem(props) {
           <Button
             size="small"
             onClick={() => {
-              if (doi) {
+              if (openAccessPdf) {
+                window.open(openAccessPdf.url, '_blank');
+              } else if (doi) {
                 window.open(`https://doi.org/${doi}`, '_blank');
               } else {
                 alert('由于版权原因，本文暂不支持查看原文');
               }
             }}
           >
-            {'查看原文'}
+            {openAccessPdf ? '查看PDF' : '跳转原文'}
           </Button>
         </ConfigProvider>
       </div>
