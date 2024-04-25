@@ -138,12 +138,12 @@ function Search() {
 
   const getReplacedSummary = (str) => {
     const formattedStr = str.replace(/\[(.*?)\]/g, function (match, i) {
-      const paperId = match.replace(/^\[(.+)\]$/, '$1');
+      const citedItemId = match.replace(/^\[(.+)\]$/, '$1');
 
-      const papersIndex = papers.findIndex((item) => item.paperId === paperId);
+      const papersIndex = papers.findIndex((item) => item.id === citedItemId);
 
       const showpapersIndex = showPapers.findIndex(
-        (item) => item.paperId === paperId
+        (item) => item.id === citedItemId
       );
 
       const authors = papers[papersIndex]?.authors[0] || '';
@@ -300,7 +300,7 @@ function Search() {
                   {showPapers.map((item) => {
                     return (
                       <ResultPaperItem
-                        key={item.paperId}
+                        key={item.id}
                         data={item}
                         checkedPapers={checkedPapers}
                         setCheckedPapers={setCheckedPapers}

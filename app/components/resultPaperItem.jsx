@@ -68,9 +68,9 @@ export default function ResultPaperItem(props) {
     journal,
     journalRank,
     title,
-    paperId,
+    id,
     year,
-    responseZh,
+    response,
     isOpenAccess,
     openAccessPdf,
     bibtex,
@@ -85,7 +85,7 @@ export default function ResultPaperItem(props) {
   const [isReferencesLoading, setIsReferencesLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
-  const toggleAbstract = async (paperId) => {
+  const toggleAbstract = async (id) => {
     try {
       if (contentStatus === 'abstract') {
         setContentStatus('closed');
@@ -98,7 +98,7 @@ export default function ResultPaperItem(props) {
 
       setIsAbstractLoading(true);
 
-      const res = await fetchAbstractAsync(paperId);
+      const res = await fetchAbstractAsync(id);
       if (!res.ok) {
         throw new Error('Failed search');
       }
@@ -113,7 +113,7 @@ export default function ResultPaperItem(props) {
     }
   };
 
-  const toggleReferences = async (paperId) => {
+  const toggleReferences = async (id) => {
     try {
       if (contentStatus === 'references') {
         setContentStatus('closed');
@@ -126,7 +126,7 @@ export default function ResultPaperItem(props) {
 
       setIsReferencesLoading(true);
 
-      const res = await fetchReferencesAsync(paperId);
+      const res = await fetchReferencesAsync(id);
       if (!res.ok) {
         throw new Error('Failed search');
       }
@@ -143,14 +143,14 @@ export default function ResultPaperItem(props) {
   return (
     <div className={styles.content_card}>
       <div className={styles.content_card_title}>
-        {props.checkedPapers.includes(paperId) ? (
+        {props.checkedPapers.includes(id) ? (
           <Image
             alt=""
             className={styles.content_card_check}
             src={CheckIcon}
             onClick={() => {
               const newCheckedPapers = props.checkedPapers.filter(
-                (item) => item !== paperId
+                (item) => item !== id
               );
               props.setCheckedPapers(newCheckedPapers);
             }}
@@ -161,7 +161,7 @@ export default function ResultPaperItem(props) {
             className={styles.content_card_check}
             src={NoneCheckIcon}
             onClick={() => {
-              const newCheckedPapers = [...props.checkedPapers, paperId];
+              const newCheckedPapers = [...props.checkedPapers, id];
               props.setCheckedPapers(newCheckedPapers);
             }}
           />
@@ -176,9 +176,9 @@ export default function ResultPaperItem(props) {
           <Image src={BookIcon.src} width={16} height={16} alt="BookIcon" />
         </div>
 
-        <Tooltip title={journal.name}>
+        <Tooltip title={journal}>
           <div className={styles.content_card_footer_journal_text}>
-            {journal.name}
+            {journal}
           </div>
         </Tooltip>
 
@@ -211,7 +211,7 @@ export default function ResultPaperItem(props) {
       <div className={styles.content_card_crossline} />
 
       <div className={styles.content_card_response}>
-        {responseZh || '升级你的账户，查看更多信息。'}
+        {response || '由于版权问题，暂时无法查看简介'}
       </div>
 
       <div className={styles.content_card_btn}>
@@ -259,7 +259,7 @@ export default function ResultPaperItem(props) {
             size="small"
             loading={isReferencesLoading}
             onClick={() => {
-              toggleReferences(paperId);
+              toggleReferences(id);
             }}
           >
             {contentStatus === 'references' ? (
@@ -278,7 +278,7 @@ export default function ResultPaperItem(props) {
             size="small"
             loading={isAbstractLoading}
             onClick={() => {
-              toggleAbstract(paperId);
+              toggleAbstract(id);
             }}
           >
             {contentStatus === 'abstract' ? (
