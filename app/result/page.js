@@ -29,7 +29,8 @@ import {
 } from '../models/search';
 import {
   fetchResponses as fetchResponsesAsync,
-  getPedia as getPediaAsync,
+  getFinalPartPedia as getFinalPartPediaAsync,
+  getPartPedia as getPartPediaAsync,
 } from '../service';
 import styles from './page.module.scss';
 
@@ -112,16 +113,34 @@ function Search() {
       //     q: queryText,
       //   });
 
-      const res = await getPediaAsync({ q: queryText });
+      // const res = await getPediaAsync({ q: queryText });
+      const res = await getPartPediaAsync({ query: queryText });
       if (!res.ok) {
         throw new Error('Failed search');
       }
-      const { papers, summary, summaryZh, answerZh, bltptsZh } =
-        await res.json();
+      const {
+        papers,
+        // summary,
+        // summaryZh,
+        // answerZh,
+        // bltptsZh,
+        queryEn,
+        queryZh,
+      } = await res.json();
 
       setPapers(papers);
-      setSummary(bltptsZh);
-      setSummaryZh(answerZh);
+
+      getFinalPartPediaAsync({
+        papers,
+      }).then(async (theRes) => {
+        if (theRes.ok) {
+          const data = await theRes.json();
+          setSummary(data.bulletPoints);
+          setSummaryZh(data.answer);
+        }
+      });
+      // setSummary(bltptsZh);
+      // setSummaryZh(answerZh);
 
       setTimeout(() => {
         setLoading(false);
@@ -250,7 +269,7 @@ function Search() {
             </div>
           )}
 
-          {!loading && !summary && (
+          {!loading && !summary && !showPapers.length && (
             <div className={styles.search_content_empty}>
               <div className={styles.search_content_empty_card}>
                 <Image
@@ -267,59 +286,66 @@ function Search() {
             </div>
           )}
 
-          {!loading && summary && (
+          {!loading && (
             <div className={styles.search_content_data}>
               <div className={styles.search_content_data_summary}>
-                <div className={styles.header}>
-                  <Image
-                    alt=""
-                    className={styles.header_triangle}
-                    src={RoundedArrow}
-                  />
-                  总结
-                </div>
-                <div className={styles.content}>
-                  <div
-                    className={styles.content_summary}
-                    dangerouslySetInnerHTML={{
-                      // __html: getReplacedSummary(answerZh),
-                      __html: getReplacedSummary(summaryZh),
-                    }}
-                  />
-                  <div
-                    className={styles.content_summaryZh}
-                    dangerouslySetInnerHTML={{
-                      // __html: getReplacedSummary(BltptsZh),
-                      __html: getReplacedSummary(summary),
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={styles.search_content_data_papers}>
-                <div className={styles.content_scroll}>
-                  {showPapers.map((item) => {
-                    return (
-                      <ResultPaperItem
-                        key={item.id}
-                        data={item}
-                        checkedPapers={checkedPapers}
-                        setCheckedPapers={setCheckedPapers}
+                {summary && (
+                  <>
+                    <div className={styles.header}>
+                      <Image
+                        alt=""
+                        className={styles.header_triangle}
+                        src={RoundedArrow}
                       />
-                    );
-                  })}
-                  <div className={styles.content_button}>
-                    <Button
-                      type="primary"
-                      size="large"
-                      loading={isLoadingMorePapers}
-                      onClick={() => {
-                        showMoreItems();
-                      }}
-                    >
-                      查看更多
-                    </Button>
+                      总结
+                    </div>
+                    <div className={styles.content}>
+                      <div
+                        className={styles.content_summary}
+                        dangerouslySetInnerHTML={{
+                          // __html: getReplacedSummary(answerZh),
+                          __html: getReplacedSummary(summaryZh),
+                        }}
+                      />
+                      <div
+                        className={styles.content_summaryZh}
+                        dangerouslySetInnerHTML={{
+                          // __html: getReplacedSummary(BltptsZh),
+                          __html: getReplacedSummary(summary),
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className={styles.search_content_data_papers}>
+                {showPapers.length > 0 && (
+                  <div className={styles.content_scroll}>
+                    {showPapers.map((item) => {
+                      return (
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      );
+                    })}
+                    <div className={styles.content_button}>
+                      <Button
+                        type="primary"
+                        size="large"
+                        loading={isLoadingMorePapers}
+                        onClick={() => {
+                          showMoreItems();
+                        }}
+                      >
+                        查看更多
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}

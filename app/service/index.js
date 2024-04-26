@@ -58,6 +58,33 @@ export const getPedia = async (params) => {
   // return request(`${FUNCTION_BASE_URL}/search`, 'POST', params);
 };
 
+// 多步搜索
+export const getPartPedia = async (params) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) option.headers.Authorization = `Bearer ${token}`;
+  return fetch(`${FUNCTION_BASE_URL}/search_papers`, option);
+};
+
+export const getFinalPartPedia = async (params) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) option.headers.Authorization = `Bearer ${token}`;
+  return fetch(`${FUNCTION_BASE_URL}/papers_analysis`, option);
+};
+
 export const fetchAbstract = async (paperId) => {
   // Assuming the token is stored and should be included in the request if available
   const token = getItem('token');
