@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Skeleton } from 'antd';
+import { Pagination, Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -126,7 +126,7 @@ function Search() {
   };
 
   const showPapers = useMemo(() => {
-    return papers.slice(pageIndex * 10, (pageIndex + 1) * 10);
+    return papers.slice((pageIndex - 1) * 10, pageIndex * 10);
   }, [papers, pageIndex]);
 
   const getPedia = async (queryText) => {
@@ -404,22 +404,34 @@ function Search() {
                       <Skeleton active />
                     </div>
                   ))}
-                {showPapers.map((item) => {
-                  return (
-                    <Skeleton
-                      key={item.id}
-                      active
-                      loading={isLoadingList}
-                      paragraph={{ rows: 16 }}
-                    >
+                {!isLoadingList &&
+                  showPapers.map((item) => {
+                    return (
+                      // <Skeleton
+                      //   key={item.id}
+                      //   active
+                      //   loading={isLoadingList}
+                      //   paragraph={{ rows: 16 }}
+                      // >
                       <ResultPaperItem
+                        key={item.id}
                         data={item}
                         checkedPapers={checkedPapers}
                         setCheckedPapers={setCheckedPapers}
                       />
-                    </Skeleton>
-                  );
-                })}
+                      // </Skeleton>
+                    );
+                  })}
+                {!isLoadingList && (
+                  <Pagination
+                    total={papers.length}
+                    pageSize={10}
+                    pageIndex={pageIndex}
+                    onChange={(page) => {
+                      setPageIndex(page);
+                    }}
+                  />
+                )}
                 {/* {!isLoadingList && (
                   <div className={styles.content_button}>
                     <Button
