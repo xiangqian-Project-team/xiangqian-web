@@ -133,7 +133,6 @@
         width: 90%;
         max-width: 1440px;
         margin-top: 24px;
-        // margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
 
@@ -213,9 +212,7 @@
           position: relative;
 
           .content_scroll {
-            // height: 80%;
             position: relative;
-            // overflow-y: scroll;
 
             .content_button {
               display: flex;
