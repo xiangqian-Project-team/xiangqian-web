@@ -2,10 +2,11 @@
   width: 100%;
   min-width: 1080px;
   background: linear-gradient(
-    52deg,
-    rgba(80, 201, 140, 0.4) 0%,
-    rgba(139, 187, 183, 0.4) 50%,
-    rgba(132, 196, 181, 0.4) 100%
+    90deg,
+    #f3f9fe 0%,
+    #d0f6fb 49%,
+    #f8f9fd 80%,
+    #e9faff 100%
   );
   display: flex;
   flex-direction: column;
@@ -165,13 +166,13 @@
             align-items: center;
             padding: 0 24px;
             width: calc(100% - 48px);
-            height: 37px;
+            height: 50px;
             color: white;
             background: linear-gradient(
               62deg,
-              #50c98c 0%,
-              #8bbbb7 50%,
-              #84c4b5 100%
+              #e7dffd 0%,
+              #d3f7fc 50%,
+              #98dfec 100%
             );
 
             .header_triangle {
@@ -192,7 +193,7 @@
               color: #000000;
               line-height: 24px;
               padding-bottom: 24px;
-              border-bottom: 1px solid #005c33;
+              border-bottom: 1px solid #03a097;
               pre {
                 white-space: pre-wrap;
               }

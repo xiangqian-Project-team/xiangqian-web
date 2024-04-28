@@ -8,16 +8,16 @@
  */
 'use client';
 
-import { Button } from 'antd';
+import { Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
-import LogoIcon2 from '../icons/logo.svg';
+import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
@@ -28,7 +28,6 @@ import {
   summaryZhAtom,
 } from '../models/search';
 import {
-  fetchResponses as fetchResponsesAsync,
   getFinalPartPedia as getFinalPartPediaAsync,
   getPartPedia as getPartPediaAsync,
 } from '../service';
@@ -37,18 +36,25 @@ import styles from './page.module.scss';
 function Search() {
   const router = useRouter();
 
-  const timeId = useRef({ id: -1 });
+  // const timeId = useRef({ id: -1 });
 
-  const [loading, setLoading] = useState(false);
-  const [showPapers, setShowPapers] = useState([]);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
+  const [isLoadingList, setIsLoadingList] = useState(false);
+  const paperSkeletons = useMemo(
+    () =>
+      Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
+    []
+  );
+  const [pageIndex, setPageIndex] = useState(1);
+  // const [showPapers, setShowPapers] = useState([]);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
-  const [meter, setMeter] = useState(0);
+  // const [meter, setMeter] = useState(0);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(10);
+  // const [visibleCount, setVisibleCount] = useState(10);
   const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
   const searchParams = useSearchParams();
 
@@ -58,101 +64,125 @@ function Search() {
     getPedia(queryText);
   }, [searchParams]);
 
-  const showMoreItems = async () => {
-    const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
-    const papersToShow = papers.slice(visibleCount, nextVisibleCount);
-    setIsLoadingMorePapers(true);
-    let requireFetchResponse = false;
-    for (const paper of papersToShow) {
-      if (!paper.responseZh) {
-        requireFetchResponse = true;
-        break;
-      }
-    }
-    if (requireFetchResponse) {
-      try {
-        const res = await fetchResponsesAsync({ papers: papersToShow });
-        if (!res.ok) {
-          throw new Error('Failed search');
-        }
-        const { papers: processedPapers } = await res.json();
-        setPapers((papers) => [
-          ...papers.slice(0, visibleCount),
-          ...processedPapers,
-          ...papers.slice(nextVisibleCount),
-        ]);
-      } catch (error) {
-        setIsLoadingMorePapers(false);
-        console.log(error);
-      }
+  // const showMoreItems = async () => {
+  //   const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
+  //   const papersToShow = papers.slice(visibleCount, nextVisibleCount);
+  //   setIsLoadingMorePapers(true);
+  //   let requireFetchResponse = false;
+  //   for (const paper of papersToShow) {
+  //     if (!paper.response) {
+  //       requireFetchResponse = true;
+  //       break;
+  //     }
+  //   }
+  //   if (requireFetchResponse) {
+  //     try {
+  //       const res = await fetchResponsesAsync({ papers: papersToShow });
+  //       if (!res.ok) {
+  //         throw new Error('Failed search');
+  //       }
+  //       const { papers: processedPapers } = await res.json();
+  //       setPapers((papers) => [
+  //         ...papers.slice(0, visibleCount),
+  //         ...processedPapers,
+  //         ...papers.slice(nextVisibleCount),
+  //       ]);
+  //     } catch (error) {
+  //       setIsLoadingMorePapers(false);
+  //       console.log(error);
+  //     }
+  //   }
+
+  //   setVisibleCount(nextVisibleCount);
+  //   setIsLoadingMorePapers(false);
+  // };
+
+  // const getResultList = async () => {
+  //   try {
+  //     const res = await getPartPediaAsync({ query: queryText });
+  //     if (!res.ok) {
+  //       throw new Error('Failed search');
+  //     }
+  //     const { papers, queryEn, queryZh } = await res.json();
+
+  //     setPapers(papers);
+  // }
+
+  const getSammury = async (params) => {
+    const { papers, queryEn, queryZh } = params;
+    const res = await getFinalPartPediaAsync({
+      papers,
+      queryEn,
+      queryZh,
+    });
+    if (!res.ok) {
+      throw new Error('Failed get summary');
     }
 
-    setVisibleCount(nextVisibleCount);
-    setIsLoadingMorePapers(false);
+    const data = await res.json();
+    setSummary(data.bulletPoints);
+    setSummaryZh(data.answer);
+    setIsLoadingSummary(false);
   };
 
+  const showPapers = useMemo(() => {
+    return papers.slice(pageIndex * 10, (pageIndex + 1) * 10);
+  }, [papers, pageIndex]);
+
   const getPedia = async (queryText) => {
-    if (loading) return;
+    if (isLoadingList || isLoadingSummary) return;
+
+    setSummary('');
+    setSummaryZh('');
+    setPapers([]);
+    setPageIndex(1);
+    setIsLoadingSummary(true);
+    setIsLoadingList(true);
+    // setVisibleCount(10);
+    // 开启倒计时
+    // timeId.current.id = setInterval(() => {
+    //   setMeter((meter) => {
+    //     if (meter >= 99.9) return 99.9;
+    //     return meter + 0.1;
+    //   });
+    // }, 50);
+    let queryEn, queryZh, papers;
     try {
-      setSummary('');
-      setSummaryZh('');
-      setPapers([]);
-      setLoading(true);
-      setVisibleCount(10);
-      // 开启倒计时
-      timeId.current.id = setInterval(() => {
-        setMeter((meter) => {
-          if (meter >= 99.9) return 99.9;
-          return meter + 0.1;
-        });
-      }, 50);
-
-      // mark summary and summaryZh will be useful later, do not remove
-      // const { papers, summary, summaryZh, answerZh, bltptsZh } =
-      //   await getPediaAsync({
-      //     q: queryText,
-      //   });
-
-      // const res = await getPediaAsync({ q: queryText });
-      const res = await getPartPediaAsync({ query: queryText });
-      if (!res.ok) {
+      const listRes = await getPartPediaAsync({ query: queryText });
+      if (!listRes.ok) {
         throw new Error('Failed search');
       }
-      const {
-        papers,
-        // summary,
-        // summaryZh,
-        // answerZh,
-        // bltptsZh,
-        queryEn,
-        queryZh,
-      } = await res.json();
+      setIsLoadingList(false);
 
-      setPapers(papers);
-
-      getFinalPartPediaAsync({
-        papers,
-      }).then(async (theRes) => {
-        if (theRes.ok) {
-          const data = await theRes.json();
-          setSummary(data.bulletPoints);
-          setSummaryZh(data.answer);
-        }
-      });
-      // setSummary(bltptsZh);
-      // setSummaryZh(answerZh);
-
-      setTimeout(() => {
-        setLoading(false);
-        clearInterval(timeId.current.id);
-        setMeter(0);
-      }, 500);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      clearInterval(timeId.current.id);
-      setMeter(0);
+      const data = await listRes.json();
+      queryEn = data.queryEn;
+      queryZh = data.queryZh;
+      papers = data.papers;
+      setPapers(data.papers);
+    } catch (e) {
+      setIsLoadingSummary(false);
+      setIsLoadingList(false);
+      return;
     }
+
+    try {
+      getSammury({ papers, queryEn, queryZh });
+    } catch (e) {
+      setIsLoadingSummary(false);
+    }
+
+    // setTimeout(() => {
+    //   setIsLoadingSummary(false);
+    // clearInterval(timeId.current.id);
+    // setMeter(0);
+    // }, 500);
+    // } catch (error) {
+    //   console.log(error);
+    //   setIsLoadingSummary(false);
+    //   setIsLoadingList(false);
+    //   // clearInterval(timeId.current.id);
+    //   // setMeter(0);
+    // }
   };
 
   const getReplacedSummary = (str) => {
@@ -189,17 +219,17 @@ function Search() {
       if (cardList) cardList.scrollTop = scrollTop + 2;
 
       cardList.childNodes[index].style.borderWidth= '2px';
-      cardList.childNodes[index].style.borderColor= '#00A650';
+      cardList.childNodes[index].style.borderColor= '#03A097';
 
-      "style="text-decoration: none; color: #00A650; cursor: pointer;">（${authors} ，${year}）</span>`;
+      "style="text-decoration: none; color: #03A097; cursor: pointer;">（${authors} ，${year}）</span>`;
     });
 
     return `<pre>${formattedStr}</pre>`;
   };
 
-  useEffect(() => {
-    setShowPapers(papers.slice(0, visibleCount));
-  }, [papers, visibleCount]);
+  // useEffect(() => {
+  //   setShowPapers(papers.slice(0, visibleCount));
+  // }, [papers, visibleCount]);
 
   return (
     <div className={styles.search}>
@@ -258,97 +288,156 @@ function Search() {
         </div>
 
         <div className={styles.search_content}>
-          <SearchTextArea isLoading={loading} />
+          <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
 
-          {loading && (
+          {/* {loading && (
             <div className={styles.search_content_loading}>
               <div className={styles.search_content_loading_card}>
                 <div className={styles.text}>我们正在努力寻找答案……</div>
                 <meter min="0" max="100" value={meter} />
               </div>
             </div>
-          )}
+          )} */}
 
-          {!loading && !summary && !showPapers.length && (
-            <div className={styles.search_content_empty}>
-              <div className={styles.search_content_empty_card}>
-                <Image
-                  src={EmptyIcon.src}
-                  width={64}
-                  height={46}
-                  alt="EmptyIcon"
-                />
+          {!isLoadingList &&
+            !isLoadingSummary &&
+            !summary &&
+            !showPapers.length && (
+              <div className={styles.search_content_empty}>
+                <div className={styles.search_content_empty_card}>
+                  <Image
+                    src={EmptyIcon.src}
+                    width={64}
+                    height={46}
+                    alt="EmptyIcon"
+                  />
 
-                <div className={styles.text}>
-                  很抱歉，暂时无法找到合适的答案，请换个问题再试一次。
+                  <div className={styles.text}>
+                    很抱歉，暂时无法找到合适的答案，请换个问题再试一次。
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {!loading && (
-            <div className={styles.search_content_data}>
-              <div className={styles.search_content_data_summary}>
-                {summary && (
-                  <>
-                    <div className={styles.header}>
-                      <Image
-                        alt=""
-                        className={styles.header_triangle}
-                        src={RoundedArrow}
-                      />
-                      总结
-                    </div>
-                    <div className={styles.content}>
-                      <div
-                        className={styles.content_summary}
-                        dangerouslySetInnerHTML={{
-                          // __html: getReplacedSummary(answerZh),
-                          __html: getReplacedSummary(summaryZh),
-                        }}
-                      />
-                      <div
-                        className={styles.content_summaryZh}
-                        dangerouslySetInnerHTML={{
-                          // __html: getReplacedSummary(BltptsZh),
-                          __html: getReplacedSummary(summary),
-                        }}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className={styles.search_content_data_papers}>
-                {showPapers.length > 0 && (
-                  <div className={styles.content_scroll}>
-                    {showPapers.map((item) => {
-                      return (
-                        <ResultPaperItem
-                          key={item.id}
-                          data={item}
-                          checkedPapers={checkedPapers}
-                          setCheckedPapers={setCheckedPapers}
+          <div className={styles.search_content_data}>
+            <div className={styles.search_content_data_summary}>
+              {
+                <div>
+                  <Skeleton
+                    active
+                    loading={isLoadingSummary}
+                    style={{ padding: '20px' }}
+                    paragraph={{ rows: 16 }}
+                  >
+                    <>
+                      <div className={styles.header}>
+                        <Image
+                          alt=""
+                          className={styles.header_triangle}
+                          src={RoundedArrow}
                         />
-                      );
-                    })}
-                    <div className={styles.content_button}>
-                      <Button
-                        type="primary"
-                        size="large"
-                        loading={isLoadingMorePapers}
-                        onClick={() => {
-                          showMoreItems();
-                        }}
-                      >
-                        查看更多
-                      </Button>
-                    </div>
+                        总结
+                      </div>
+                      <div className={styles.content}>
+                        <div
+                          className={styles.content_summary}
+                          dangerouslySetInnerHTML={{
+                            // __html: getReplacedSummary(answerZh),
+                            __html: getReplacedSummary(summaryZh),
+                          }}
+                        />
+                        <div
+                          className={styles.content_summaryZh}
+                          dangerouslySetInnerHTML={{
+                            // __html: getReplacedSummary(BltptsZh),
+                            __html: getReplacedSummary(summary),
+                          }}
+                        />
+                      </div>
+                    </>
+                  </Skeleton>
+                </div>
+              }
+              {/* {!loading && summary && (
+                <>
+                  <div className={styles.header}>
+                    <Image
+                      alt=""
+                      className={styles.header_triangle}
+                      src={RoundedArrow}
+                    />
+                    总结
                   </div>
-                )}
-              </div>
+                  <div className={styles.content}>
+                    <div
+                      className={styles.content_summary}
+                      dangerouslySetInnerHTML={{
+                        // __html: getReplacedSummary(answerZh),
+                        __html: getReplacedSummary(summaryZh),
+                      }}
+                    />
+                    <div
+                      className={styles.content_summaryZh}
+                      dangerouslySetInnerHTML={{
+                        // __html: getReplacedSummary(BltptsZh),
+                        __html: getReplacedSummary(summary),
+                      }}
+                    />
+                  </div>
+                </>
+              )} */}
             </div>
-          )}
+
+            <div className={styles.search_content_data_papers}>
+              <div className={styles.content_scroll}>
+                {isLoadingList &&
+                  paperSkeletons.map((item) => (
+                    <div
+                      style={{
+                        background: 'white',
+                        margin: '0 0 10px',
+                        padding: '20px',
+                        borderRadius: '12px',
+                      }}
+                      key={item.id}
+                    >
+                      <Skeleton active />
+                    </div>
+                  ))}
+                {showPapers.map((item) => {
+                  return (
+                    <Skeleton
+                      key={item.id}
+                      active
+                      loading={isLoadingList}
+                      paragraph={{ rows: 16 }}
+                    >
+                      <ResultPaperItem
+                        data={item}
+                        checkedPapers={checkedPapers}
+                        setCheckedPapers={setCheckedPapers}
+                      />
+                    </Skeleton>
+                  );
+                })}
+                {/* {!isLoadingList && (
+                  <div className={styles.content_button}>
+                    <Button
+                      type="primary"
+                      size="large"
+                      loading={isLoadingMorePapers}
+                      onClick={() => {
+                        showMoreItems();
+                      }}
+                    >
+                      查看更多
+                    </Button>
+                  </div>
+                )} */}
+              </div>
+              {/* )} */}
+            </div>
+          </div>
         </div>
       </div>
     </div>

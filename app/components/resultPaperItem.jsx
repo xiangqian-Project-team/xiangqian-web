@@ -218,13 +218,15 @@ export default function ResultPaperItem(props) {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#00A650',
+              colorPrimary: '#03A097',
             },
             components: {
               Button: {
                 paddingInlineSM: 34,
-                defaultColor: '#00A650',
-                defaultBg: '#F1F1F1',
+                defaultColor: '#000',
+                defaultBg: '#EEEEEE',
+                borderRadius: 20,
+                borderColor: 'none',
               },
             },
           }}
@@ -245,12 +247,15 @@ export default function ResultPaperItem(props) {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#00A650',
+              colorPrimary: '#03A097',
             },
             components: {
               Button: {
-                defaultColor: '#00A650',
-                defaultBg: '#F1F1F1',
+                paddingInlineSM: 34,
+                defaultColor: '#000',
+                defaultBg: '#EEEEEE',
+                borderRadius: 30,
+                borderColor: 'none',
               },
             },
           }}
