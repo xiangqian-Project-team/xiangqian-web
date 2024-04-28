@@ -27,8 +27,15 @@ function HomeTextArea() {
     <div className={styles.homeTextArea}>
       <TextArea
         maxLength={150}
-        placeholder="输入概念、观点、或是问题，文献一眼便知......"
-        style={{ height: 138, width: 744, resize: 'none' }}
+        placeholder="支持中英文输入。观点或是问题，都有基于文献的回应..."
+        style={{
+          height: 138,
+          width: 744,
+          resize: 'none',
+        }}
+        classNames={{
+          wrapper: styles.homeTextAreaInput,
+        }}
         value={searchValue}
         onChange={(e) => {
           setSearchValue(e.target.value);

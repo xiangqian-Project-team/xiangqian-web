@@ -6,14 +6,25 @@
     width: 100%;
     height: 690px;
     background: linear-gradient(
-      54deg,
-      rgba(80, 201, 140, 0.4) 0%,
-      rgba(139, 187, 183, 0.4) 50%,
-      rgba(132, 196, 181, 0.4) 100%
+      90deg,
+      #f3f9fe 0%,
+      #d0f6fb 49%,
+      #f8f9fd 80%,
+      #e9faff 100%
     );
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .home_search_recommend {
+      display: flex;
+      width: 744px;
+      margin-top: 24px;
+      .home_search_recommend_title {
+        width: 100px;
+        padding: 5px 0;
+      }
+    }
 
     .home_search_logo {
       margin-top: 140px;
@@ -57,7 +68,7 @@
       /* 左边框宽度为一半的宽度，且透明 */
       border-right: 18px solid transparent;
       /* 右边框宽度为一半的宽度，且透明 */
-      border-top: 34px solid #c4e7d9;
+      border-top: 34px solid #d0f6fb;
       /* 顶部边框作为三角形的“底部”，设置为目标高度和颜色 */
     }
   }
@@ -118,6 +129,169 @@
 
     .home_university_imgs:nth-child(3) {
       margin-top: 40px !important;
+    }
+  }
+  .home_intro {
+    padding-bottom: 60px;
+    .home_intro_title {
+      text-align: center;
+      font-size: 28px;
+    }
+    .home_intro_sub_title {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .home_intro_list {
+      justify-content: center;
+    }
+    .home_intro_list {
+      display: flex;
+      margin-top: 30px;
+      .home_intro_list_item {
+        width: 288px;
+        height: 275px;
+        border-radius: 20px;
+        margin: 0 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        .home_intro_list_item_img {
+          margin: 25px 0;
+        }
+        .home_intro_list_item_h1 {
+          font-size: 15px;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+        .home_intro_list_item_h2 {
+          font-size: 14px;
+          width: 232px;
+          line-height: 20px;
+        }
+        .home_intro_list_item_h6 {
+          font-size: 10px;
+          color: #7d7b7b;
+          position: absolute;
+          bottom: 15px;
+        }
+      }
+    }
+  }
+  .home_desc {
+    padding-bottom: 60px;
+    background: linear-gradient(
+      90deg,
+      #f3f9fe 0%,
+      #d0f6fb 49%,
+      #f8f9fd 80%,
+      #e9faff 100%
+    );
+    padding-top: 50px;
+    .home_desc_title {
+      text-align: center;
+      font-size: 28px;
+    }
+    .home_desc_sub_title {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .home_desc_list {
+      flex-direction: column;
+      display: flex;
+      margin-top: 30px;
+      .home_desc_list_item {
+        width: 904px;
+        margin: 20px auto 0;
+        height: 128px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        position: relative;
+        .home_desc_list_item_img {
+          margin: 0 25px 0 50px;
+        }
+        .home_desc_list_item_titles {
+          width: 649px;
+          .home_desc_list_item_h1 {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+          }
+          .home_desc_list_item_h2 {
+            font-size: 14px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+  .faq {
+    width: 904px;
+    margin: 0 auto;
+    padding: 30px 0 30px 0;
+    display: flex;
+    .faq_icon {
+      margin: 0 20px 0 50px;
+    }
+    .faq_title {
+      font-size: 28px;
+      margin-top: 20px;
+    }
+    .faq_list {
+      margin-top: 30px;
+      .faq_list_item {
+        width: 600px;
+        padding: 15px 0;
+        border-top: 1px solid #efefef;
+        line-height: 25px;
+        font-size: 14px;
+        overflow: hidden;
+        max-height: 25px;
+        transition: all 0.5s;
+        .faq_list_item_title {
+          font-size: 15px;
+          font-weight: bold;
+          padding-bottom: 10px;
+          position: relative;
+          cursor: pointer;
+          .faq_list_item_drop_down {
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            transition: all 0.5s;
+          }
+        }
+      }
+    }
+  }
+  .school_info {
+    padding: 30px 0 30px 0;
+    background: linear-gradient(
+      90deg,
+      #f3f9fe 0%,
+      #d0f6fb 49%,
+      #f8f9fd 80%,
+      #e9faff 100%
+    );
+    .school_info_title {
+      font-size: 20px;
+      text-align: center;
+    }
+    .school_info_list {
+      display: flex;
+      width: 1200px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin: 30px auto 0;
+      .school_info_list_item {
+        margin: 0 20px;
+      }
     }
   }
 }

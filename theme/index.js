@@ -15,13 +15,14 @@ const withTheme = (node) => (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#86F1D3',
-          colorBgContainerDisabled: '#BFE8D5',
+          colorPrimary: '#99E0ED',
+          colorBgContainerDisabled: 'rgba(0,0,0,0.6)',
         },
         components: {
           Button: {
-            defaultBg: '#F5F5F5',
-            defaultColor: '#005C33',
+            defaultBg: '#FFF',
+            defaultColor: '#000',
+            defaultBorderColor: '#FFF',
             borderRadius: 20,
           },
           Input: {
@@ -29,7 +30,7 @@ const withTheme = (node) => (
             borderRadius: 16,
             paddingBlock: 20,
             paddingInline: 26,
-            colorTextPlaceholder: '#00A650',
+            colorTextPlaceholder: 'rgba(0,0,0,0.5)',
             fontSize: 16,
           },
         },
