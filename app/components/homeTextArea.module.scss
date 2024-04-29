@@ -4,6 +4,12 @@
   border-radius: 13px 13px 13px 13px;
   position: relative;
 
+  .searchTextArea_language_select {
+    position: absolute;
+    bottom: 12px;
+    left: 25px;
+  }
+
   .homeTextArea_btn {
     position: absolute;
     right: 16px;

@@ -8,7 +8,7 @@
  */
 'use client';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { Button, Input, Radio } from 'antd';
 import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
@@ -47,6 +47,13 @@ function HomeTextArea() {
           }
         }}
       />
+
+      {/* <div className={styles.searchTextArea_language_select}>
+        <Radio.Group value={'zh-cn'}>
+          <Radio value={'en'}>英文文献</Radio>
+          <Radio value={'zh-cn'}>中文文献</Radio>
+        </Radio.Group>
+      </div> */}
 
       <div className={styles.homeTextArea_btn}>
         <Button

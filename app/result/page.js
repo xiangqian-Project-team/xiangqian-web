@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Pagination, Skeleton } from 'antd';
+import { Button, Pagination, Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -28,8 +28,9 @@ import {
   summaryZhAtom,
 } from '../models/search';
 import {
-  getFinalPartPedia as getFinalPartPediaAsync,
+  getAnalysisPedia as getAnalysisPediaAsync,
   getPartPedia as getPartPediaAsync,
+  getResponsePedia as getResponsePediaAsync,
 } from '../service';
 import styles from './page.module.scss';
 
@@ -108,9 +109,9 @@ function Search() {
   //     setPapers(papers);
   // }
 
-  const getSammury = async (params) => {
+  const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
-    const res = await getFinalPartPediaAsync({
+    const res = await getAnalysisPediaAsync({
       papers,
       queryEn,
       queryZh,
@@ -123,6 +124,19 @@ function Search() {
     setSummary(data.bulletPoints);
     setSummaryZh(data.answer);
     setIsLoadingSummary(false);
+  };
+
+  const getResponsePedia = async (params) => {
+    const { papers } = params;
+    const res = await getResponsePediaAsync({
+      papers,
+    });
+    if (!res.ok) {
+      throw new Error('Failed get response');
+    }
+
+    const data = await res.json();
+    setPapers(data.papers);
   };
 
   const showPapers = useMemo(() => {
@@ -166,7 +180,8 @@ function Search() {
     }
 
     try {
-      getSammury({ papers, queryEn, queryZh });
+      getAnalysisPedia({ papers, queryEn, queryZh });
+      getResponsePedia({ papers });
     } catch (e) {
       setIsLoadingSummary(false);
     }
@@ -403,49 +418,36 @@ function Search() {
                     <Skeleton active />
                   </div>
                 ))}
-              {!isLoadingList &&
-                showPapers.map((item) => {
-                  return (
-                    // <Skeleton
-                    //   key={item.id}
-                    //   active
-                    //   loading={isLoadingList}
-                    //   paragraph={{ rows: 16 }}
-                    // >
-                    <ResultPaperItem
-                      key={item.id}
-                      data={item}
-                      checkedPapers={checkedPapers}
-                      setCheckedPapers={setCheckedPapers}
-                    />
-                    // </Skeleton>
-                  );
-                })}
               {!isLoadingList && (
-                <Pagination
-                  total={papers.length}
-                  pageSize={10}
-                  pageIndex={pageIndex}
-                  onChange={(page) => {
-                    setPageIndex(page);
-                  }}
-                />
-              )}
-              {/* {!isLoadingList && (
+                <div>
                   <div className={styles.content_button}>
-                    <Button
-                      type="primary"
-                      size="large"
-                      loading={isLoadingMorePapers}
-                      onClick={() => {
-                        showMoreItems();
-                      }}
-                    >
-                      查看更多
-                    </Button>
+                    <Button>英文文献</Button>
+                    <Button>中文文献</Button>
+                    <Button>我选中的</Button>
+                    <Button>最新发表</Button>
                   </div>
-                )} */}
-              {/* )} */}
+                  <div>
+                    {showPapers.map((item) => {
+                      return (
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      );
+                    })}
+                  </div>
+                  <Pagination
+                    total={papers.length}
+                    pageSize={10}
+                    pageIndex={pageIndex}
+                    onChange={(page) => {
+                      setPageIndex(page);
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
