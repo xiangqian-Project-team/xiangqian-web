@@ -390,50 +390,49 @@ function Search() {
             </div>
 
             <div className={styles.search_content_data_papers}>
-              <div className={styles.content_scroll}>
-                {isLoadingList &&
-                  paperSkeletons.map((item) => (
-                    <div
-                      style={{
-                        background: 'white',
-                        margin: '0 0 10px',
-                        padding: '20px',
-                        borderRadius: '12px',
-                      }}
-                      key={item.id}
-                    >
-                      <Skeleton active />
-                    </div>
-                  ))}
-                {!isLoadingList &&
-                  showPapers.map((item) => {
-                    return (
-                      // <Skeleton
-                      //   key={item.id}
-                      //   active
-                      //   loading={isLoadingList}
-                      //   paragraph={{ rows: 16 }}
-                      // >
-                      <ResultPaperItem
-                        key={item.id}
-                        data={item}
-                        checkedPapers={checkedPapers}
-                        setCheckedPapers={setCheckedPapers}
-                      />
-                      // </Skeleton>
-                    );
-                  })}
-                {!isLoadingList && (
-                  <Pagination
-                    total={papers.length}
-                    pageSize={10}
-                    pageIndex={pageIndex}
-                    onChange={(page) => {
-                      setPageIndex(page);
+              {isLoadingList &&
+                paperSkeletons.map((item) => (
+                  <div
+                    style={{
+                      background: 'white',
+                      margin: '0 0 10px',
+                      padding: '20px',
+                      borderRadius: '12px',
                     }}
-                  />
-                )}
-                {/* {!isLoadingList && (
+                    key={item.id}
+                  >
+                    <Skeleton active />
+                  </div>
+                ))}
+              {!isLoadingList &&
+                showPapers.map((item) => {
+                  return (
+                    // <Skeleton
+                    //   key={item.id}
+                    //   active
+                    //   loading={isLoadingList}
+                    //   paragraph={{ rows: 16 }}
+                    // >
+                    <ResultPaperItem
+                      key={item.id}
+                      data={item}
+                      checkedPapers={checkedPapers}
+                      setCheckedPapers={setCheckedPapers}
+                    />
+                    // </Skeleton>
+                  );
+                })}
+              {!isLoadingList && (
+                <Pagination
+                  total={papers.length}
+                  pageSize={10}
+                  pageIndex={pageIndex}
+                  onChange={(page) => {
+                    setPageIndex(page);
+                  }}
+                />
+              )}
+              {/* {!isLoadingList && (
                   <div className={styles.content_button}>
                     <Button
                       type="primary"
@@ -447,7 +446,6 @@ function Search() {
                     </Button>
                   </div>
                 )} */}
-              </div>
               {/* )} */}
             </div>
           </div>
