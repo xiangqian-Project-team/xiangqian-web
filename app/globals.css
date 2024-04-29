@@ -128,20 +128,6 @@ body {
     Arial, sans-serif;
 }
 
-body::-webkit-scrollbar {
-  width: 4px; /* 设置垂直滚动条的宽度为4像素 */
-  height: 12px; /* 设置水平滚动条的高度为12像素 */
-}
-
-body::-webkit-scrollbar-thumb {
-  border-radius: 2px; /* 设置滚动条的圆角半径为2像素 */
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2); /* 设置滚动条的阴影效果 */
-  background: #00a650; /* 设置滚动条的背景颜色为绿色 */
-}
-body::-webkit-scrollbar-track {
-  background-color: transparent; /* 设置滚动条轨道的背景颜色为透明 */
-}
-
 #nprogress .bar {
   background: #00a650 !important;
 }
