@@ -1,7 +1,7 @@
 'use client';
 
 import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Modal, Tooltip } from 'antd';
+import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import CheckIcon from '../icons/icon_check.svg';
@@ -210,9 +210,11 @@ export default function ResultPaperItem(props) {
 
       <div className={styles.content_card_crossline} />
 
-      <div className={styles.content_card_response}>
-        {response || '由于版权问题，暂时无法查看简介'}
-      </div>
+      <Skeleton active loading={!response} paragraph={{ rows: 0 }}>
+        <div className={styles.content_card_response}>
+          {response || '由于版权问题，暂时无法查看简介'}
+        </div>
+      </Skeleton>
 
       <div className={styles.content_card_btn}>
         <ConfigProvider
