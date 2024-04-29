@@ -127,6 +127,7 @@ function Search() {
   };
 
   const getResponsePedia = async (params) => {
+<<<<<<< HEAD
     const { papers: lastPapers } = params;
     const start = (pageIndex - 1) * 10;
     const end =  (pageIndex) * 10;
@@ -138,10 +139,16 @@ function Search() {
     }
     const res = await getResponsePediaAsync({
       papers: filteredPapers,
+=======
+    const { papers } = params;
+    const res = await getResponsePediaAsync({
+      papers,
+>>>>>>> main
     });
     if (!res.ok) {
       throw new Error('Failed get response');
     }
+<<<<<<< HEAD
     const data = await res.json();
     const currentPapersMap = new Map(lastPapers.map((item) => [item.id, item]));
     const currentList = new Set(responseList);
@@ -151,6 +158,11 @@ function Search() {
     });
     setPapers(Array.from(currentPapersMap.values()));
     setResponseList(Array.from(currentList));
+=======
+
+    const data = await res.json();
+    setPapers(data.papers);
+>>>>>>> main
   };
 
   const showPapers = useMemo(() => {
@@ -427,11 +439,16 @@ function Search() {
                 ))}
               {!isLoadingList && (
                 <div>
+<<<<<<< HEAD
                   {/* <div className={styles.content_button}>
+=======
+                  <div className={styles.content_button}>
+>>>>>>> main
                     <Button>英文文献</Button>
                     <Button>中文文献</Button>
                     <Button>我选中的</Button>
                     <Button>最新发表</Button>
+<<<<<<< HEAD
                   </div> */}
                   <div>
                     {showPapers.map((item) => {
@@ -445,6 +462,21 @@ function Search() {
                       );
                     })}
                   </div>
+=======
+                  </div>
+                  <div>
+                    {showPapers.map((item) => {
+                      return (
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      );
+                    })}
+                  </div>
+>>>>>>> main
                   <Pagination
                     total={papers.length}
                     pageSize={10}
