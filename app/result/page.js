@@ -37,8 +37,7 @@ import styles from './page.module.scss';
 function Search() {
   const router = useRouter();
 
-  // const timeId = useRef({ id: -1 });
-
+  const [responseList, setResponseList] = useState([]);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const paperSkeletons = useMemo(
@@ -47,16 +46,13 @@ function Search() {
     []
   );
   const [pageIndex, setPageIndex] = useState(1);
-  // const [showPapers, setShowPapers] = useState([]);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
-  // const [meter, setMeter] = useState(0);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  // const [visibleCount, setVisibleCount] = useState(10);
-  const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
+  // const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -64,6 +60,10 @@ function Search() {
     setSearchValue(queryText);
     getPedia(queryText);
   }, [searchParams]);
+
+  useEffect(() => {
+    getResponsePedia({ papers });
+  }, [pageIndex]);
 
   // const showMoreItems = async () => {
   //   const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
@@ -127,16 +127,42 @@ function Search() {
   };
 
   const getResponsePedia = async (params) => {
+<<<<<<< HEAD
+    const { papers: lastPapers } = params;
+    const start = (pageIndex - 1) * 10;
+    const end =  (pageIndex) * 10;
+    const filteredPapers = lastPapers.slice(start, end);
+    const fetchedResponseSet = new Set(responseList.map((item) => item.id));
+    filteredPapers.filter((item) => !fetchedResponseSet.has(item.id));
+    if (!filteredPapers.length) {
+      return;
+    }
+    const res = await getResponsePediaAsync({
+      papers: filteredPapers,
+=======
     const { papers } = params;
     const res = await getResponsePediaAsync({
       papers,
+>>>>>>> main
     });
     if (!res.ok) {
       throw new Error('Failed get response');
     }
+<<<<<<< HEAD
+    const data = await res.json();
+    const currentPapersMap = new Map(lastPapers.map((item) => [item.id, item]));
+    const currentList = new Set(responseList);
+    data.papers.forEach((element) => {
+      currentList.add(element.id);
+      currentPapersMap.set(element.id, element);
+    });
+    setPapers(Array.from(currentPapersMap.values()));
+    setResponseList(Array.from(currentList));
+=======
 
     const data = await res.json();
     setPapers(data.papers);
+>>>>>>> main
   };
 
   const showPapers = useMemo(() => {
@@ -152,14 +178,7 @@ function Search() {
     setPageIndex(1);
     setIsLoadingSummary(true);
     setIsLoadingList(true);
-    // setVisibleCount(10);
-    // 开启倒计时
-    // timeId.current.id = setInterval(() => {
-    //   setMeter((meter) => {
-    //     if (meter >= 99.9) return 99.9;
-    //     return meter + 0.1;
-    //   });
-    // }, 50);
+
     let queryEn, queryZh, papers;
     try {
       const listRes = await getPartPediaAsync({ query: queryText });
@@ -420,11 +439,30 @@ function Search() {
                 ))}
               {!isLoadingList && (
                 <div>
+<<<<<<< HEAD
+                  {/* <div className={styles.content_button}>
+=======
                   <div className={styles.content_button}>
+>>>>>>> main
                     <Button>英文文献</Button>
                     <Button>中文文献</Button>
                     <Button>我选中的</Button>
                     <Button>最新发表</Button>
+<<<<<<< HEAD
+                  </div> */}
+                  <div>
+                    {showPapers.map((item) => {
+                      return (
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      );
+                    })}
+                  </div>
+=======
                   </div>
                   <div>
                     {showPapers.map((item) => {
@@ -438,6 +476,7 @@ function Search() {
                       );
                     })}
                   </div>
+>>>>>>> main
                   <Pagination
                     total={papers.length}
                     pageSize={10}
