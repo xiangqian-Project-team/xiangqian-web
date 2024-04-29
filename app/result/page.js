@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Button, Pagination, Skeleton } from 'antd';
+import { Pagination, Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -37,7 +37,6 @@ import styles from './page.module.scss';
 function Search() {
   const router = useRouter();
 
-  const [responseList, setResponseList] = useState([]);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const paperSkeletons = useMemo(
@@ -52,7 +51,6 @@ function Search() {
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  // const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -64,50 +62,6 @@ function Search() {
   useEffect(() => {
     getResponsePedia({ papers });
   }, [pageIndex]);
-
-  // const showMoreItems = async () => {
-  //   const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
-  //   const papersToShow = papers.slice(visibleCount, nextVisibleCount);
-  //   setIsLoadingMorePapers(true);
-  //   let requireFetchResponse = false;
-  //   for (const paper of papersToShow) {
-  //     if (!paper.response) {
-  //       requireFetchResponse = true;
-  //       break;
-  //     }
-  //   }
-  //   if (requireFetchResponse) {
-  //     try {
-  //       const res = await fetchResponsesAsync({ papers: papersToShow });
-  //       if (!res.ok) {
-  //         throw new Error('Failed search');
-  //       }
-  //       const { papers: processedPapers } = await res.json();
-  //       setPapers((papers) => [
-  //         ...papers.slice(0, visibleCount),
-  //         ...processedPapers,
-  //         ...papers.slice(nextVisibleCount),
-  //       ]);
-  //     } catch (error) {
-  //       setIsLoadingMorePapers(false);
-  //       console.log(error);
-  //     }
-  //   }
-
-  //   setVisibleCount(nextVisibleCount);
-  //   setIsLoadingMorePapers(false);
-  // };
-
-  // const getResultList = async () => {
-  //   try {
-  //     const res = await getPartPediaAsync({ query: queryText });
-  //     if (!res.ok) {
-  //       throw new Error('Failed search');
-  //     }
-  //     const { papers, queryEn, queryZh } = await res.json();
-
-  //     setPapers(papers);
-  // }
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -129,28 +83,23 @@ function Search() {
   const getResponsePedia = async (params) => {
     const { papers: lastPapers } = params;
     const start = (pageIndex - 1) * 10;
-    const end =  (pageIndex) * 10;
-    const filteredPapers = lastPapers.slice(start, end);
-    const fetchedResponseSet = new Set(responseList.map((item) => item.id));
-    filteredPapers.filter((item) => !fetchedResponseSet.has(item.id));
-    if (!filteredPapers.length) {
+    const end = pageIndex * 10;
+    const showingPapers = lastPapers.slice(start, end);
+    if (showingPapers.every((item) => item.response)) {
       return;
     }
     const res = await getResponsePediaAsync({
-      papers: filteredPapers,
+      papers: showingPapers,
     });
     if (!res.ok) {
       throw new Error('Failed get response');
     }
-    const data = await res.json();
-    const currentPapersMap = new Map(lastPapers.map((item) => [item.id, item]));
-    const currentList = new Set(responseList);
-    data.papers.forEach((element) => {
-      currentList.add(element.id);
-      currentPapersMap.set(element.id, element);
-    });
-    setPapers(Array.from(currentPapersMap.values()));
-    setResponseList(Array.from(currentList));
+    const { papers: processedPapers } = await res.json();
+    setPapers([
+      ...lastPapers.slice(0, start),
+      ...processedPapers,
+      ...lastPapers.slice(end),
+    ]);
   };
 
   const showPapers = useMemo(() => {
@@ -192,19 +141,6 @@ function Search() {
     } catch (e) {
       setIsLoadingSummary(false);
     }
-
-    // setTimeout(() => {
-    //   setIsLoadingSummary(false);
-    // clearInterval(timeId.current.id);
-    // setMeter(0);
-    // }, 500);
-    // } catch (error) {
-    //   console.log(error);
-    //   setIsLoadingSummary(false);
-    //   setIsLoadingList(false);
-    //   // clearInterval(timeId.current.id);
-    //   // setMeter(0);
-    // }
   };
 
   const getReplacedSummary = (str) => {
@@ -248,10 +184,6 @@ function Search() {
 
     return `<pre>${formattedStr}</pre>`;
   };
-
-  // useEffect(() => {
-  //   setShowPapers(papers.slice(0, visibleCount));
-  // }, [papers, visibleCount]);
 
   return (
     <div className={styles.search}>
@@ -311,15 +243,6 @@ function Search() {
 
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-
-          {/* {loading && (
-            <div className={styles.search_content_loading}>
-              <div className={styles.search_content_loading_card}>
-                <div className={styles.text}>我们正在努力寻找答案……</div>
-                <meter min="0" max="100" value={meter} />
-              </div>
-            </div>
-          )} */}
 
           {!isLoadingList &&
             !isLoadingSummary &&
