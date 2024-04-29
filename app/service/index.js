@@ -72,7 +72,7 @@ export const getPartPedia = async (params) => {
   return fetch(`${FUNCTION_BASE_URL}/search_papers`, option);
 };
 
-export const getFinalPartPedia = async (params) => {
+export const getAnalysisPedia = async (params) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
@@ -83,6 +83,19 @@ export const getFinalPartPedia = async (params) => {
   };
   if (token) option.headers.Authorization = `Bearer ${token}`;
   return fetch(`${FUNCTION_BASE_URL}/papers_analysis`, option);
+};
+
+export const getResponsePedia = async (params) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+  if (token) option.headers.Authorization = `Bearer ${token}`;
+  return fetch(`${FUNCTION_BASE_URL}/papers_response`, option);
 };
 
 export const fetchAbstract = async (paperId) => {
