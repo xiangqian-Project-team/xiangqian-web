@@ -95,7 +95,7 @@ export const getResponsePedia = async (params) => {
     },
   };
   if (token) option.headers.Authorization = `Bearer ${token}`;
-  return fetch(`${FUNCTION_BASE_URL}/papers_response`, option);
+  return fetch(`${FUNCTION_BASE_URL}/paper_response`, option);
 };
 
 export const fetchAbstract = async (paperId) => {

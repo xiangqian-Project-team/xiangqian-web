@@ -265,7 +265,13 @@ export default function Home() {
             height={60}
             alt="logo"
           />
-          <Image src={FudanUniversity.src} width={120} height={60} alt="logo" />
+          <Image
+            src={FudanUniversity.src}
+            className={styles.school_info_list_item}
+            width={120}
+            height={60}
+            alt="logo"
+          />
           <Image
             src={ShanghaiJiaoTongUniversity.src}
             className={styles.school_info_list_item}

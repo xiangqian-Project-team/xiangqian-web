@@ -127,18 +127,16 @@ function Search() {
   };
 
   const getResponsePedia = async (params) => {
-    const { papers, queryEn, queryZh } = params;
+    const { papers } = params;
     const res = await getResponsePediaAsync({
       papers,
-      queryEn,
-      queryZh,
     });
     if (!res.ok) {
-      throw new Error('Failed get summary');
+      throw new Error('Failed get response');
     }
 
     const data = await res.json();
-    console.log(data);
+    setPapers(data.papers);
   };
 
   const showPapers = useMemo(() => {
