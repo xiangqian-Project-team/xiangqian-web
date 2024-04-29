@@ -19,6 +19,7 @@ import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
+import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
@@ -65,49 +66,14 @@ function Search() {
     getResponsePedia({ papers });
   }, [pageIndex]);
 
-  // const showMoreItems = async () => {
-  //   const nextVisibleCount = Math.min(visibleCount + 5, papers.length);
-  //   const papersToShow = papers.slice(visibleCount, nextVisibleCount);
-  //   setIsLoadingMorePapers(true);
-  //   let requireFetchResponse = false;
-  //   for (const paper of papersToShow) {
-  //     if (!paper.response) {
-  //       requireFetchResponse = true;
-  //       break;
-  //     }
-  //   }
-  //   if (requireFetchResponse) {
-  //     try {
-  //       const res = await fetchResponsesAsync({ papers: papersToShow });
-  //       if (!res.ok) {
-  //         throw new Error('Failed search');
-  //       }
-  //       const { papers: processedPapers } = await res.json();
-  //       setPapers((papers) => [
-  //         ...papers.slice(0, visibleCount),
-  //         ...processedPapers,
-  //         ...papers.slice(nextVisibleCount),
-  //       ]);
-  //     } catch (error) {
-  //       setIsLoadingMorePapers(false);
-  //       console.log(error);
-  //     }
-  //   }
-
-  //   setVisibleCount(nextVisibleCount);
-  //   setIsLoadingMorePapers(false);
-  // };
-
-  // const getResultList = async () => {
-  //   try {
-  //     const res = await getPartPediaAsync({ query: queryText });
-  //     if (!res.ok) {
-  //       throw new Error('Failed search');
-  //     }
-  //     const { papers, queryEn, queryZh } = await res.json();
-
-  //     setPapers(papers);
-  // }
+  const onResultSortByTimeClick = () => {
+    const newList = [...papers];
+    newList.sort((a, b) => {
+      return b.year - a.year;
+    });
+    setPapers(newList);
+    getResponsePedia({ papers: newList });
+  };
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -129,7 +95,7 @@ function Search() {
   const getResponsePedia = async (params) => {
     const { papers: lastPapers } = params;
     const start = (pageIndex - 1) * 10;
-    const end =  (pageIndex) * 10;
+    const end = pageIndex * 10;
     const filteredPapers = lastPapers.slice(start, end);
     const fetchedResponseSet = new Set(responseList.map((item) => item.id));
     filteredPapers.filter((item) => !fetchedResponseSet.has(item.id));
@@ -192,19 +158,6 @@ function Search() {
     } catch (e) {
       setIsLoadingSummary(false);
     }
-
-    // setTimeout(() => {
-    //   setIsLoadingSummary(false);
-    // clearInterval(timeId.current.id);
-    // setMeter(0);
-    // }, 500);
-    // } catch (error) {
-    //   console.log(error);
-    //   setIsLoadingSummary(false);
-    //   setIsLoadingList(false);
-    //   // clearInterval(timeId.current.id);
-    //   // setMeter(0);
-    // }
   };
 
   const getReplacedSummary = (str) => {
@@ -248,10 +201,6 @@ function Search() {
 
     return `<pre>${formattedStr}</pre>`;
   };
-
-  // useEffect(() => {
-  //   setShowPapers(papers.slice(0, visibleCount));
-  // }, [papers, visibleCount]);
 
   return (
     <div className={styles.search}>
@@ -380,34 +329,6 @@ function Search() {
                   </Skeleton>
                 </div>
               }
-              {/* {!loading && summary && (
-                <>
-                  <div className={styles.header}>
-                    <Image
-                      alt=""
-                      className={styles.header_triangle}
-                      src={RoundedArrow}
-                    />
-                    总结
-                  </div>
-                  <div className={styles.content}>
-                    <div
-                      className={styles.content_summary}
-                      dangerouslySetInnerHTML={{
-                        // __html: getReplacedSummary(answerZh),
-                        __html: getReplacedSummary(summaryZh),
-                      }}
-                    />
-                    <div
-                      className={styles.content_summaryZh}
-                      dangerouslySetInnerHTML={{
-                        // __html: getReplacedSummary(BltptsZh),
-                        __html: getReplacedSummary(summary),
-                      }}
-                    />
-                  </div>
-                </>
-              )} */}
             </div>
 
             <div className={styles.search_content_data_papers}>
@@ -425,14 +346,26 @@ function Search() {
                     <Skeleton active />
                   </div>
                 ))}
+
               {!isLoadingList && (
                 <div>
-                  {/* <div className={styles.content_button}>
-                    <Button>英文文献</Button>
-                    <Button>中文文献</Button>
-                    <Button>我选中的</Button>
-                    <Button>最新发表</Button>
-                  </div> */}
+                  <div className={styles.content_button}>
+                    <Button className={styles.en_button}>英文文献</Button>
+                    <Button className={styles.cn_button}>中文文献</Button>
+                    <Button className={styles.selected_button}>我选中的</Button>
+                    <Button
+                      className={styles.sort_button}
+                      onClick={() => {
+                        onResultSortByTimeClick();
+                      }}
+                    >
+                      最新发表
+                      <Image
+                        className={styles.sort_button_icon}
+                        src={SortIcon}
+                      />
+                    </Button>
+                  </div>
                   <div>
                     {showPapers.map((item) => {
                       return (
