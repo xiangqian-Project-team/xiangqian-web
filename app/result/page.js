@@ -167,6 +167,7 @@ function Search() {
 
     try {
       getSammury({ papers, queryEn, queryZh });
+      // getListDetail({})
     } catch (e) {
       setIsLoadingSummary(false);
     }
