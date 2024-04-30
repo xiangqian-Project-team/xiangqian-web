@@ -136,8 +136,8 @@ function Search() {
     }
 
     try {
-      getAnalysisPedia({ papers, queryEn, queryZh });
       getResponsePedia({ papers });
+      getAnalysisPedia({ papers, queryEn, queryZh });
     } catch (e) {
       setIsLoadingSummary(false);
     }
