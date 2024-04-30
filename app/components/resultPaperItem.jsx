@@ -240,8 +240,8 @@ export default function ResultPaperItem(props) {
             }}
           >
             <div className={styles.content_card_btn_quote}>
-              <Icon component={QuoteSvg} />
               引用
+              <Icon component={QuoteSvg} />
             </div>
           </Button>
         </ConfigProvider>

@@ -8,13 +8,14 @@
  */
 'use client';
 
-import { Pagination, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
+import PageManager from './pageManager';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
@@ -36,7 +37,7 @@ import styles from './page.module.scss';
 
 function Search() {
   const router = useRouter();
-
+  const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const paperSkeletons = useMemo(
@@ -60,8 +61,20 @@ function Search() {
   }, [searchParams]);
 
   useEffect(() => {
-    getResponsePedia({ papers });
+    if (pageIndex === 1) {
+      return
+    }
+    getResponsePedia({ papers, pageIndex });
   }, [pageIndex]);
+
+  const onResultSortByTimeClick = () => {
+    const newList = [...papers];
+    newList.sort((a, b) => {
+      return b.year - a.year;
+    });
+    setPapers(newList);
+    getResponsePedia({ papers: newList });
+  };
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -81,9 +94,9 @@ function Search() {
   };
 
   const getResponsePedia = async (params) => {
-    const { papers: lastPapers } = params;
-    const start = (pageIndex - 1) * 10;
-    const end = pageIndex * 10;
+    const { papers: lastPapers, pageIndex } = params;
+    const start = (pageIndex - 1) * pageSize;
+    const end = pageIndex * pageSize;
     const showingPapers = lastPapers.slice(start, end);
     if (showingPapers.every((item) => item.response)) {
       return;
@@ -103,7 +116,7 @@ function Search() {
   };
 
   const showPapers = useMemo(() => {
-    return papers.slice((pageIndex - 1) * 10, pageIndex * 10);
+    return papers.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [papers, pageIndex]);
 
   const getPedia = async (queryText) => {
@@ -136,7 +149,7 @@ function Search() {
     }
 
     try {
-      getResponsePedia({ papers });
+      getResponsePedia({ papers, pageIndex: 1 });
       getAnalysisPedia({ papers, queryEn, queryZh });
     } catch (e) {
       setIsLoadingSummary(false);
@@ -303,34 +316,6 @@ function Search() {
                   </Skeleton>
                 </div>
               }
-              {/* {!loading && summary && (
-                <>
-                  <div className={styles.header}>
-                    <Image
-                      alt=""
-                      className={styles.header_triangle}
-                      src={RoundedArrow}
-                    />
-                    总结
-                  </div>
-                  <div className={styles.content}>
-                    <div
-                      className={styles.content_summary}
-                      dangerouslySetInnerHTML={{
-                        // __html: getReplacedSummary(answerZh),
-                        __html: getReplacedSummary(summaryZh),
-                      }}
-                    />
-                    <div
-                      className={styles.content_summaryZh}
-                      dangerouslySetInnerHTML={{
-                        // __html: getReplacedSummary(BltptsZh),
-                        __html: getReplacedSummary(summary),
-                      }}
-                    />
-                  </div>
-                </>
-              )} */}
             </div>
 
             <div className={styles.search_content_data_papers}>
@@ -348,13 +333,25 @@ function Search() {
                     <Skeleton active />
                   </div>
                 ))}
+
               {!isLoadingList && (
                 <div>
                   {/* <div className={styles.content_button}>
-                    <Button>英文文献</Button>
-                    <Button>中文文献</Button>
-                    <Button>我选中的</Button>
-                    <Button>最新发表</Button>
+                    <Button className={styles.en_button}>英文文献</Button>
+                    <Button className={styles.cn_button}>中文文献</Button>
+                    <Button className={styles.selected_button}>我选中的</Button>
+                    <Button
+                      className={styles.sort_button}
+                      onClick={() => {
+                        onResultSortByTimeClick();
+                      }}
+                    >
+                      最新发表
+                      <Image
+                        className={styles.sort_button_icon}
+                        src={SortIcon}
+                      />
+                    </Button>
                   </div> */}
                   <div>
                     {showPapers.map((item) => {
@@ -368,15 +365,14 @@ function Search() {
                       );
                     })}
                   </div>
-                  <Pagination
-                    total={papers.length}
-                    pageSize={10}
-                    pageIndex={pageIndex}
-                    showSizeChanger={false}
-                    onChange={(page) => {
-                      setPageIndex(page);
-                    }}
-                  />
+                  <div>
+                    <PageManager
+                      pageIndex={pageIndex}
+                      total={papers.length}
+                      pageSize={pageSize}
+                      setPageIndex={setPageIndex}
+                    />
+                  </div>
                 </div>
               )}
             </div>

@@ -1,0 +1,40 @@
+.page_index, .page_next_button, .page_prev_button, .page_index_active  {
+    border-radius: 4px;
+    background: none;
+    border: none;
+    font-size: 14px;
+}
+
+.page_index, .page_next_button, .page_prev_button  {
+    cursor: pointer;
+    &:hover {
+        background-color: #E6EDF1;
+    }
+}
+
+.page_next_button, .page_prev_button {
+    height: 22px;
+}
+.page_index, .page_index_active {
+    width: 26px;
+    height: 22px;
+}
+
+.page_prev_button {
+    margin-right: 10px;
+}
+.page_index {
+    margin: 0 5px;
+}
+.page_index_active {
+    margin: 0 5px;
+    background-color: #99E0ED;
+    font-weight: bold;
+}
+.page_next_button {
+    margin-left: 10px;
+}
+.page_more_indicator {
+    width: 26px;
+    height: 22px;
+}
