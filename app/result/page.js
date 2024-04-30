@@ -8,18 +8,18 @@
  */
 'use client';
 
-import { Button, Pagination, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
+import PageManager from './pageManager';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
-import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
@@ -38,6 +38,7 @@ import styles from './page.module.scss';
 function Search() {
   const router = useRouter();
 
+  const [pageSize] = useState(10);
   const [responseList, setResponseList] = useState([]);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
@@ -94,8 +95,8 @@ function Search() {
 
   const getResponsePedia = async (params) => {
     const { papers: lastPapers } = params;
-    const start = (pageIndex - 1) * 10;
-    const end = pageIndex * 10;
+    const start = (pageIndex - 1) * pageSize;
+    const end = pageIndex * pageSize;
     const filteredPapers = lastPapers.slice(start, end);
     const fetchedResponseSet = new Set(responseList.map((item) => item.id));
     filteredPapers.filter((item) => !fetchedResponseSet.has(item.id));
@@ -120,7 +121,7 @@ function Search() {
   };
 
   const showPapers = useMemo(() => {
-    return papers.slice((pageIndex - 1) * 10, pageIndex * 10);
+    return papers.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [papers, pageIndex]);
 
   const getPedia = async (queryText) => {
@@ -349,7 +350,7 @@ function Search() {
 
               {!isLoadingList && (
                 <div>
-                  <div className={styles.content_button}>
+                  {/* <div className={styles.content_button}>
                     <Button className={styles.en_button}>英文文献</Button>
                     <Button className={styles.cn_button}>中文文献</Button>
                     <Button className={styles.selected_button}>我选中的</Button>
@@ -365,7 +366,7 @@ function Search() {
                         src={SortIcon}
                       />
                     </Button>
-                  </div>
+                  </div> */}
                   <div>
                     {showPapers.map((item) => {
                       return (
@@ -378,14 +379,14 @@ function Search() {
                       );
                     })}
                   </div>
-                  <Pagination
-                    total={papers.length}
-                    pageSize={10}
-                    pageIndex={pageIndex}
-                    onChange={(page) => {
-                      setPageIndex(page);
-                    }}
-                  />
+                  <div>
+                    <PageManager
+                      pageIndex={pageIndex}
+                      total={papers.length}
+                      pageSize={pageSize}
+                      setPageIndex={setPageIndex}
+                    />
+                  </div>
                 </div>
               )}
             </div>
