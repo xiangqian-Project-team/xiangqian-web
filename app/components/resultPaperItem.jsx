@@ -3,9 +3,9 @@
 import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
-import CheckIcon from '../icons/icon_check.svg';
-import NoneCheckIcon from '../icons/icon_none_check.svg';
+import { useCallback, useState } from 'react';
+// import CheckIcon from '../icons/icon_check.svg';
+// import NoneCheckIcon from '../icons/icon_none_check.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
@@ -16,44 +16,44 @@ import {
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
-const QuoteSvg = () => (
+const QuoteIcon = () => (
   <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect
-      x="3"
-      y="4"
+      x="1"
+      y="3"
       width="4"
       height="4"
-      stroke="#00A650"
+      stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M7 8V8C7 9.22573 6.30747 10.3463 5.21115 10.8944L5 11"
-      stroke="#00A650"
+      d="M5 7V7C5 8.22573 4.30747 9.34626 3.21115 9.89443L3 10"
+      stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <rect
-      x="9"
-      y="4"
+      x="7"
+      y="3"
       width="4"
       height="4"
-      stroke="#00A650"
+      stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M13 8V8C13 9.22573 12.3075 10.3463 11.2111 10.8944L11 11"
-      stroke="#00A650"
+      d="M11 7V7C11 8.22573 10.3075 9.34626 9.21115 9.89443L9 10"
+      stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -84,6 +84,13 @@ export default function ResultPaperItem(props) {
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [isReferencesLoading, setIsReferencesLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
+
+  const IsSelected = useCallback(
+    (id) => {
+      return props.checkedPapers.includes(id);
+    },
+    [props.checkedPapers]
+  );
 
   const toggleAbstract = async (id) => {
     try {
@@ -143,32 +150,34 @@ export default function ResultPaperItem(props) {
   return (
     <div className={styles.content_card}>
       <div className={styles.content_card_title}>
-        {props.checkedPapers.includes(id) ? (
-          <Image
-            alt=""
-            className={styles.content_card_check}
-            src={CheckIcon}
-            onClick={() => {
-              const newCheckedPapers = props.checkedPapers.filter(
-                (item) => item !== id
-              );
-              props.setCheckedPapers(newCheckedPapers);
-            }}
-          />
-        ) : (
-          <Image
-            alt=""
-            className={styles.content_card_check}
-            src={NoneCheckIcon}
-            onClick={() => {
-              const newCheckedPapers = [...props.checkedPapers, id];
-              props.setCheckedPapers(newCheckedPapers);
-            }}
-          />
-        )}
+        {/* {props.checkedPapers.includes(id) ? ( 
+        //   <Image
+        //     alt=""
+        //     className={styles.content_card_check}
+        //     src={CheckIcon}
+        //     onClick={() => {
+        //       const newCheckedPapers = props.checkedPapers.filter(
+        //         (item) => item !== id
+        //       );
+        //       props.setCheckedPapers(newCheckedPapers);
+        //     }}
+        //   />
+        // ) : (
+        //   <Image
+        //     alt=""
+        //     className={styles.content_card_check}
+        //     src={NoneCheckIcon}
+        //     onClick={() => {
+        //       const newCheckedPapers = [...props.checkedPapers, id];
+        //       props.setCheckedPapers(newCheckedPapers);
+        //     }}
+        //   />
+        // )}*/}
         <Tooltip title={title}>
           <span>{title}</span>
         </Tooltip>
+
+        {/* {IsSelected ? <Button className={styles.content_card_checked}>已选中</Button> : <Button className={styles.content_card_check}>选择文本</Button>} */}
       </div>
 
       <div className={styles.content_card_footer}>
@@ -220,15 +229,15 @@ export default function ResultPaperItem(props) {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#03A097',
+              colorPrimary: '#000',
             },
             components: {
               Button: {
                 paddingInlineSM: 34,
                 defaultColor: '#000',
+                defaultHoverColor: '#FFF',
                 defaultBg: '#EEEEEE',
-                borderRadius: 20,
-                borderColor: 'none',
+                defaultHoverBg: '#068DA5',
               },
             },
           }}
@@ -241,7 +250,7 @@ export default function ResultPaperItem(props) {
           >
             <div className={styles.content_card_btn_quote}>
               引用
-              <Icon component={QuoteSvg} />
+              <Icon component={QuoteIcon} />
             </div>
           </Button>
         </ConfigProvider>
@@ -249,15 +258,15 @@ export default function ResultPaperItem(props) {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#03A097',
+              colorPrimary: '#000',
             },
             components: {
               Button: {
                 paddingInlineSM: 34,
                 defaultColor: '#000',
+                defaultHoverColor: '#FFF',
                 defaultBg: '#EEEEEE',
-                borderRadius: 30,
-                borderColor: 'none',
+                defaultHoverBg: '#068DA5',
               },
             },
           }}
@@ -272,12 +281,24 @@ export default function ResultPaperItem(props) {
             {contentStatus === 'references' ? (
               <>
                 收起
-                <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+                <UpOutlined
+                  style={{
+                    color: '#00A650',
+                    fontSize: '8px',
+                    marginLeft: '5px',
+                  }}
+                />
               </>
             ) : (
               <>
                 参考文献
-                <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+                <DownOutlined
+                  style={{
+                    color: '#00A650',
+                    fontSize: '8px',
+                    marginLeft: '5px',
+                  }}
+                />
               </>
             )}
           </Button>
@@ -291,12 +312,24 @@ export default function ResultPaperItem(props) {
             {contentStatus === 'abstract' ? (
               <>
                 收起
-                <UpOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+                <UpOutlined
+                  style={{
+                    color: '#00A650',
+                    fontSize: '8px',
+                    marginLeft: '5px',
+                  }}
+                />
               </>
             ) : (
               <>
                 查看摘要
-                <DownOutlined style={{ color: '#00A650', fontSize: '8px' }} />
+                <DownOutlined
+                  style={{
+                    color: '#00A650',
+                    fontSize: '8px',
+                    marginLeft: '5px',
+                  }}
+                />
               </>
             )}
           </Button>
