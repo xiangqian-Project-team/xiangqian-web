@@ -8,18 +8,18 @@
  */
 'use client';
 
-import { Skeleton } from 'antd';
+import { Button, ConfigProvider, Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import LoginBtn from '../components/loginBtn';
-import PageManager from './pageManager';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
+import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
@@ -34,8 +34,10 @@ import {
   getResponsePedia as getResponsePediaAsync,
 } from '../service';
 import styles from './page.module.scss';
+import PageManager from './pageManager';
 
 function Search() {
+  const responseSetRef = useRef(new Set());
   const router = useRouter();
   const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
@@ -45,6 +47,7 @@ function Search() {
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
     []
   );
+  const [isSortActive, setIsSortActive] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
@@ -60,20 +63,8 @@ function Search() {
     getPedia(queryText);
   }, [searchParams]);
 
-  useEffect(() => {
-    if (pageIndex === 1) {
-      return
-    }
-    getResponsePedia({ papers, pageIndex });
-  }, [pageIndex]);
-
   const onResultSortByTimeClick = () => {
-    const newList = [...papers];
-    newList.sort((a, b) => {
-      return b.year - a.year;
-    });
-    setPapers(newList);
-    getResponsePedia({ papers: newList });
+    setIsSortActive(!isSortActive);
   };
 
   const getAnalysisPedia = async (params) => {
@@ -93,31 +84,55 @@ function Search() {
     setIsLoadingSummary(false);
   };
 
-  const getResponsePedia = async (params) => {
-    const { papers: lastPapers, pageIndex } = params;
-    const start = (pageIndex - 1) * pageSize;
-    const end = pageIndex * pageSize;
-    const showingPapers = lastPapers.slice(start, end);
-    if (showingPapers.every((item) => item.response)) {
+  const getResponsePedia = async () => {
+    const fetchList = [];
+    showPapers.forEach(element => {
+      if (element.response) {
+        return;
+      }
+      if (responseSetRef.current.has(element.id)) {
+        return;
+      }
+      fetchList.push(element);
+      responseSetRef.current.add(element.id);
+    });
+    if (fetchList.length === 0) {
       return;
     }
     const res = await getResponsePediaAsync({
-      papers: showingPapers,
+      papers: fetchList,
     });
     if (!res.ok) {
       throw new Error('Failed get response');
     }
+    // const newPapers = papers;
     const { papers: processedPapers } = await res.json();
-    setPapers([
-      ...lastPapers.slice(0, start),
-      ...processedPapers,
-      ...lastPapers.slice(end),
-    ]);
+    const processedMap = new Map(processedPapers.map((item) => [item.id, item]));
+    const newPapers = papers.map((item) => {
+      if (processedMap.has(item.id)) {
+        // item.response = processedMap.get(item.id).response;
+        return {...item, response: processedMap.get(item.id).response};
+      }
+      return item
+    })
+    setPapers(newPapers);
+    // setPapers(papers.map((item) => {return item}))
   };
 
   const showPapers = useMemo(() => {
-    return papers.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [papers, pageIndex]);
+    const newList = [...papers];
+    if (isSortActive) {
+      return newList
+        .sort((a, b) => b.year - a.year)
+        .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+    }
+    return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  }, [papers, pageIndex, isSortActive]);
+
+
+  useEffect(() => {
+    getResponsePedia();
+  }, [showPapers]);
 
   const getPedia = async (queryText) => {
     if (isLoadingList || isLoadingSummary) return;
@@ -142,18 +157,13 @@ function Search() {
       queryZh = data.queryZh;
       papers = data.papers;
       setPapers(data.papers);
-    } catch (e) {
+      await getAnalysisPedia({ papers, queryEn, queryZh });
       setIsLoadingSummary(false);
+    } catch (e) {
       setIsLoadingList(false);
-      return;
+      setIsLoadingSummary(false);
     }
 
-    try {
-      getResponsePedia({ papers, pageIndex: 1 });
-      getAnalysisPedia({ papers, queryEn, queryZh });
-    } catch (e) {
-      setIsLoadingSummary(false);
-    }
   };
 
   const getReplacedSummary = (str) => {
@@ -336,23 +346,42 @@ function Search() {
 
               {!isLoadingList && (
                 <div>
-                  {/* <div className={styles.content_button}>
-                    <Button className={styles.en_button}>英文文献</Button>
-                    <Button className={styles.cn_button}>中文文献</Button>
-                    <Button className={styles.selected_button}>我选中的</Button>
-                    <Button
-                      className={styles.sort_button}
-                      onClick={() => {
-                        onResultSortByTimeClick();
+                  <div className={styles.content_button}>
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: '#000',
+                        },
+                        components: {
+                          Button: {
+                            paddingInlineSM: 34,
+                            defaultColor: '#000',
+                            defaultBg: '#FFF',
+                            defaultHoverBg: '#99E0ED',
+                            defaultHoverBorderColor: '#EEE',
+                          },
+                        },
                       }}
                     >
-                      最新发表
-                      <Image
-                        className={styles.sort_button_icon}
-                        src={SortIcon}
-                      />
-                    </Button>
-                  </div> */}
+                      {/* <Button className={styles.en_button}>英文文献</Button>
+                      <Button className={styles.cn_button}>中文文献</Button>
+                      <Button className={styles.selected_button}>
+                        我选中的
+                      </Button> */}
+                      <Button
+                        className={styles.sort_button}
+                        onClick={() => {
+                          onResultSortByTimeClick();
+                        }}
+                      >
+                        最新发表
+                        <Image
+                          className={styles.sort_button_icon}
+                          src={SortIcon}
+                        />
+                      </Button>
+                    </ConfigProvider>
+                  </div>
                   <div>
                     {showPapers.map((item) => {
                       return (

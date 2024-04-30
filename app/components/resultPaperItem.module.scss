@@ -23,10 +23,16 @@
       white-space: nowrap; //溢出不换行
     }
 
-    .content_card_check {
+    .content_card_check ,.content_card_checked {
       display: block;
       margin-right: 4px;
       cursor: pointer;
+    }
+    .content_card_check {
+      background-color: #838890;
+    }
+    .content_card_checked {
+      background-color: #eee;
     }
   }
 
@@ -42,12 +48,18 @@
     button {
       margin-right: 8px;
       width: 120px;
-      text-align: center; /* 使文字水平居中 */
-      justify-content: center; /* 通过flex使内容水平居中 */
+      border-radius: 20px;
+      border: none;
+      text-align: center;
+      justify-content: center;
+      &:hover {
+        svg {
+          color: #ffffff;
+        }
+      }
     }
     .content_card_btn_quote {
       svg {
-        transform: translateY(2px) !important;
         margin-right: 4px;
       }
     }
