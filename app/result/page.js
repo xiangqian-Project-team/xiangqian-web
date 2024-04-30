@@ -37,9 +37,7 @@ import styles from './page.module.scss';
 
 function Search() {
   const router = useRouter();
-
-  const [pageSize] = useState(10);
-  const [responseList, setResponseList] = useState([]);
+  // const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const paperSkeletons = useMemo(
@@ -54,7 +52,6 @@ function Search() {
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  // const [isLoadingMorePapers, setIsLoadingMorePapers] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -95,29 +92,24 @@ function Search() {
 
   const getResponsePedia = async (params) => {
     const { papers: lastPapers } = params;
-    const start = (pageIndex - 1) * pageSize;
-    const end = pageIndex * pageSize;
-    const filteredPapers = lastPapers.slice(start, end);
-    const fetchedResponseSet = new Set(responseList.map((item) => item.id));
-    filteredPapers.filter((item) => !fetchedResponseSet.has(item.id));
-    if (!filteredPapers.length) {
+    const start = (pageIndex - 1) * 10;
+    const end = pageIndex * 10;
+    const showingPapers = lastPapers.slice(start, end);
+    if (showingPapers.every((item) => item.response)) {
       return;
     }
     const res = await getResponsePediaAsync({
-      papers: filteredPapers,
+      papers: showingPapers,
     });
     if (!res.ok) {
       throw new Error('Failed get response');
     }
-    const data = await res.json();
-    const currentPapersMap = new Map(lastPapers.map((item) => [item.id, item]));
-    const currentList = new Set(responseList);
-    data.papers.forEach((element) => {
-      currentList.add(element.id);
-      currentPapersMap.set(element.id, element);
-    });
-    setPapers(Array.from(currentPapersMap.values()));
-    setResponseList(Array.from(currentList));
+    const { papers: processedPapers } = await res.json();
+    setPapers([
+      ...lastPapers.slice(0, start),
+      ...processedPapers,
+      ...lastPapers.slice(end),
+    ]);
   };
 
   const showPapers = useMemo(() => {
@@ -154,8 +146,8 @@ function Search() {
     }
 
     try {
-      getAnalysisPedia({ papers, queryEn, queryZh });
       getResponsePedia({ papers });
+      getAnalysisPedia({ papers, queryEn, queryZh });
     } catch (e) {
       setIsLoadingSummary(false);
     }
@@ -261,15 +253,6 @@ function Search() {
 
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-
-          {/* {loading && (
-            <div className={styles.search_content_loading}>
-              <div className={styles.search_content_loading_card}>
-                <div className={styles.text}>我们正在努力寻找答案……</div>
-                <meter min="0" max="100" value={meter} />
-              </div>
-            </div>
-          )} */}
 
           {!isLoadingList &&
             !isLoadingSummary &&
