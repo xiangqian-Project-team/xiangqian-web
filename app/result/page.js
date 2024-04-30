@@ -37,7 +37,7 @@ import styles from './page.module.scss';
 
 function Search() {
   const router = useRouter();
-  // const [pageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const paperSkeletons = useMemo(
@@ -61,7 +61,10 @@ function Search() {
   }, [searchParams]);
 
   useEffect(() => {
-    getResponsePedia({ papers });
+    if (pageIndex === 1) {
+      return
+    }
+    getResponsePedia({ papers, pageIndex });
   }, [pageIndex]);
 
   const onResultSortByTimeClick = () => {
@@ -91,9 +94,9 @@ function Search() {
   };
 
   const getResponsePedia = async (params) => {
-    const { papers: lastPapers } = params;
-    const start = (pageIndex - 1) * 10;
-    const end = pageIndex * 10;
+    const { papers: lastPapers, pageIndex } = params;
+    const start = (pageIndex - 1) * pageSize;
+    const end = pageIndex * pageSize;
     const showingPapers = lastPapers.slice(start, end);
     if (showingPapers.every((item) => item.response)) {
       return;
@@ -146,7 +149,7 @@ function Search() {
     }
 
     try {
-      getResponsePedia({ papers });
+      getResponsePedia({ papers, pageIndex: 1 });
       getAnalysisPedia({ papers, queryEn, queryZh });
     } catch (e) {
       setIsLoadingSummary(false);

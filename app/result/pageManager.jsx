@@ -2,13 +2,8 @@
 import { useMemo, useState } from 'react';
 import styles from './pageManager.module.scss';
 
-export default function PageManager(props: {
-  pageIndex: number;
-  total: number;
-  pageSize: number;
-  setPageIndex: (pageIndex: number) => void;
-}) {
-  const [typeCount] = useState(5)
+export default function PageManager(props) {
+  const [typeCount] = useState(5);
   const { pageIndex, total, pageSize, setPageIndex } = props;
 
   const totalPage = useMemo(() => {
@@ -37,7 +32,7 @@ export default function PageManager(props: {
   }, [pageIndex, total, pageSize]);
 
   const pageList = useMemo(() => {
-    const list: number[] = [];
+    const list = [];
     let visiblePage = typeCount;
     if (visiblePage > totalPage) {
       visiblePage = totalPage;
@@ -59,56 +54,59 @@ export default function PageManager(props: {
     return list;
   }, [pageIndex, total, pageSize]);
 
-    return (
-      <>
+  return (
+    <>
+      <button
+        className={styles.page_prev_button}
+        onClick={() => {
+          if (pageIndex <= 1) {
+            return;
+          }
+          setPageIndex(pageIndex - 1);
+        }}
+      >
+        上一页
+      </button>
+      {isGoFirstVisible && (
         <button
-          className={styles.page_prev_button}
+          className={styles.page_index}
           onClick={() => {
-            if (pageIndex <= 1) {
-              return;
-            }
-            setPageIndex(pageIndex - 1);
+            setPageIndex(1);
           }}
         >
-          上一页
+          1
         </button>
-        {isGoFirstVisible && (
+      )}
+      {isPrevMore && <span>...</span>}
+      {pageList.map((item) =>
+        pageIndex === item ? (
+          <button key={Math.random()} className={styles.page_index_active}>
+            {item}
+          </button>
+        ) : (
           <button
+            key={Math.random()}
             className={styles.page_index}
             onClick={() => {
-              setPageIndex(1);
+              setPageIndex(item);
             }}
           >
-            1
+            {item}
           </button>
-        )}
-        {isPrevMore && <span>...</span>}
-        {pageList.map((item) =>
-          pageIndex === item ? (
-            <button className={styles.page_index_active}>{item}</button>
-          ) : (
-            <button
-              className={styles.page_index}
-              onClick={() => {
-                setPageIndex(item);
-              }}
-            >
-              {item}
-            </button>
-          )
-        )}
-        {isNextMore && <span>...</span>}
-        <button
-          className={styles.page_next_button}
-          onClick={() => {
-            if (pageIndex + 1 > totalPage) {
-              return;
-            }
-            setPageIndex(pageIndex + 1);
-          }}
-        >
-          下一页
-        </button>
-      </>
-    );
+        )
+      )}
+      {isNextMore && <span>...</span>}
+      <button
+        className={styles.page_next_button}
+        onClick={() => {
+          if (pageIndex + 1 > totalPage) {
+            return;
+          }
+          setPageIndex(pageIndex + 1);
+        }}
+      >
+        下一页
+      </button>
+    </>
+  );
 }
