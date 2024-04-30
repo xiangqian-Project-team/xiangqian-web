@@ -372,6 +372,7 @@ function Search() {
                     total={papers.length}
                     pageSize={10}
                     pageIndex={pageIndex}
+                    showSizeChanger={false}
                     onChange={(page) => {
                       setPageIndex(page);
                     }}
