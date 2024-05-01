@@ -9,6 +9,7 @@
 'use client';
 
 import { Button, ConfigProvider, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -35,6 +36,7 @@ import {
   getResponsePedia as getResponsePediaAsync,
 } from '../service';
 import styles from './page.module.scss';
+import PageManager from './pageManager';
 
 function Search() {
   const responseSetRef = useRef(new Set());
@@ -66,6 +68,13 @@ function Search() {
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
   };
+
+  useEffect(() => {
+    if (pageIndex === 1) {
+      return
+    }
+    getResponsePedia({ papers, pageIndex });
+  }, [pageIndex]);
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -105,6 +114,7 @@ function Search() {
     if (!res.ok) {
       throw new Error('Failed get response');
     }
+    // const newPapers = papers;
     const { papers: processedPapers } = await res.json();
     const processedMap = new Map(processedPapers.map((item) => [item.id, item]));
     const newPapers = papers.map((item) => {
@@ -115,6 +125,7 @@ function Search() {
     })
     setPapers(newPapers);
   };
+
 
   const showPapers = useMemo(() => {
     const newList = [...papers];
