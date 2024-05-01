@@ -8,14 +8,13 @@
  */
 'use client';
 
-import { Button, ConfigProvider, Skeleton } from 'antd';
+import { Button, ConfigProvider, Popover, Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
-import PageManager from './pageManager';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
@@ -35,6 +34,7 @@ import {
   getResponsePedia as getResponsePediaAsync,
 } from '../service';
 import styles from './page.module.scss';
+import PageManager from './pageManager';
 
 function Search() {
   const router = useRouter();
@@ -64,7 +64,7 @@ function Search() {
 
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
-    setPageIndex(1)
+    setPageIndex(1);
   };
 
   const getAnalysisPedia = async (params) => {
@@ -84,9 +84,33 @@ function Search() {
     setIsLoadingSummary(false);
   };
 
+  const getPopoverResponsePedia = async (paper) => {
+    // const paper = papers.find((item) => item.id === id && !item.response);
+    if (!paper) {
+      return;
+    }
+    const res = await getResponsePediaAsync({
+      papers: [paper],
+    });
+    if (!res.ok) {
+      throw new Error('Failed get response');
+    }
+    const { papers: processedPapers } = await res.json();
+    const processedMap = new Map(
+      processedPapers.map((item) => [item.id, item])
+    );
+    const newPapers = papers.map((item) => {
+      if (processedMap.has(item.id)) {
+        return { ...item, response: processedMap.get(item.id).response };
+      }
+      return item;
+    });
+    setPapers(newPapers);
+  };
+
   const getResponsePedia = async () => {
     const fetchList = [];
-    showPapers.forEach(element => {
+    showPapers.forEach((element) => {
       if (element.response) {
         return;
       }
@@ -102,16 +126,17 @@ function Search() {
       throw new Error('Failed get response');
     }
     const { papers: processedPapers } = await res.json();
-    const processedMap = new Map(processedPapers.map((item) => [item.id, item]));
+    const processedMap = new Map(
+      processedPapers.map((item) => [item.id, item])
+    );
     const newPapers = papers.map((item) => {
       if (processedMap.has(item.id)) {
-        return {...item, response: processedMap.get(item.id).response};
+        return { ...item, response: processedMap.get(item.id).response };
       }
-      return item
-    })
+      return item;
+    });
     setPapers(newPapers);
   };
-
 
   const showPapers = useMemo(() => {
     const newList = [...papers];
@@ -122,7 +147,6 @@ function Search() {
     }
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [papers, pageIndex, isSortActive]);
-
 
   useEffect(() => {
     getResponsePedia();
@@ -159,46 +183,47 @@ function Search() {
     }
   };
 
-  const getReplacedSummary = (str) => {
-    const formattedStr = str.replace(/\[(.*?)\]/g, function (match, i) {
-      const citedItemId = match.replace(/^\[(.+)\]$/, '$1');
+  const getReplacedSummary = (text) => {
+    const pattern = /(\[.*?\])/g;
+    const splitText = text.split(pattern);
 
-      const papersIndex = papers.findIndex((item) => item.id === citedItemId);
+    if (splitText.length <= 1) {
+      return <pre>{text}</pre>;
+    }
+    const matches = text.match(pattern);
 
-      const showpapersIndex = showPapers.findIndex(
-        (item) => item.id === citedItemId
-      );
-
-      const authors = papers[papersIndex]?.authors[0] || '';
-      const year = papers[papersIndex]?.year || '';
-
-      return `<span onclick="
-
-      const cardList = document.getElementById('cardList');
-
-      for (let j = 0; j < cardList.childNodes.length; j++) {
-        cardList.childNodes[j].style.borderWidth= '1px';
-        cardList.childNodes[j].style.borderColor= '#84C4B5';
+    const formattedStr = splitText.reduce((arr, element) => {
+      if (matches.includes(element)) {
+        const id = element.replace(/^\[(.+)\]$/, '$1');
+        const paper = papers.find((item) => item.id === id);
+        const authors = paper?.authors[0] || '';
+        const year = paper?.year || '';
+        return [
+          ...arr,
+          <Popover
+            placement="rightTop"
+            trigger="click"
+            overlayStyle={{ padding: 0, maxWidth: 790 }}
+            onOpenChange={(visible) => {
+              if (visible) {
+                if (paper.response) {
+                  return 
+                }
+                getPopoverResponsePedia(paper);
+              }
+            }}
+            content={<ResultPaperItem data={paper} />}
+          >
+            <span className={styles.mark_author_year}>
+              （{authors} ，{year}）
+            </span>
+          </Popover>,
+        ];
       }
+      return [...arr, element];
+    }, []);
 
-      const index = ${showpapersIndex}
-
-      let scrollTop = 0;
-      for (let j = 0; j < index; j++) {
-        cardList.childNodes[j].style.borderWidth= '1px';
-        cardList.childNodes[j].style.borderColor= '#84C4B5';
-        scrollTop += cardList.childNodes[j].clientHeight;
-      }
-      scrollTop += (index - 1) * 10;
-      if (cardList) cardList.scrollTop = scrollTop + 2;
-
-      cardList.childNodes[index].style.borderWidth= '2px';
-      cardList.childNodes[index].style.borderColor= '#03A097';
-
-      "style="text-decoration: none; color: #03A097; cursor: pointer;">（${authors} ，${year}）</span>`;
-    });
-
-    return `<pre>${formattedStr}</pre>`;
+    return <pre>{formattedStr}</pre>;
   };
 
   return (
@@ -302,18 +327,22 @@ function Search() {
                       <div className={styles.content}>
                         <div
                           className={styles.content_summary}
-                          dangerouslySetInnerHTML={{
-                            // __html: getReplacedSummary(answerZh),
-                            __html: getReplacedSummary(summaryZh),
-                          }}
-                        />
+                          // dangerouslySetInnerHTML={{
+                          //   // __html: getReplacedSummary(answerZh),
+                          //   __html: getReplacedSummary(summaryZh),
+                          // }}
+                        >
+                          {getReplacedSummary(summaryZh)}
+                        </div>
                         <div
                           className={styles.content_summaryZh}
-                          dangerouslySetInnerHTML={{
-                            // __html: getReplacedSummary(BltptsZh),
-                            __html: getReplacedSummary(summary),
-                          }}
-                        />
+                          // dangerouslySetInnerHTML={{
+                          //   // __html: getReplacedSummary(BltptsZh),
+                          //   __html: getReplacedSummary(summary),
+                          // }}
+                        >
+                          {getReplacedSummary(summary)}
+                        </div>
                       </div>
                     </>
                   </Skeleton>
@@ -381,6 +410,7 @@ function Search() {
                         <ResultPaperItem
                           key={item.id}
                           data={item}
+                          isBorderVisible={true}
                           checkedPapers={checkedPapers}
                           setCheckedPapers={setCheckedPapers}
                         />

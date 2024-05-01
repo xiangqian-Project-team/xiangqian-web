@@ -77,6 +77,8 @@ export default function ResultPaperItem(props) {
     doi,
   } = props.data;
 
+  const { isBorderVisible } = props;
+
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [references, setReferences] = useState('');
@@ -148,7 +150,11 @@ export default function ResultPaperItem(props) {
   };
 
   return (
-    <div className={styles.content_card}>
+    <div
+      className={
+        isBorderVisible ? styles.content_card : styles.content_card_no_border
+      }
+    >
       <div className={styles.content_card_title}>
         {/* {props.checkedPapers.includes(id) ? ( 
         //   <Image
