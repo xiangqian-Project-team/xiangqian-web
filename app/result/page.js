@@ -37,7 +37,6 @@ import {
 import styles from './page.module.scss';
 
 function Search() {
-  const responseSetRef = useRef(new Set());
   const router = useRouter();
   const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
@@ -65,14 +64,8 @@ function Search() {
 
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
+    setPageIndex(1)
   };
-
-  useEffect(() => {
-    if (pageIndex === 1) {
-      return
-    }
-    getResponsePedia({ papers, pageIndex });
-  }, [pageIndex]);
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -97,11 +90,7 @@ function Search() {
       if (element.response) {
         return;
       }
-      if (responseSetRef.current.has(element.id)) {
-        return;
-      }
       fetchList.push(element);
-      responseSetRef.current.add(element.id);
     });
     if (fetchList.length === 0) {
       return;
@@ -112,7 +101,6 @@ function Search() {
     if (!res.ok) {
       throw new Error('Failed get response');
     }
-    // const newPapers = papers;
     const { papers: processedPapers } = await res.json();
     const processedMap = new Map(processedPapers.map((item) => [item.id, item]));
     const newPapers = papers.map((item) => {
