@@ -9,7 +9,6 @@
 'use client';
 
 import { Button, ConfigProvider, Skeleton } from 'antd';
-import { Skeleton } from 'antd';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -36,7 +35,6 @@ import {
   getResponsePedia as getResponsePediaAsync,
 } from '../service';
 import styles from './page.module.scss';
-import PageManager from './pageManager';
 
 function Search() {
   const responseSetRef = useRef(new Set());
