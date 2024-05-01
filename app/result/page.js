@@ -8,11 +8,8 @@
  */
 'use client';
 
-<<<<<<< HEAD
 import { Button, ConfigProvider, Skeleton } from 'antd';
-=======
 import { Skeleton } from 'antd';
->>>>>>> main
 import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -68,27 +65,16 @@ function Search() {
     getPedia(queryText);
   }, [searchParams]);
 
-<<<<<<< HEAD
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
   };
-=======
+
   useEffect(() => {
     if (pageIndex === 1) {
       return
     }
     getResponsePedia({ papers, pageIndex });
   }, [pageIndex]);
->>>>>>> main
-
-  const onResultSortByTimeClick = () => {
-    const newList = [...papers];
-    newList.sort((a, b) => {
-      return b.year - a.year;
-    });
-    setPapers(newList);
-    getResponsePedia({ papers: newList });
-  };
 
   const getAnalysisPedia = async (params) => {
     const { papers, queryEn, queryZh } = params;
@@ -107,7 +93,6 @@ function Search() {
     setIsLoadingSummary(false);
   };
 
-<<<<<<< HEAD
   const getResponsePedia = async () => {
     const fetchList = [];
     showPapers.forEach(element => {
@@ -121,14 +106,6 @@ function Search() {
       responseSetRef.current.add(element.id);
     });
     if (fetchList.length === 0) {
-=======
-  const getResponsePedia = async (params) => {
-    const { papers: lastPapers, pageIndex } = params;
-    const start = (pageIndex - 1) * pageSize;
-    const end = pageIndex * pageSize;
-    const showingPapers = lastPapers.slice(start, end);
-    if (showingPapers.every((item) => item.response)) {
->>>>>>> main
       return;
     }
     const res = await getResponsePediaAsync({
@@ -142,17 +119,15 @@ function Search() {
     const processedMap = new Map(processedPapers.map((item) => [item.id, item]));
     const newPapers = papers.map((item) => {
       if (processedMap.has(item.id)) {
-        // item.response = processedMap.get(item.id).response;
         return {...item, response: processedMap.get(item.id).response};
       }
       return item
     })
     setPapers(newPapers);
-    // setPapers(papers.map((item) => {return item}))
   };
 
+
   const showPapers = useMemo(() => {
-<<<<<<< HEAD
     const newList = [...papers];
     if (isSortActive) {
       return newList
@@ -166,10 +141,6 @@ function Search() {
   useEffect(() => {
     getResponsePedia();
   }, [showPapers]);
-=======
-    return papers.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [papers, pageIndex]);
->>>>>>> main
 
   const getPedia = async (queryText) => {
     if (isLoadingList || isLoadingSummary) return;
@@ -200,16 +171,6 @@ function Search() {
       setIsLoadingList(false);
       setIsLoadingSummary(false);
     }
-
-<<<<<<< HEAD
-=======
-    try {
-      getResponsePedia({ papers, pageIndex: 1 });
-      getAnalysisPedia({ papers, queryEn, queryZh });
-    } catch (e) {
-      setIsLoadingSummary(false);
-    }
->>>>>>> main
   };
 
   const getReplacedSummary = (str) => {
@@ -392,7 +353,6 @@ function Search() {
 
               {!isLoadingList && (
                 <div>
-<<<<<<< HEAD
                   <div className={styles.content_button}>
                     <ConfigProvider
                       theme={{
@@ -429,25 +389,6 @@ function Search() {
                       </Button>
                     </ConfigProvider>
                   </div>
-=======
-                  {/* <div className={styles.content_button}>
-                    <Button className={styles.en_button}>英文文献</Button>
-                    <Button className={styles.cn_button}>中文文献</Button>
-                    <Button className={styles.selected_button}>我选中的</Button>
-                    <Button
-                      className={styles.sort_button}
-                      onClick={() => {
-                        onResultSortByTimeClick();
-                      }}
-                    >
-                      最新发表
-                      <Image
-                        className={styles.sort_button_icon}
-                        src={SortIcon}
-                      />
-                    </Button>
-                  </div> */}
->>>>>>> main
                   <div>
                     {showPapers.map((item) => {
                       return (
