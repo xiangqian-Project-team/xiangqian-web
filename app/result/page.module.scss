@@ -181,6 +181,11 @@
               border-bottom: 1px solid #03a097;
               pre {
                 white-space: pre-wrap;
+                .mark_author_year {
+                  text-decoration: none;
+                  color: #03a097;
+                  cursor: pointer;
+                }
               }
             }
 
@@ -192,6 +197,11 @@
               margin-top: 24px;
               pre {
                 white-space: pre-wrap;
+                .mark_author_year {
+                  text-decoration: none;
+                  color: #03a097;
+                  cursor: pointer;
+                }
               }
             }
           }
