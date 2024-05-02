@@ -85,7 +85,6 @@ function Search() {
   };
 
   const getPopoverResponsePedia = async (paper) => {
-    // const paper = papers.find((item) => item.id === id && !item.response);
     if (!paper) {
       return;
     }
@@ -185,7 +184,7 @@ function Search() {
 
   const getReplacedSummary = (text) => {
     const pattern = /(\[.*?\])/g;
-    const splitText = text.split(pattern);
+    const splitText = (text || '').split(pattern);
 
     if (splitText.length <= 1) {
       return <pre>{text}</pre>;
