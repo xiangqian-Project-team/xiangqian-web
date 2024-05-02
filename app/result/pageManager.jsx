@@ -45,7 +45,10 @@ export default function PageManager(props) {
       return list;
     }
 
-    list.push(pageIndex - 1, pageIndex);
+    if (pageIndex - 1 > 0) {
+      list.push(pageIndex - 1);
+    }
+    list.push(pageIndex);
 
     if (pageIndex + 1 <= totalPage) {
       list.push(pageIndex + 1);
