@@ -17,6 +17,9 @@ import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
+import LangCNIcon from '../icons/lang_cn.svg';
+import LangENIcon from '../icons/lang_en.svg';
+import LangENActiveIcon from '../icons/lang_en_active.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import SortIcon from '../icons/sort_icon.svg';
@@ -24,7 +27,7 @@ import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
   papersAtom,
-  searchValueAtom,
+  // searchValueAtom,
   summaryAtom,
   summaryZhAtom,
 } from '../models/search';
@@ -35,6 +38,64 @@ import {
 } from '../service';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
+
+function LanguageButtons(props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const goEN = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('lang', 'en');
+    router.replace(`/result?${newSearchParams.toString()}`);
+  };
+
+  const goCN = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('lang', 'zh-cn');
+    console.log(newSearchParams)
+    router.replace(`/result?${newSearchParams.toString()}`);
+  };
+
+  switch (props.lang) {
+    case 'en':
+      return (
+        <>
+          <Button className={styles.en_button_active}>
+            <Image src={LangENActiveIcon.src} width={18} height={18} />
+            英文文献
+          </Button>
+          <Button
+            className={styles.cn_button}
+            onClick={() => {
+              goCN();
+            }}
+          >
+            <Image src={LangCNIcon.src} width={18} height={18} />
+            中文文献
+          </Button>
+        </>
+      );
+    case 'zh-cn':
+      return (
+        <>
+          <Button
+            className={styles.en_button}
+            onClick={() => {
+              goEN();
+            }}
+          >
+            <Image src={LangENIcon.src} width={18} height={18} />
+            英文文献
+          </Button>
+          <Button className={styles.cn_button_active}>
+            <Image src={LangENActiveIcon.src} width={18} height={18} />
+            中文文献
+          </Button>
+        </>
+      );
+    default:
+      return null;
+  }
+}
 
 function Search() {
   const router = useRouter();
@@ -51,15 +112,23 @@ function Search() {
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  // const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const queryText = searchParams.get('q');
-    setSearchValue(queryText);
-    getPedia(queryText);
+    const question = searchParams.get('q');
+    const lang = searchParams.get('lang');
+    // setSearchValue(queryText);
+    if (!lang) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('lang', 'en');
+      router.replace(`/result?${newSearchParams.toString()}`);
+      return;
+    }
+    console.log('lang', lang)
+    getPedia(question, lang);
   }, [searchParams]);
 
   const onResultSortByTimeClick = () => {
@@ -151,7 +220,7 @@ function Search() {
     getResponsePedia();
   }, [showPapers]);
 
-  const getPedia = async (queryText) => {
+  const getPedia = async (queryText, language) => {
     if (isLoadingList || isLoadingSummary) return;
 
     setSummary('');
@@ -163,6 +232,7 @@ function Search() {
 
     let queryEn, queryZh, papers;
     try {
+      // TODO add lang
       const listRes = await getPartPediaAsync({ query: queryText });
       if (!listRes.ok) {
         throw new Error('Failed search');
@@ -206,7 +276,7 @@ function Search() {
             onOpenChange={(visible) => {
               if (visible) {
                 if (paper.response) {
-                  return 
+                  return;
                 }
                 getPopoverResponsePedia(paper);
               }
@@ -324,22 +394,10 @@ function Search() {
                         总结
                       </div>
                       <div className={styles.content}>
-                        <div
-                          className={styles.content_summary}
-                          // dangerouslySetInnerHTML={{
-                          //   // __html: getReplacedSummary(answerZh),
-                          //   __html: getReplacedSummary(summaryZh),
-                          // }}
-                        >
+                        <div className={styles.content_summary}>
                           {getReplacedSummary(summaryZh)}
                         </div>
-                        <div
-                          className={styles.content_summaryZh}
-                          // dangerouslySetInnerHTML={{
-                          //   // __html: getReplacedSummary(BltptsZh),
-                          //   __html: getReplacedSummary(summary),
-                          // }}
-                        >
+                        <div className={styles.content_summaryZh}>
                           {getReplacedSummary(summary)}
                         </div>
                       </div>
@@ -384,8 +442,8 @@ function Search() {
                         },
                       }}
                     >
-                      {/* <Button className={styles.en_button}>英文文献</Button>
-                      <Button className={styles.cn_button}>中文文献</Button>
+                      <LanguageButtons lang={searchParams.get('lang')} />
+                      {/* 
                       <Button className={styles.selected_button}>
                         我选中的
                       </Button> */}
