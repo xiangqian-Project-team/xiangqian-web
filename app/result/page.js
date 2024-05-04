@@ -9,7 +9,7 @@
 'use client';
 
 import { Button, ConfigProvider, Popover, Skeleton } from 'antd';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -26,8 +26,9 @@ import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
+  languageAtom,
   papersAtom,
-  // searchValueAtom,
+  searchValueAtom,
   summaryAtom,
   summaryZhAtom,
 } from '../models/search';
@@ -39,23 +40,10 @@ import {
 import styles from './page.module.scss';
 import PageManager from './pageManager';
 
-function LanguageButtons(props) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const goEN = () => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('lang', 'en');
-    router.replace(`/result?${newSearchParams.toString()}`);
-  };
+function LanguageButtons() {
+  const language = useAtomValue(languageAtom);
 
-  const goCN = () => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('lang', 'zh-cn');
-    console.log(newSearchParams)
-    router.replace(`/result?${newSearchParams.toString()}`);
-  };
-
-  switch (props.lang) {
+  switch (language) {
     case 'en':
       return (
         <>
@@ -112,23 +100,16 @@ function Search() {
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
-  // const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  const setSearchValue = useSetAtom(searchValueAtom);
+  const language = useAtomValue(languageAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const question = searchParams.get('q');
-    const lang = searchParams.get('lang');
-    // setSearchValue(queryText);
-    if (!lang) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('lang', 'en');
-      router.replace(`/result?${newSearchParams.toString()}`);
-      return;
-    }
-    console.log('lang', lang)
-    getPedia(question, lang);
+    setSearchValue(question);
+    getPedia(question, language);
   }, [searchParams]);
 
   const onResultSortByTimeClick = () => {
@@ -220,7 +201,7 @@ function Search() {
     getResponsePedia();
   }, [showPapers]);
 
-  const getPedia = async (queryText, language) => {
+  const getPedia = async (queryText, lang) => {
     if (isLoadingList || isLoadingSummary) return;
 
     setSummary('');
@@ -232,8 +213,7 @@ function Search() {
 
     let queryEn, queryZh, papers;
     try {
-      // TODO add lang
-      const listRes = await getPartPediaAsync({ query: queryText });
+      const listRes = await getPartPediaAsync({ query: queryText }, lang);
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
@@ -442,7 +422,7 @@ function Search() {
                         },
                       }}
                     >
-                      <LanguageButtons lang={searchParams.get('lang')} />
+                      <LanguageButtons />
                       {/* 
                       <Button className={styles.selected_button}>
                         我选中的
