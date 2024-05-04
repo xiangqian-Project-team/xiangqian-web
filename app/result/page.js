@@ -20,6 +20,7 @@ import SearchTextArea from '../components/searchTextArea';
 import LangCNIcon from '../icons/lang_cn.svg';
 import LangENIcon from '../icons/lang_en.svg';
 import LangENActiveIcon from '../icons/lang_en_active.svg';
+import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import SortIcon from '../icons/sort_icon.svg';
@@ -28,6 +29,7 @@ import EmptyIcon from '../img/empty.png';
 import {
   languageAtom,
   papersAtom,
+  papersAtomZH,
   searchValueAtom,
   summaryAtom,
   summaryZhAtom,
@@ -75,7 +77,7 @@ function LanguageButtons() {
             英文文献
           </Button>
           <Button className={styles.cn_button_active}>
-            <Image src={LangENActiveIcon.src} width={18} height={18} />
+            <Image src={LangCNActiveIcon.src} width={18} height={18} />
             中文文献
           </Button>
         </>
@@ -100,16 +102,26 @@ function Search() {
   const [summary, setSummary] = useAtom(summaryAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZhAtom);
   const [papers, setPapers] = useAtom(papersAtom);
+  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const setSearchValue = useSetAtom(searchValueAtom);
   const language = useAtomValue(languageAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
+  const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
+
+  useEffect(() => {
+    setPrevQuestion((prevQuestion) => searchParams.get('q'));
+  }, [searchParams]);
 
   useEffect(() => {
     const question = searchParams.get('q');
     setSearchValue(question);
-    getPedia(question, language);
+    let clear = false;
+    if (prevQuestion !== question) {
+      clear = true;
+    }
+    getPedia(question, { clear });
   }, [searchParams, language]);
 
   const onResultSortByTimeClick = () => {
@@ -188,32 +200,49 @@ function Search() {
   };
 
   const showPapers = useMemo(() => {
-    const newList = [...papers];
+    let newList = [...papers];
+    if (language === 'zh-cn') {
+      newList = [...papersZH];
+    }
     if (isSortActive) {
       return newList
         .sort((a, b) => b.year - a.year)
         .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     }
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [papers, pageIndex, isSortActive]);
+  }, [papers, papersZH, pageIndex, isSortActive, language]);
 
   useEffect(() => {
     getResponsePedia();
   }, [showPapers]);
 
-  const getPedia = async (queryText, lang) => {
+  const getPedia = async (queryText, options) => {
     if (isLoadingList || isLoadingSummary) return;
+    const currLanguage = language;
 
-    setSummary('');
-    setSummaryZh('');
-    setPapers([]);
-    setPageIndex(1);
+    if (options.clear) {
+      setSummary('');
+      setSummaryZh('');
+      setPapers([]);
+      setPapersZH([]);
+      setPageIndex(1);
+    } else {
+      if (currLanguage === 'zh-cn' && papersZH.length) {
+        return;
+      }
+      if (currLanguage === 'en' && papers.length) {
+        return;
+      }
+    }
     setIsLoadingSummary(true);
     setIsLoadingList(true);
 
-    let queryEn, queryZh, papers;
+    let queryEn, queryZh, nextPapers;
     try {
-      const listRes = await getPartPediaAsync({ query: queryText }, lang);
+      const listRes = await getPartPediaAsync(
+        { query: queryText },
+        currLanguage
+      );
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
@@ -222,9 +251,13 @@ function Search() {
       const data = await listRes.json();
       queryEn = data.queryEn;
       queryZh = data.queryZh;
-      papers = data.papers;
-      setPapers(data.papers);
-      await getAnalysisPedia({ papers, queryEn, queryZh });
+      nextPapers = data.papers;
+      if (currLanguage === 'en') {
+        setPapers(nextPapers);
+      } else {
+        setPapersZH(nextPapers);
+      }
+      await getAnalysisPedia({ papers: nextPapers, queryEn, queryZh });
       setIsLoadingSummary(false);
     } catch (e) {
       setIsLoadingList(false);
