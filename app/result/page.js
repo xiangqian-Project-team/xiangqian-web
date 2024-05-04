@@ -41,7 +41,7 @@ import styles from './page.module.scss';
 import PageManager from './pageManager';
 
 function LanguageButtons() {
-  const language = useAtomValue(languageAtom);
+  const [language, setLanguage] = useAtom(languageAtom);
 
   switch (language) {
     case 'en':
@@ -54,7 +54,7 @@ function LanguageButtons() {
           <Button
             className={styles.cn_button}
             onClick={() => {
-              goCN();
+              setLanguage('zh-cn');
             }}
           >
             <Image src={LangCNIcon.src} width={18} height={18} />
@@ -68,7 +68,7 @@ function LanguageButtons() {
           <Button
             className={styles.en_button}
             onClick={() => {
-              goEN();
+              setLanguage('en');
             }}
           >
             <Image src={LangENIcon.src} width={18} height={18} />
@@ -110,7 +110,7 @@ function Search() {
     const question = searchParams.get('q');
     setSearchValue(question);
     getPedia(question, language);
-  }, [searchParams]);
+  }, [searchParams, language]);
 
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
