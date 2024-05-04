@@ -8,12 +8,12 @@
  */
 'use client';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Input, Radio } from 'antd';
+import { Button, Input } from 'antd';
 import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
-import { searchValueAtom } from '../models/search';
+import { languageAtom, searchValueAtom } from '../models/search';
 import styles from './homeTextArea.module.scss';
 
 const { TextArea } = Input;
@@ -21,6 +21,7 @@ const { TextArea } = Input;
 function HomeTextArea() {
   const router = useRouter();
 
+  const [language, setLanguage] = useAtom(languageAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
 
   return (
@@ -48,12 +49,30 @@ function HomeTextArea() {
         }}
       />
 
-      {/* <div className={styles.searchTextArea_language_select}>
-        <Radio.Group value={'zh-cn'}>
-          <Radio value={'en'}>英文文献</Radio>
-          <Radio value={'zh-cn'}>中文文献</Radio>
-        </Radio.Group>
-      </div> */}
+      <div className={styles.searchTextArea_language_select}>
+        <input
+          type="radio"
+          id="en"
+          name="language"
+          value="en"
+          checked={language === 'en'}
+          onChange={(e) => {
+            setLanguage(e.target.value);
+          }}
+        />
+        <label htmlFor="en" className={language === 'en' ? styles.lang_button_active : ''}>英文文献</label>
+        <input
+          type="radio"
+          id="zh-cn"
+          name="language"
+          value="zh-cn"
+          checked={language === 'zh-cn'}
+          onChange={(e) => {
+            setLanguage(e.target.value);
+          }}
+        />
+        <label htmlFor="zh-cn" className={language === 'zh-cn' ? styles.lang_button_active : ''}>中文文献</label>
+      </div>
 
       <div className={styles.homeTextArea_btn}>
         <Button

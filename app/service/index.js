@@ -59,7 +59,11 @@ export const getPedia = async (params) => {
 };
 
 // 多步搜索
-export const getPartPedia = async (params) => {
+export const getPartPedia = async (params, lang) => {
+  let path = '/search_papers';
+  if (lang === 'zh-cn') {
+    path = '/search_papers_zh';
+  }
   const token = getItem('token');
   const option = {
     method: 'POST',
@@ -69,7 +73,7 @@ export const getPartPedia = async (params) => {
     },
   };
   if (token) option.headers.Authorization = `Bearer ${token}`;
-  return fetch(`${FUNCTION_BASE_URL}/search_papers`, option);
+  return fetch(`${FUNCTION_BASE_URL}${path}`, option);
 };
 
 export const getAnalysisPedia = async (params) => {
