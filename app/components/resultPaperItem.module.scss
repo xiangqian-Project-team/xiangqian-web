@@ -6,7 +6,8 @@
   margin-bottom: 10px;
 }
 
-.content_card_no_border, .content_card {
+.content_card_no_border,
+.content_card {
   background: #ffffff;
 
   .content_card_title {
@@ -26,13 +27,28 @@
       white-space: nowrap; //溢出不换行
     }
 
-    .content_card_check ,.content_card_checked {
+    .content_card_check,
+    .content_card_checked {
       display: block;
+      width: 116px;
+      height: 25px;
+      padding: 0;
       margin-right: 4px;
       cursor: pointer;
+      border-radius: 30px;
+      img {
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+      }
+      span {
+        display: inline-block;
+        overflow: auto;
+      }
     }
     .content_card_check {
       background-color: #838890;
+      color: white;
     }
     .content_card_checked {
       background-color: #eee;

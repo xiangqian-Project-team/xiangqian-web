@@ -220,7 +220,8 @@
             .en_button,
             .cn_button_active,
             .en_button_active,
-            .selected_button {
+            .selected_button,
+            .selected_button_active {
               width: 139px;
               height: 36px;
               border: none;
@@ -239,13 +240,14 @@
             .cn_button,
             .cn_button_active {
               margin: 0 2px;
-              border-radius: 0 30px 30px 0;
             }
             .cn_button_active,
-            .en_button_active {
+            .en_button_active,
+            .selected_button_active {
               background-color: #99e0ed;
             }
-            .selected_button {
+            .selected_button,
+            .selected_button_active {
               border-radius: 0 30px 30px 0;
             }
             .sort_button {
