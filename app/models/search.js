@@ -15,13 +15,17 @@ const searchValueAtom = atom(''); // 搜索内容
 const papersAtom = atomWithImmer([]); // 引文列表
 const papersAtomZH = atomWithImmer([]); // 中文引文列表
 const summaryAtom = atom(''); // 概述
-const summaryZhAtom = atom(''); // 中文概述
+const bulletPointsAtom = atom('');
+const summaryZHAtom = atom(''); // 概述
+const bulletPointsZHAtom = atom('');
 
 export {
+  bulletPointsAtom,
+  bulletPointsZHAtom,
   languageAtom,
   papersAtom,
   papersAtomZH,
   searchValueAtom,
   summaryAtom,
-  summaryZhAtom,
+  summaryZHAtom,
 };

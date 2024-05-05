@@ -4,8 +4,8 @@ import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
-// import CheckIcon from '../icons/icon_check.svg';
-// import NoneCheckIcon from '../icons/icon_none_check.svg';
+import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
+import SelectedWhiteButtonIcon from '../icons/selected_white_button_icon.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
@@ -156,34 +156,74 @@ export default function ResultPaperItem(props) {
       }
     >
       <div className={styles.content_card_title}>
-        {/* {props.checkedPapers.includes(id) ? ( 
-        //   <Image
-        //     alt=""
-        //     className={styles.content_card_check}
-        //     src={CheckIcon}
-        //     onClick={() => {
-        //       const newCheckedPapers = props.checkedPapers.filter(
-        //         (item) => item !== id
-        //       );
-        //       props.setCheckedPapers(newCheckedPapers);
-        //     }}
-        //   />
-        // ) : (
-        //   <Image
-        //     alt=""
-        //     className={styles.content_card_check}
-        //     src={NoneCheckIcon}
-        //     onClick={() => {
-        //       const newCheckedPapers = [...props.checkedPapers, id];
-        //       props.setCheckedPapers(newCheckedPapers);
-        //     }}
-        //   />
-        // )}*/}
         <Tooltip title={title}>
           <span>{title}</span>
         </Tooltip>
-
-        {/* {IsSelected ? <Button className={styles.content_card_checked}>已选中</Button> : <Button className={styles.content_card_check}>选择文本</Button>} */}
+        {IsSelected(id) ? (
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultBorderColor: 'none',
+                  defaultColor: '#000',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#99E0ED',
+                  defaultHoverBorderColor: '#EEE',
+                },
+              },
+            }}
+          >
+            <Button
+              className={styles.content_card_checked}
+              active
+              onClick={() => {
+                const newCheckedPapers = props.checkedPapers.filter(
+                  (item) => item !== id
+                );
+                props.setCheckedPapers(newCheckedPapers);
+              }}
+            >
+              <Image
+                src={SelectedActiveButtonIcon.src}
+                width={18}
+                height={18}
+              />
+              已选中
+            </Button>
+          </ConfigProvider>
+        ) : (
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultBorderColor: 'none',
+                  defaultColor: '#000',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#99E0ED',
+                  defaultHoverBorderColor: '#EEE',
+                },
+              },
+            }}
+          >
+          <Button
+            className={styles.content_card_check}
+            onClick={() => {
+              const newCheckedPapers = [...props.checkedPapers, id];
+              props.setCheckedPapers(newCheckedPapers);
+            }}
+          >
+            <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
+            选中文本
+          </Button></ConfigProvider>
+        )}
       </div>
 
       <div className={styles.content_card_footer}>
