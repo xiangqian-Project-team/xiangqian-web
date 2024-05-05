@@ -29,14 +29,8 @@ import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
 import {
-  bulletPointsAtom,
-  bulletPointsZHAtom,
   modeAtom,
-  papersAtom,
-  papersAtomZH,
   searchValueAtom,
-  summaryAtom,
-  summaryZHAtom,
 } from '../models/search';
 import {
   getAnalysisPedia as getAnalysisPediaAsync,
@@ -120,12 +114,12 @@ function Search() {
   );
   const [isSortActive, setIsSortActive] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [summary, setSummary] = useAtom(summaryAtom);
-  const [bulletPoints, setBulletPoints] = useAtom(bulletPointsAtom);
-  const [summaryZh, setSummaryZh] = useAtom(summaryZHAtom);
-  const [bulletPointsZH, setBulletPointsZH] = useAtom(bulletPointsZHAtom);
-  const [papers, setPapers] = useAtom(papersAtom);
-  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
+  const [summary, setSummary] = useState('');
+  const [bulletPoints, setBulletPoints] = useState('');
+  const [summaryZh, setSummaryZh] = useState('');
+  const [bulletPointsZH, setBulletPointsZH] = useState('');
+  const [papers, setPapers] = useState([]);
+  const [papersZH, setPapersZH] = useState([]);
   const setSearchValue = useSetAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
   const [selectedSummary, setSelectedSummary] = useState('');
