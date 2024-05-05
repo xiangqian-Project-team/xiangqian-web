@@ -10,7 +10,7 @@
 import { atom } from 'jotai';
 import { atomWithImmer } from 'jotai-immer';
 
-const languageAtom = atom('en');
+const modeAtom = atom('en'); // en | zh-cn | selected
 const searchValueAtom = atom(''); // 搜索内容
 const papersAtom = atomWithImmer([]); // 引文列表
 const papersAtomZH = atomWithImmer([]); // 中文引文列表
@@ -22,7 +22,7 @@ const bulletPointsZHAtom = atom('');
 export {
   bulletPointsAtom,
   bulletPointsZHAtom,
-  languageAtom,
+  modeAtom,
   papersAtom,
   papersAtomZH,
   searchValueAtom,

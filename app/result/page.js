@@ -9,11 +9,11 @@
 'use client';
 
 import { Button, ConfigProvider, Popover, Skeleton } from 'antd';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
@@ -31,7 +31,7 @@ import EmptyIcon from '../img/empty.png';
 import {
   bulletPointsAtom,
   bulletPointsZHAtom,
-  languageAtom,
+  modeAtom,
   papersAtom,
   papersAtomZH,
   searchValueAtom,
@@ -46,51 +46,64 @@ import {
 import styles from './page.module.scss';
 import PageManager from './pageManager';
 
-function LanguageButtons(props) {
-  const [language, setLanguage] = useAtom(languageAtom);
+function ModeButtons(props) {
+  const [mode, setMode] = useAtom(modeAtom);
 
-  switch (language) {
-    case 'en':
-      return (
-        <>
-          <Button className={styles.en_button_active}>
-            <Image src={LangENActiveIcon.src} width={18} height={18} />
-            英文文献
-          </Button>
-          <Button
-            className={styles.cn_button}
-            onClick={() => {
-              setLanguage('zh-cn');
-              props.onLanguageChangeClick();
-            }}
-          >
-            <Image src={LangCNIcon.src} width={18} height={18} />
-            中文文献
-          </Button>
-        </>
-      );
-    case 'zh-cn':
-      return (
-        <>
-          <Button
-            className={styles.en_button}
-            onClick={() => {
-              setLanguage('en');
-              props.onLanguageChangeClick();
-            }}
-          >
-            <Image src={LangENIcon.src} width={18} height={18} />
-            英文文献
-          </Button>
-          <Button className={styles.cn_button_active}>
-            <Image src={LangCNActiveIcon.src} width={18} height={18} />
-            中文文献
-          </Button>
-        </>
-      );
-    default:
-      return null;
-  }
+  return (
+    <>
+      {mode === 'en' ? (
+        <Button className={styles.en_button_active}>
+          <Image src={LangENActiveIcon.src} width={18} height={18} />
+          英文文献
+        </Button>
+      ) : (
+        <Button
+          className={styles.en_button}
+          onClick={() => {
+            setMode('en');
+            props.onModeChangeClick();
+          }}
+        >
+          <Image src={LangENIcon.src} width={18} height={18} />
+          英文文献
+        </Button>
+      )}
+      {mode === 'zh-cn' ? (
+        <Button className={styles.cn_button_active}>
+          <Image src={LangCNActiveIcon.src} width={18} height={18} />
+          中文文献
+        </Button>
+      ) : (
+        <Button
+          className={styles.cn_button}
+          onClick={() => {
+            setMode('zh-cn');
+            props.onModeChangeClick();
+          }}
+        >
+          <Image src={LangCNIcon.src} width={18} height={18} />
+          中文文献
+        </Button>
+      )}
+      {mode === 'selected' ? (
+        <Button className={styles.selected_button_active}>
+          <Image src={SelectedActiveButtonIcon.src} width={18} height={18} />
+          我选中的
+        </Button>
+      ) : (
+        <Button
+          className={styles.selected_button}
+          onClick={() => {
+            setMode('selected');
+            props.onModeChangeClick();
+          }}
+        >
+          <Image src={SelectedButtonIcon.src} width={18} height={18} />
+          我选中的
+        </Button>
+      )}
+    </>
+  );
 }
 
 function Search() {
@@ -98,7 +111,8 @@ function Search() {
   const [pageSize] = useState(10);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
-  const [isSelectedPapersActive, setIsSelectedPapersActive] = useState(false);
+  const [mode, setMode] = useAtom(modeAtom); // en | zh-cn | selected
+  const queryRef = useRef({queryEn: '', queryZh: ''});
   const paperSkeletons = useMemo(
     () =>
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
@@ -113,9 +127,9 @@ function Search() {
   const [papers, setPapers] = useAtom(papersAtom);
   const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const setSearchValue = useSetAtom(searchValueAtom);
-  const language = useAtomValue(languageAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
-  const [checkedPapersZH, setCheckedPapersZH] = useState([]);
+  const [selectedSummary, setSelectedSummary] = useState('');
+  const [selectedBulletPoints, setSelectedBulletPoints] = useState('');
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
   const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
@@ -132,15 +146,16 @@ function Search() {
       clear = true;
     }
     getPedia(question, { clear });
-  }, [searchParams, language]);
+  }, [searchParams, mode]);
 
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
     setPageIndex(1);
   };
 
-  const getAnalysisPedia = async (params, lang) => {
+  const getAnalysisPedia = async (params, mode) => {
     const { papers, queryEn, queryZh } = params;
+    const currentMode = mode;
     const res = await getAnalysisPediaAsync({
       papers,
       queryEn,
@@ -151,12 +166,19 @@ function Search() {
     }
 
     const data = await res.json();
-    if (lang === 'en') {
-      setSummary(data.answer);
-      setBulletPoints(data.bulletPoints);
-    } else {
-      setSummaryZh(data.answer);
-      setBulletPointsZH(data.bulletPoints);
+    switch(currentMode) {
+      case 'en':
+        setSummary(data.answer);
+        setBulletPoints(data.bulletPoints);
+        break;
+      case 'zh-cn':
+        setSummaryZh(data.answer);
+        setBulletPointsZH(data.bulletPoints);
+        break;
+      case 'selected':
+        setSelectedSummary(data.answer);
+        setSelectedBulletPoints(data.bulletPoints);
+        break;
     }
     setIsLoadingSummary(false);
   };
@@ -215,26 +237,45 @@ function Search() {
   };
 
   const showSummary = useMemo(() => {
-    if (language === 'zh-cn') {
-      return { summary: summaryZh, bulletPoints: bulletPointsZH };
+    switch (mode) {
+      case 'en':
+        return {
+          summary,
+          bulletPoints,
+        };
+      case 'zh-cn':
+        return { summary: summaryZh, bulletPoints: bulletPointsZH };
+      case 'selected':
+        return {
+          summary: selectedSummary,
+          bulletPoints: selectedBulletPoints,
+        };
     }
-    return {
-      summary,
-      bulletPoints,
-    };
-  }, [summary, summaryZh, bulletPoints, bulletPointsZH, language]);
+    return {};
+  }, [
+    summary,
+    summaryZh,
+    bulletPoints,
+    bulletPointsZH,
+    selectedSummary,
+    selectedBulletPoints,
+    mode,
+  ]);
 
   const showPapers = useMemo(() => {
-    let newList = [...papers];
-    if (language === 'zh-cn') {
-      newList = [...papersZH];
-      if (isSelectedPapersActive) {
-        newList = newList.filter((item) => checkedPapersZH.includes(item.id));
-      }
-    } else {
-      if (isSelectedPapersActive) {
-        newList = newList.filter((item) => checkedPapers.includes(item.id));
-      }
+    let newList = [];
+    switch (mode) {
+      case 'en':
+        newList = [...papers];
+        break;
+      case 'zh-cn':
+        newList = [...papersZH];
+        break;
+      case 'selected':
+        newList = [...papers, ...papersZH].filter((item) =>
+          checkedPapers.includes(item.id)
+        );
+        break;
     }
 
     if (isSortActive) {
@@ -243,28 +284,19 @@ function Search() {
         .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     }
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [
-    papers,
-    papersZH,
-    pageIndex,
-    isSortActive,
-    language,
-    isSelectedPapersActive,
-    checkedPapers,
-  ]);
+  }, [papers, papersZH, pageIndex, isSortActive, mode, checkedPapers]);
 
   const totalPapers = useMemo(() => {
-    if (language === 'zh-cn') {
-      if (isSelectedPapersActive) {
-        return checkedPapersZH.length;
-      }
-      return papersZH.length;
+    switch (mode) {
+      case 'en':
+        return papers.length;
+      case 'zh-cn':
+        return papersZH.length;
+      case 'selected':
+        return checkedPapers.length;
     }
-    if (isSelectedPapersActive) {
-      return checkedPapers.length;
-    }
-    return papers.length;
-  });
+    return 0;
+  }, [mode, papers, papersZH, checkedPapers]);
 
   useEffect(() => {
     getResponsePedia();
@@ -272,23 +304,28 @@ function Search() {
 
   const getPedia = async (queryText, options) => {
     if (isLoadingList || isLoadingSummary) return;
-    const currLanguage = language;
+    let currMode = mode;
 
     if (options.clear) {
       setSummary('');
       setSummaryZh('');
       setBulletPoints('');
       setBulletPointsZH('');
-      setCheckedPapersZH([]);
       setCheckedPapers([]);
       setPapers([]);
       setPapersZH([]);
+      setSelectedSummary('');
       setPageIndex(1);
+      setMode('en');
+      currMode = 'en';
     } else {
-      if (currLanguage === 'zh-cn' && papersZH.length) {
+      if (currMode === 'selected') {
         return;
       }
-      if (currLanguage === 'en' && papers.length) {
+      if (currMode === 'zh-cn' && papersZH.length) {
+        return;
+      }
+      if (currMode === 'en' && papers.length) {
         return;
       }
     }
@@ -297,27 +334,27 @@ function Search() {
 
     let queryEn, queryZh, nextPapers;
     try {
-      const listRes = await getPartPediaAsync(
-        { query: queryText },
-        currLanguage
-      );
+      const listRes = await getPartPediaAsync({ query: queryText }, currMode);
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
       setIsLoadingList(false);
-
       const data = await listRes.json();
+      queryRef.current = { queryEn: data.queryEn, queryZh: data.queryZh };
       queryEn = data.queryEn;
       queryZh = data.queryZh;
       nextPapers = data.papers;
-      if (currLanguage === 'en') {
-        setPapers(nextPapers);
-      } else {
-        setPapersZH(nextPapers);
+      switch (currMode) {
+        case 'en':
+          setPapers(nextPapers);
+          break;
+        case 'zh-cn':
+          setPapersZH(nextPapers);
+          break;
       }
       await getAnalysisPedia(
         { papers: nextPapers, queryEn, queryZh },
-        currLanguage
+        currMode
       );
       setIsLoadingSummary(false);
     } catch (e) {
@@ -356,19 +393,11 @@ function Search() {
               }
             }}
             content={
-              language === 'zh-cn' ? (
-                <ResultPaperItem
-                  data={papersZH}
-                  checkedPapers={checkedPapersZH}
-                  setCheckedPapers={setCheckedPapersZH}
-                />
-              ) : (
-                <ResultPaperItem
-                  data={paper}
-                  checkedPapers={checkedPapers}
-                  setCheckedPapers={setCheckedPapers}
-                />
-              )
+              <ResultPaperItem
+                data={paper}
+                checkedPapers={checkedPapers}
+                setCheckedPapers={setCheckedPapers}
+              />
             }
           >
             <span className={styles.mark_author_year}>
@@ -481,13 +510,47 @@ function Search() {
                         />
                         总结
                       </div>
+                      {mode === 'selected' && !showSummary.summary && (
+                        <div  className={styles.fetch_selected_summary_button_container}>
+                        <ConfigProvider
+                          theme={{
+                            token: {
+                              colorPrimary: '#000',
+                            },
+                            components: {
+                              Button: {
+                                paddingInlineSM: 34,
+                                borderRadius: 30,
+                                defaultColor: '#000',
+                                defaultBg: '#FFF',
+                                defaultHoverBg: '#99E0ED',
+                                defaultHoverBorderColor: '#EEE',
+                              },
+                            },
+                          }}
+                        >
+                          <Button onClick={() => {
+                            const papers = [...papers, ...papersZH].filter((item) =>
+                              checkedPapers.includes(item.id)
+                            );
+                             getAnalysisPedia(
+                              { papers, queryEn: queryRef.current.queryEn, queryZh: queryRef.current.queryZh},
+                              'selected'
+                            );
+                          }}>获取总结</Button>
+                        </ConfigProvider></div>
+                      )}
                       <div className={styles.content}>
-                        <div className={styles.content_summary}>
-                          {getReplacedSummary(showSummary.summary)}
-                        </div>
-                        <div className={styles.content_summaryZh}>
-                          {getReplacedSummary(showSummary.bulletPoints)}
-                        </div>
+                        {showSummary.summary && (
+                          <>
+                            <div className={styles.content_summary}>
+                              {getReplacedSummary(showSummary.summary)}
+                            </div>
+                            <div className={styles.content_summaryZh}>
+                              {getReplacedSummary(showSummary.bulletPoints)}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </>
                   </Skeleton>
@@ -530,43 +593,13 @@ function Search() {
                         },
                       }}
                     >
-                      <LanguageButtons
-                        onLanguageChangeClick={() => {
+                      <ModeButtons
+                        mode={mode}
+                        setMode={setMode}
+                        onModeChangeClick={() => {
                           setPageIndex(1);
                         }}
                       />
-                      {!isSelectedPapersActive && (
-                        <Button
-                          className={styles.selected_button}
-                          onClick={() => {
-                            setIsSelectedPapersActive(!isSelectedPapersActive);
-                            setPageIndex(1);
-                          }}
-                        >
-                          <Image
-                            src={SelectedButtonIcon.src}
-                            width={18}
-                            height={18}
-                          />
-                          我选中的
-                        </Button>
-                      )}
-                      {isSelectedPapersActive && (
-                        <Button
-                          className={styles.selected_button_active}
-                          onClick={() => {
-                            setIsSelectedPapersActive(!isSelectedPapersActive);
-                            setPageIndex(1);
-                          }}
-                        >
-                          <Image
-                            src={SelectedActiveButtonIcon.src}
-                            width={18}
-                            height={18}
-                          />
-                          我选中的
-                        </Button>
-                      )}
 
                       <Button
                         className={styles.sort_button}
@@ -586,23 +619,13 @@ function Search() {
                     {showPapers.map((item) => {
                       return (
                         <>
-                          {language === 'zh-cn' ? (
-                            <ResultPaperItem
-                              key={item.id}
-                              data={item}
-                              isBorderVisible={true}
-                              checkedPapers={checkedPapersZH}
-                              setCheckedPapers={setCheckedPapersZH}
-                            />
-                          ) : (
-                            <ResultPaperItem
-                              key={item.id}
-                              data={item}
-                              isBorderVisible={true}
-                              checkedPapers={checkedPapers}
-                              setCheckedPapers={setCheckedPapers}
-                            />
-                          )}
+                          <ResultPaperItem
+                            key={item.id}
+                            data={item}
+                            isBorderVisible={true}
+                            checkedPapers={checkedPapers}
+                            setCheckedPapers={setCheckedPapers}
+                          />
                         </>
                       );
                     })}

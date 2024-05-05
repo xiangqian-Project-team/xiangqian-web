@@ -13,7 +13,7 @@ import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
-import { languageAtom, searchValueAtom } from '../models/search';
+import { modeAtom, searchValueAtom } from '../models/search';
 import styles from './homeTextArea.module.scss';
 
 const { TextArea } = Input;
@@ -21,7 +21,7 @@ const { TextArea } = Input;
 function HomeTextArea() {
   const router = useRouter();
 
-  const [language, setLanguage] = useAtom(languageAtom);
+  const [mode, setMode] = useAtom(modeAtom);
   const [searchValue, setSearchValue] = useAtom(searchValueAtom);
 
   return (
@@ -53,25 +53,25 @@ function HomeTextArea() {
         <input
           type="radio"
           id="en"
-          name="language"
+          name="mode"
           value="en"
-          checked={language === 'en'}
+          checked={mode === 'en'}
           onChange={(e) => {
-            setLanguage(e.target.value);
+            setMode(e.target.value);
           }}
         />
-        <label htmlFor="en" className={language === 'en' ? styles.lang_button_active : ''}>英文文献</label>
+        <label htmlFor="en" className={mode === 'en' ? styles.lang_button_active : ''}>英文文献</label>
         <input
           type="radio"
           id="zh-cn"
-          name="language"
+          name="mode"
           value="zh-cn"
-          checked={language === 'zh-cn'}
+          checked={mode === 'zh-cn'}
           onChange={(e) => {
-            setLanguage(e.target.value);
+            setMode(e.target.value);
           }}
         />
-        <label htmlFor="zh-cn" className={language === 'zh-cn' ? styles.lang_button_active : ''}>中文文献</label>
+        <label htmlFor="zh-cn" className={mode === 'zh-cn' ? styles.lang_button_active : ''}>中文文献</label>
       </div>
 
       <div className={styles.homeTextArea_btn}>
