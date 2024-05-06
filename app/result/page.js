@@ -384,7 +384,7 @@ function Search() {
     const formattedStr = splitText.reduce((arr, element) => {
       if (matches.includes(element)) {
         const id = element.replace(/^\[(.+)\]$/, '$1');
-        const paper = papers.find((item) => item.id === id);
+        const paper = [...papers, ...papersZH].find((item) => item.id === id);
         const authors = paper?.authors[0] || '';
         const year = paper?.year || '';
         return [

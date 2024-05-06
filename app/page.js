@@ -16,6 +16,8 @@ import HomeDescIcon_1 from './icons/home_desc_icon_1.svg';
 import HomeDescIcon_2 from './icons/home_desc_icon_2.svg';
 import HomeDescIcon_3 from './icons/home_desc_icon_3.svg';
 import HomeDescIcon_4 from './icons/home_desc_icon_4.svg';
+import HomeTriangleIcon from './icons/home_triangle_icon.svg';
+import HomeTriangleWhiteIcon from './icons/home_triangle_white_icon.svg';
 import MagnifierIcon from './icons/magnifier.svg';
 import LogoIcon from './icons/main_logo.svg';
 import ReportIcon from './icons/report.svg';
@@ -91,11 +93,15 @@ export default function Home() {
           <div className={styles.home_search_recommend_title}>试试搜索：</div>
           <RecommendBtnListCom />
         </div>
-      </div>
-
-      <div className={styles.home_searchGuide}>
-        <div className={styles.home_searchGuide_content}>
-          <div className={styles.home_searchGuide_content_triangle} />
+        <div className={styles.home_triangle_mask}>
+          <div className={styles.home_triangle}>
+            <Image
+              src={HomeTriangleIcon.src}
+              width={60}
+              height={43}
+              alt="triangle"
+            />
+          </div>
         </div>
       </div>
 
@@ -151,6 +157,16 @@ export default function Home() {
       </div>
 
       <div className={styles.home_desc}>
+        <div className={styles.home_white_triangle_container}>
+          <div className={styles.home_white_triangle}>
+            <Image
+              src={HomeTriangleWhiteIcon.src}
+              width={60}
+              height={43}
+              alt="triangle"
+            />
+          </div>
+        </div>
         <div className={styles.home_desc_title}>为什么更适合社会科学？</div>
         <div className={styles.home_desc_sub_title}>
           多位行业顶尖的社会科学专家参与设计，充分考虑社科文献的使用场景
@@ -227,6 +243,16 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div className={styles.home_triangle_mask}>
+          <div className={styles.home_triangle}>
+            <Image
+              src={HomeTriangleIcon.src}
+              width={60}
+              height={43}
+              alt="triangle"
+            />
+          </div>
+        </div>
       </div>
 
       <div className={styles.faq}>
@@ -248,6 +274,16 @@ export default function Home() {
       </div>
 
       <div className={styles.school_info}>
+        <div className={styles.home_white_triangle_container}>
+          <div className={styles.home_white_triangle}>
+            <Image
+              src={HomeTriangleWhiteIcon.src}
+              width={60}
+              height={43}
+              alt="triangle"
+            />
+          </div>
+        </div>
         <div className={styles.school_info_title}>
           5000+ 社会科学工作者已率先使用
         </div>
