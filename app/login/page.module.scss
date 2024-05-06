@@ -7,11 +7,15 @@
         flex-direction: column;
         align-items   : center;
         width         : 100%;
-        height        : calc(100vh - 242px);
-        margin-bottom : 24px;
+        height        : calc(100vh - 62px);
         padding-bottom: 24px;
-        background    : linear-gradient(52deg, rgba(80, 201, 140, 0.4) 0%, rgba(139, 187, 183, 0.4) 50%, rgba(132, 196, 181, 0.4) 100%);
-
+        background: linear-gradient(
+            90deg,
+            #f3f9fe 0%,
+            #d0f6fb 49%,
+            #f8f9fd 80%,
+            #e9faff 100%
+        );
         .login_content_logo {
             position: absolute;
             left    : 160px;

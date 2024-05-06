@@ -73,6 +73,7 @@ function LoginBtn(props) {
         <>
           <button
             className={styles.loggedOutIcon}
+            disabled
             onClick={() => {
               if (getItem('token')) {
                 return;
