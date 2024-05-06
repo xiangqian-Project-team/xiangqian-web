@@ -389,7 +389,7 @@ export default function ResultPaperItem(props) {
               if (openAccessPdf) {
                 window.open(openAccessPdf.url, '_blank');
               } else if (doi) {
-                window.open(`https://doi.org/${doi}`, '_blank');
+                window.open(doi, '_blank');
               } else {
                 alert('由于版权原因，本文暂不支持查看原文');
               }
