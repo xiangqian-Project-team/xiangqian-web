@@ -13,6 +13,7 @@
   .content_card_title {
     font-weight: 400;
     font-size: 16px;
+    letter-spacing: 0.3px;
     line-height: 18px;
     color: #000000;
     margin-bottom: 8px;
@@ -34,6 +35,7 @@
       height: 25px;
       padding: 0;
       margin-right: 4px;
+      color: #eee;
       cursor: pointer;
       border-radius: 30px;
       img {
@@ -47,11 +49,11 @@
       }
     }
     .content_card_check {
-      background-color: #838890;
-      color: white;
+      background-color: #eee;
+      color: black;
     }
     .content_card_checked {
-      background-color: #eee;
+      background-color: #838890;
     }
   }
 
@@ -98,9 +100,10 @@
   margin-top: 16px;
   height: auto;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   color: #000000;
-  line-height: 18px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
   overflow-y: hidden;
   position: relative;
   white-space: pre-wrap;
@@ -214,9 +217,9 @@
           height: 46px;
           background: linear-gradient(
             58deg,
-            #E1DAFF 0%,
-            #DEEBFD 50%,
-            #A4E5F0 100%
+            #e1daff 0%,
+            #deebfd 50%,
+            #a4e5f0 100%
           );
           margin-bottom: 0;
 

@@ -188,11 +188,7 @@ export default function ResultPaperItem(props) {
                 props.setCheckedPapers(newCheckedPapers);
               }}
             >
-              <Image
-                src={SelectedActiveButtonIcon.src}
-                width={18}
-                height={18}
-              />
+              <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
               已选中
             </Button>
           </ConfigProvider>
@@ -221,8 +217,12 @@ export default function ResultPaperItem(props) {
                 props.setCheckedPapers(newCheckedPapers);
               }}
             >
-              <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
-              选中文本
+              <Image
+                src={SelectedActiveButtonIcon.src}
+                width={18}
+                height={18}
+              />
+              选中本文
             </Button>
           </ConfigProvider>
         )}
@@ -405,7 +405,7 @@ export default function ResultPaperItem(props) {
           {paperAbstract != 'No abstract' ? (
             <>
               <span>摘要：{paperAbstractZh}</span>
-              <span>摘要原文：{paperAbstract}</span>
+              {isEn && <span>摘要原文：{paperAbstract}</span>}
             </>
           ) : (
             <span>

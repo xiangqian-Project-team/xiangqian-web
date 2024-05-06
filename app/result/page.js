@@ -107,7 +107,7 @@ function ModeButtons(props) {
 function Search() {
   const router = useRouter();
   const [pageSize] = useState(10);
-  const [isInitialed, setIsInitialed] = useState(false)
+  const [isInitialed, setIsInitialed] = useState(false);
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
@@ -292,7 +292,11 @@ function Search() {
 
   const isPapersEmptyErrorVisible = useMemo(() => {
     return (
-      isInitialed && !isLoadingList && !isLoadingSummary && !summary && !showPapers.length
+      isInitialed &&
+      !isLoadingList &&
+      !isLoadingSummary &&
+      !summary &&
+      !showPapers.length
     );
   }, [isLoadingList, isLoadingSummary, summary, showPapers]);
 
@@ -606,7 +610,7 @@ function Search() {
                         onResultSortByTimeClick();
                       }}
                     >
-                      最新发表
+                      近期发表
                       <Image
                         className={styles.sort_button_icon}
                         src={SortIcon}
@@ -620,7 +624,7 @@ function Search() {
                         onResultSortByTimeClick();
                       }}
                     >
-                      最新发表
+                      近期发表
                       <Image
                         className={styles.sort_button_icon}
                         src={SortIcon}
@@ -672,16 +676,18 @@ function Search() {
                     );
                   })}
                 </div>
-                {isInitialed && !isLoadingList && !isPapersEmptyErrorVisible && (
-                  <div>
-                    <PageManager
-                      pageIndex={pageIndex}
-                      total={totalPapers}
-                      pageSize={pageSize}
-                      setPageIndex={setPageIndex}
-                    />
-                  </div>
-                )}
+                {isInitialed &&
+                  !isLoadingList &&
+                  !isPapersEmptyErrorVisible && (
+                    <div>
+                      <PageManager
+                        pageIndex={pageIndex}
+                        total={totalPapers}
+                        pageSize={pageSize}
+                        setPageIndex={setPageIndex}
+                      />
+                    </div>
+                  )}
               </div>
             </div>
           </div>
