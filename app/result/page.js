@@ -22,12 +22,12 @@ import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LangENIcon from '../icons/lang_en.svg';
 import LangENActiveIcon from '../icons/lang_en_active.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
+import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
-import EmptyIcon from '../img/empty.png';
 import { modeAtom, searchValueAtom } from '../models/search';
 import {
   getAnalysisPedia as getAnalysisPediaAsync,
@@ -43,13 +43,14 @@ function ModeButtons(props) {
   return (
     <>
       {mode === 'en' ? (
-        <Button className={styles.en_button_active}>
+        <Button className={styles.en_button_active} disabled={props.disabled}>
           <Image src={LangENActiveIcon.src} width={18} height={18} />
           英文文献
         </Button>
       ) : (
         <Button
           className={styles.en_button}
+          disabled={props.disabled}
           onClick={() => {
             setMode('en');
             props.onModeChangeClick();
@@ -60,13 +61,14 @@ function ModeButtons(props) {
         </Button>
       )}
       {mode === 'zh-cn' ? (
-        <Button className={styles.cn_button_active}>
+        <Button className={styles.cn_button_active} disabled={props.disabled}>
           <Image src={LangCNActiveIcon.src} width={18} height={18} />
           中文文献
         </Button>
       ) : (
         <Button
           className={styles.cn_button}
+          disabled={props.disabled}
           onClick={() => {
             setMode('zh-cn');
             props.onModeChangeClick();
@@ -77,13 +79,17 @@ function ModeButtons(props) {
         </Button>
       )}
       {mode === 'selected' ? (
-        <Button className={styles.selected_button_active}>
+        <Button
+          className={styles.selected_button_active}
+          disabled={props.disabled}
+        >
           <Image src={SelectedActiveButtonIcon.src} width={18} height={18} />
           我选中的
         </Button>
       ) : (
         <Button
           className={styles.selected_button}
+          disabled={props.disabled}
           onClick={() => {
             setMode('selected');
             props.onModeChangeClick();
@@ -277,6 +283,12 @@ function Search() {
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [papers, papersZH, pageIndex, isSortActive, mode, checkedPapers]);
 
+  const isErrorVisible = useMemo(() => {
+    return (
+      !isLoadingList && !isLoadingSummary && !summary && !showPapers.length
+    );
+  }, [isLoadingList, isLoadingSummary, summary, showPapers]);
+
   const totalPapers = useMemo(() => {
     switch (mode) {
       case 'en':
@@ -462,25 +474,19 @@ function Search() {
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
 
-          {!isLoadingList &&
-            !isLoadingSummary &&
-            !summary &&
-            !showPapers.length && (
-              <div className={styles.search_content_empty}>
-                <div className={styles.search_content_empty_card}>
-                  <Image
-                    src={EmptyIcon.src}
-                    width={64}
-                    height={46}
-                    alt="EmptyIcon"
-                  />
-
-                  <div className={styles.text}>
-                    很抱歉，暂时无法找到合适的答案，请换个问题再试一次。
-                  </div>
+          {isErrorVisible && (
+            <div className={styles.search_content_empty}>
+              <div className={styles.search_content_empty_card}>
+                <div className={styles.text}>
+                  <h2>抱歉，这里好像出错了</h2>
+                  <h3>可能是这个问题太复杂了，换个问题再试试吧</h3>
                 </div>
               </div>
-            )}
+              <div className={styles.search_content_empty_contact}>
+                仍无法解决？请联系「镶嵌」用户服务：hello_xiangqian
+              </div>
+            </div>
+          )}
 
           <div className={styles.search_content_data}>
             <div className={styles.search_content_data_summary}>
@@ -507,41 +513,30 @@ function Search() {
                             styles.fetch_selected_summary_button_container
                           }
                         >
-                          <ConfigProvider
-                            theme={{
-                              token: {
-                                colorPrimary: '#000',
-                              },
-                              components: {
-                                Button: {
-                                  paddingInlineSM: 34,
-                                  borderRadius: 30,
-                                  defaultColor: '#000',
-                                  defaultBg: '#FFF',
-                                  defaultHoverBg: '#99E0ED',
-                                  defaultHoverBorderColor: '#EEE',
+                          <button
+                            onClick={() => {
+                              const papers = [...papers, ...papersZH].filter(
+                                (item) => checkedPapers.includes(item.id)
+                              );
+                              getAnalysisPedia(
+                                {
+                                  papers,
+                                  queryEn: queryRef.current.queryEn,
+                                  queryZh: queryRef.current.queryZh,
                                 },
-                              },
+                                'selected'
+                              );
                             }}
                           >
-                            <Button
-                              onClick={() => {
-                                const papers = [...papers, ...papersZH].filter(
-                                  (item) => checkedPapers.includes(item.id)
-                                );
-                                getAnalysisPedia(
-                                  {
-                                    papers,
-                                    queryEn: queryRef.current.queryEn,
-                                    queryZh: queryRef.current.queryZh,
-                                  },
-                                  'selected'
-                                );
-                              }}
-                            >
-                              获取总结
-                            </Button>
-                          </ConfigProvider>
+                            <Image
+                              alt=""
+                              className={
+                                styles.fetch_selected_summary_button_icon
+                              }
+                              src={RefreshIcon.src}
+                            />
+                            I用选中的文章生成总结，以获取更优结果
+                          </button>
                         </div>
                       )}
                       <div className={styles.content}>
@@ -563,6 +558,62 @@ function Search() {
             </div>
 
             <div className={styles.search_content_data_papers}>
+                <div className={styles.content_button}>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#000',
+                      },
+                      components: {
+                        Button: {
+                          paddingInlineSM: 34,
+                          defaultColor: '#000',
+                          defaultBg: '#FFF',
+                          defaultHoverBg: '#99E0ED',
+                          defaultHoverBorderColor: '#EEE',
+                        },
+                      },
+                    }}
+                  >
+                    <ModeButtons
+                      disabled={isLoadingList}
+                      mode={mode}
+                      setMode={setMode}
+                      onModeChangeClick={() => {
+                        setPageIndex(1);
+                      }}
+                    />
+                    {isSortActive ? (
+                      <Button
+                        className={styles.sort_button_active}
+                        disabled={isLoadingList}
+                        onClick={() => {
+                          onResultSortByTimeClick();
+                        }}
+                      >
+                        最新发表
+                        <Image
+                          className={styles.sort_button_icon}
+                          src={SortIcon}
+                        />
+                      </Button>
+                    ) : (
+                      <Button
+                        className={styles.sort_button}
+                        disabled={isLoadingList}
+                        onClick={() => {
+                          onResultSortByTimeClick();
+                        }}
+                      >
+                        最新发表
+                        <Image
+                          className={styles.sort_button_icon}
+                          src={SortIcon}
+                        />
+                      </Button>
+                    )}
+                  </ConfigProvider>
+                </div>
               {isLoadingList &&
                 paperSkeletons.map((item) => (
                   <div
@@ -578,76 +629,23 @@ function Search() {
                   </div>
                 ))}
 
-              {!isLoadingList && (
+              <div>
                 <div>
-                  <div className={styles.content_button}>
-                    <ConfigProvider
-                      theme={{
-                        token: {
-                          colorPrimary: '#000',
-                        },
-                        components: {
-                          Button: {
-                            paddingInlineSM: 34,
-                            defaultColor: '#000',
-                            defaultBg: '#FFF',
-                            defaultHoverBg: '#99E0ED',
-                            defaultHoverBorderColor: '#EEE',
-                          },
-                        },
-                      }}
-                    >
-                      <ModeButtons
-                        mode={mode}
-                        setMode={setMode}
-                        onModeChangeClick={() => {
-                          setPageIndex(1);
-                        }}
-                      />
-                      {isSortActive ? (
-                        <Button
-                          className={styles.sort_button_active}
-                          onClick={() => {
-                            onResultSortByTimeClick();
-                          }}
-                        >
-                          最新发表
-                          <Image
-                            className={styles.sort_button_icon}
-                            src={SortIcon}
-                          />
-                        </Button>
-                      ) : (
-                        <Button
-                          className={styles.sort_button}
-                          onClick={() => {
-                            onResultSortByTimeClick();
-                          }}
-                        >
-                          最新发表
-                          <Image
-                            className={styles.sort_button_icon}
-                            src={SortIcon}
-                          />
-                        </Button>
-                      )}
-                    </ConfigProvider>
-                  </div>
-                  <div>
-                    {showPapers.map((item) => {
-                      return (
-                        <>
-                          <ResultPaperItem
-                            key={item.id}
-                            data={item}
-                            isBorderVisible={true}
-                            checkedPapers={checkedPapers}
-                            setCheckedPapers={setCheckedPapers}
-                          />
-                        </>
-                      );
-                    })}
-                  </div>
+                  {showPapers.map((item) => {
+                    return (
+                      <>
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          isBorderVisible={true}
+                          checkedPapers={checkedPapers}
+                          setCheckedPapers={setCheckedPapers}
+                        />
+                      </>
+                    );
+                  })}
+                </div>
+                {!isLoadingList && (
                   <div>
                     <PageManager
                       pageIndex={pageIndex}
@@ -656,8 +654,8 @@ function Search() {
                       setPageIndex={setPageIndex}
                     />
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
