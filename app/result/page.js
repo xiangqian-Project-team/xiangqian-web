@@ -591,7 +591,7 @@ function Search() {
                   }}
                 >
                   <ModeButtons
-                    disabled={isLoadingList}
+                    disabled={isLoadingList || isLoadingSummary}
                     mode={mode}
                     setMode={setMode}
                     onModeChangeClick={() => {
@@ -601,7 +601,7 @@ function Search() {
                   {isSortActive ? (
                     <Button
                       className={styles.sort_button_active}
-                      disabled={isLoadingList}
+                      disabled={isLoadingList || isLoadingSummary}
                       onClick={() => {
                         onResultSortByTimeClick();
                       }}
@@ -615,7 +615,7 @@ function Search() {
                   ) : (
                     <Button
                       className={styles.sort_button}
-                      disabled={isLoadingList}
+                      disabled={isLoadingList || isLoadingSummary}
                       onClick={() => {
                         onResultSortByTimeClick();
                       }}
