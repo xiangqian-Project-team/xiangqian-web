@@ -75,6 +75,7 @@ export default function ResultPaperItem(props) {
     openAccessPdf,
     bibtex,
     doi,
+    isEn,
   } = props.data;
 
   const { isBorderVisible } = props;
@@ -213,16 +214,17 @@ export default function ResultPaperItem(props) {
               },
             }}
           >
-          <Button
-            className={styles.content_card_check}
-            onClick={() => {
-              const newCheckedPapers = [...props.checkedPapers, id];
-              props.setCheckedPapers(newCheckedPapers);
-            }}
-          >
-            <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
-            选中文本
-          </Button></ConfigProvider>
+            <Button
+              className={styles.content_card_check}
+              onClick={() => {
+                const newCheckedPapers = [...props.checkedPapers, id];
+                props.setCheckedPapers(newCheckedPapers);
+              }}
+            >
+              <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
+              选中文本
+            </Button>
+          </ConfigProvider>
         )}
       </div>
 
@@ -317,37 +319,39 @@ export default function ResultPaperItem(props) {
             },
           }}
         >
-          <Button
-            size="small"
-            loading={isReferencesLoading}
-            onClick={() => {
-              toggleReferences(id);
-            }}
-          >
-            {contentStatus === 'references' ? (
-              <>
-                收起
-                <UpOutlined
-                  style={{
-                    color: '#00A650',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
-            ) : (
-              <>
-                参考文献
-                <DownOutlined
-                  style={{
-                    color: '#00A650',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
-            )}
-          </Button>
+          {isEn && (
+            <Button
+              size="small"
+              loading={isReferencesLoading}
+              onClick={() => {
+                toggleReferences(id);
+              }}
+            >
+              {contentStatus === 'references' ? (
+                <>
+                  收起
+                  <UpOutlined
+                    style={{
+                      color: '#00A650',
+                      fontSize: '8px',
+                      marginLeft: '5px',
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  参考文献
+                  <DownOutlined
+                    style={{
+                      color: '#00A650',
+                      fontSize: '8px',
+                      marginLeft: '5px',
+                    }}
+                  />
+                </>
+              )}
+            </Button>
+          )}
           <Button
             size="small"
             loading={isAbstractLoading}
