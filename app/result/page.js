@@ -107,6 +107,7 @@ function ModeButtons(props) {
 function Search() {
   const router = useRouter();
   const [pageSize] = useState(10);
+  const [isInitialed, setIsInitialed] = useState(false)
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
@@ -286,12 +287,12 @@ function Search() {
   }, [papers, papersZH, pageIndex, isSortActive, mode, checkedPapers]);
 
   const isSearchPapersVisible = useMemo(() => {
-    return showPapers.length === 0 && !isLoadingList;
+    return isInitialed && showPapers.length === 0 && !isLoadingList;
   }, [showPapers, isLoadingList]);
 
   const isPapersEmptyErrorVisible = useMemo(() => {
     return (
-      !isLoadingList && !isLoadingSummary && !summary && !showPapers.length
+      isInitialed && !isLoadingList && !isLoadingSummary && !summary && !showPapers.length
     );
   }, [isLoadingList, isLoadingSummary, summary, showPapers]);
 
@@ -344,6 +345,7 @@ function Search() {
     let queryEn, queryZh, nextPapers;
     try {
       const listRes = await getPartPediaAsync({ query: queryText }, currMode);
+      setIsInitialed(true);
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
@@ -669,7 +671,7 @@ function Search() {
                     );
                   })}
                 </div>
-                {!isLoadingList && !isPapersEmptyErrorVisible && (
+                {isInitialed && !isLoadingList && !isPapersEmptyErrorVisible && (
                   <div>
                     <PageManager
                       pageIndex={pageIndex}
