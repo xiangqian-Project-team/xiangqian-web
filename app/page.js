@@ -45,33 +45,31 @@ export default function Home() {
     {
       title: '镶嵌该怎么用？',
       content: [
-        '当你搜索概念，我们会为你查询定义和研究进展',
-        '当你搜索问题，你会得到简要回答和一些观点',
-        '如果需要更加紧凑的、穿插文献的回应，点击底部按钮获取。',
+        '# 当作谷歌学术使用，获取更高质量的搜索结果，并快速获得解读',
+        '# 当作ChatGPT使用，得到具有文献支撑的答案',
+        '# 根据总结中的要点，生成文献综述参考。通过文献勾选，可调整写法',
       ],
     },
     {
       title: '镶嵌与GPT等对话式工具的比较优势?',
       content: [
-        '消除ChatGPT的幻觉，所有回应均依靠真实可靠的文献支撑',
-        '针对文献调研工作流（了解现状、挖掘灵感、梳理思路），给出特定回答',
-        '结合社会科学领域，进行问答能力、阅读方式、辅助信息等多重优化',
-        '费用仅为ChatGPT的1/3',
+        '# 消除GPT的幻觉，所有回答均同步提供可靠的文献支撑',
+        '# 结合社会科学领域，进行问答能力、阅读方式、辅助信息等多重优化',
+        '# 综合费用仅为GPT-4的1/3',
       ],
     },
     {
       title: '镶嵌为何限制免费次数？有何成本?',
       content: [
-        '镶嵌遵循检索增强生成（RAG）架构，由数十个机器学习（ML）组件组成。每次问答，N个组件需进行链式运转，需调用大量算力和相应云服务而产生开支。这会产生 N*（0.005RMB-0.01RMB）的开支。',
-        '为兼顾轻松提问和理想结果，我们致力于平衡组件复杂度和运算低成本，打造高性价比的智能方案。',
+        '# 基于检索增强生成(RAG)架构，由数十个机器学习(ML)组件组成。每次问答，多个组件的链式运转需调用大量算力和相应云服务，从而产生开支',
+        '# 我们始终致力于平衡组件复杂度和运算低成本，打造高性价比的智能方案',
       ],
     },
     {
       title: '我如何联系团队?',
       content: [
-        '你好！我们总是期待和您交流 : &#41;',
-        '任何有关镶嵌反馈、建议和批评，以及有关AI+社会科学的想法，都欢迎添加用户服务微信 hello-xiangqian 交流',
-        '我们的自媒体社区正在筹备中，届时你可以加入了解更多。',
+        '你好，我们总是期待和您交流:) 不只是反馈、建议和批评，还有你对AI+科研的奇思妙想。',
+        '欢迎添加用户服务微信 hello-xiangqian',
       ],
     },
   ];
@@ -86,7 +84,8 @@ export default function Home() {
         </div>
         <HomeTextArea />
         <div className={styles.home_search_tips}>
-          *Powered by Gemmed Search, 基于社会科学大数据的「推理式」英文文献搜索
+          *Powered by Gemmed Search,
+          基于社科大数据的「推理式」文献搜索与回答引擎
         </div>
 
         <div className={styles.home_search_recommend}>
@@ -108,7 +107,7 @@ export default function Home() {
       <div className={styles.home_intro}>
         <div className={styles.home_intro_title}>为什么使用「镶嵌」</div>
         <div className={styles.home_intro_sub_title}>
-          借助前沿的AI技术，增强文献搜索能力，重塑结果反馈的方式
+          基于前沿AI技术，更强大的文献搜索能力，更明快的结果反馈方式
         </div>
         <div className={styles.home_intro_list}>
           <div className={styles.home_intro_list_item}>
@@ -121,7 +120,10 @@ export default function Home() {
             />
             <div className={styles.home_intro_list_item_h1}>推理式搜索</div>
             <div className={styles.home_intro_list_item_h2}>
-              无需提炼关键词，更直接的提问方式，更明快的搜索结果。用中文也能搜到英文文献。
+              像聊天一样搜索！
+            </div>
+            <div className={styles.home_intro_list_item_h2}>
+              只用中文也能搜到双语文献。
             </div>
           </div>
           <div className={styles.home_intro_list_item}>
@@ -132,12 +134,15 @@ export default function Home() {
               height={68}
               alt="report"
             />
-            <div className={styles.home_intro_list_item_h1}>基于文献的回应</div>
+            <div className={styles.home_intro_list_item_h1}>基于文献回应</div>
             <div className={styles.home_intro_list_item_h2}>
-              每篇给出的文献都真实存在且路径可查，你可以通过摘要、原文链接甚至是PDF全文快速确认。
+              让GPT变得可靠！
+            </div>
+            <div className={styles.home_intro_list_item_h2}>
+              事关学术，必须有理也有据。
             </div>
             <div className={styles.home_intro_list_item_h6}>
-              *部分信息受限于版权，建议查看原文。
+              *部分信息受限于版权，需跳转查看原文。
             </div>
           </div>
           <div className={styles.home_intro_list_item}>
@@ -148,9 +153,10 @@ export default function Home() {
               height={68}
               alt="workFlow"
             />
-            <div className={styles.home_intro_list_item_h1}>加速学术工作流</div>
+            <div className={styles.home_intro_list_item_h1}>文献内容速览</div>
+            <div className={styles.home_intro_list_item_h2}>一目十行！</div>
             <div className={styles.home_intro_list_item_h2}>
-              快速了解陌生学术领域的中英文研究，轻松定位相关方向的学术论文，获取研究思路和启发。
+              文献要点和综述，都已整理就绪。
             </div>
           </div>
         </div>
@@ -169,7 +175,7 @@ export default function Home() {
         </div>
         <div className={styles.home_desc_title}>为什么更适合社会科学？</div>
         <div className={styles.home_desc_sub_title}>
-          多位行业顶尖的社会科学专家参与设计，充分考虑社科文献的使用场景
+          十余名行业顶尖的社会科学专家参与设计，充分考虑社科学术的使用场景
         </div>
         <div className={styles.home_desc_list}>
           <div className={styles.home_desc_list_item}>
@@ -186,8 +192,8 @@ export default function Home() {
               </div>
               <div className={styles.home_desc_list_item_h2}>
                 聚合中英文文献库。已实现中文核心期刊全覆盖，同时提供Elsevier,
-                Springer Nature, Wiley, Taylor & Francis, SAGE, NAS, Frontiers,
-                MDPI等主流出版商的全部英文文献。
+                Springer Nature, Wiley, Taylor & Francis, SAGE, NAS, AAAS, AEA,
+                INFORMS, The BMJ等主流出版商和协会的全部英文文献。
               </div>
             </div>
           </div>
@@ -221,7 +227,12 @@ export default function Home() {
                 社会科学专业期刊分级标注
               </div>
               <div className={styles.home_desc_list_item_h2}>
-                提供JCR、CSSCI等中英文期刊索引标识，及部分专业性榜单标注（如UTD24、国家社科基金资助期刊等）。
+                英文期刊提供JCR分区、A&HCI
+                索引，中文期刊提供南大/北大核心等期刊索引标识。
+                让权威期刊更醒目（如AMI权威、UTD24、FT50等），帮你快速定位高水平文献。
+              </div>
+              <div className={styles.home_desc_list_item_h3}>
+                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文顶级/权威期刊综合参照中国社科院AMI评价、基金委重点期刊等正式来源标注。
               </div>
             </div>
           </div>
@@ -238,7 +249,7 @@ export default function Home() {
                 优化中英文显示
               </div>
               <div className={styles.home_desc_list_item_h2}>
-                用中文概括英文文献的要点，一眼即可了解文章议题，更符合中国学者的习惯。
+                试试英文文献的中文简介！一眼即可了解文章的主要议题，更符合中国学者的习惯。
               </div>
             </div>
           </div>

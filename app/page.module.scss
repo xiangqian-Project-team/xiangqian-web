@@ -197,6 +197,9 @@
           margin-bottom: 15px;
         }
         .home_intro_list_item_h2 {
+          display: flex;
+          justify-content: center;
+          align-items: center;
           font-size: 14px;
           width: 232px;
           line-height: 20px;
@@ -256,6 +259,12 @@
           .home_desc_list_item_h2 {
             font-size: 14px;
             line-height: 20px;
+          }
+          .home_desc_list_item_h3 {
+            font-size: 10px;
+            color: #7d7b7b;
+            position: absolute;
+            bottom: 15px;
           }
         }
       }

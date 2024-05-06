@@ -34,7 +34,7 @@ export default function Footer(props) {
       </div> */}
 
       <div className={styles.footer_footer}>
-        <span>Copyright © 2024-2025 南京相嵌科技有限公司.</span>
+        <span>Copyright © 2024-2025 南京相嵌科技有限公司</span>
         <span>All Rights Reserved</span>
         <span>苏ICP备2024092953号</span>
       </div>
