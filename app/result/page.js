@@ -392,6 +392,7 @@ function Search() {
         return [
           ...arr,
           <Popover
+            key={paper.id}
             placement="rightTop"
             trigger="click"
             overlayStyle={{ padding: 0, maxWidth: 790 }}
