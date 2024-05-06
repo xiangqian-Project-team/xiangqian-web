@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Button, ConfigProvider, Popover, Skeleton } from 'antd';
+import { Button, ConfigProvider, Modal, Popover, Skeleton } from 'antd';
 import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
+import ErrorIcon from '../icons/error_icon.svg';
 import LangCNIcon from '../icons/lang_cn.svg';
 import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LangENIcon from '../icons/lang_en.svg';
@@ -106,6 +107,7 @@ function ModeButtons(props) {
 function Search() {
   const router = useRouter();
   const [pageSize] = useState(10);
+  const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [mode, setMode] = useAtom(modeAtom); // en | zh-cn | selected
@@ -283,7 +285,11 @@ function Search() {
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
   }, [papers, papersZH, pageIndex, isSortActive, mode, checkedPapers]);
 
-  const isErrorVisible = useMemo(() => {
+  const isSearchPapersVisible = useMemo(() => {
+    return showPapers.length === 0 && !isLoadingList;
+  }, [showPapers, isLoadingList]);
+
+  const isPapersEmptyErrorVisible = useMemo(() => {
     return (
       !isLoadingList && !isLoadingSummary && !summary && !showPapers.length
     );
@@ -474,7 +480,7 @@ function Search() {
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
 
-          {isErrorVisible && (
+          {isPapersEmptyErrorVisible && (
             <div className={styles.search_content_empty}>
               <div className={styles.search_content_empty_card}>
                 <div className={styles.text}>
@@ -515,12 +521,16 @@ function Search() {
                         >
                           <button
                             onClick={() => {
-                              const papers = [...papers, ...papersZH].filter(
+                              const thePapers = [...papers, ...papersZH].filter(
                                 (item) => checkedPapers.includes(item.id)
                               );
+                              if (thePapers.length < 10) {
+                                setIsNoEnoughModalVisible(true);
+                                return;
+                              }
                               getAnalysisPedia(
                                 {
-                                  papers,
+                                  papers: thePapers,
                                   queryEn: queryRef.current.queryEn,
                                   queryZh: queryRef.current.queryZh,
                                 },
@@ -533,9 +543,11 @@ function Search() {
                               className={
                                 styles.fetch_selected_summary_button_icon
                               }
+                              width={18}
+                              height={18}
                               src={RefreshIcon.src}
                             />
-                            I用选中的文章生成总结，以获取更优结果
+                            用选中的文章生成总结，以获取更优结果
                           </button>
                         </div>
                       )}
@@ -558,62 +570,62 @@ function Search() {
             </div>
 
             <div className={styles.search_content_data_papers}>
-                <div className={styles.content_button}>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: '#000',
+              <div className={styles.content_button}>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: '#000',
+                    },
+                    components: {
+                      Button: {
+                        paddingInlineSM: 34,
+                        defaultColor: '#000',
+                        defaultBg: '#FFF',
+                        defaultHoverBg: '#99E0ED',
+                        defaultHoverBorderColor: '#EEE',
                       },
-                      components: {
-                        Button: {
-                          paddingInlineSM: 34,
-                          defaultColor: '#000',
-                          defaultBg: '#FFF',
-                          defaultHoverBg: '#99E0ED',
-                          defaultHoverBorderColor: '#EEE',
-                        },
-                      },
+                    },
+                  }}
+                >
+                  <ModeButtons
+                    disabled={isLoadingList}
+                    mode={mode}
+                    setMode={setMode}
+                    onModeChangeClick={() => {
+                      setPageIndex(1);
                     }}
-                  >
-                    <ModeButtons
+                  />
+                  {isSortActive ? (
+                    <Button
+                      className={styles.sort_button_active}
                       disabled={isLoadingList}
-                      mode={mode}
-                      setMode={setMode}
-                      onModeChangeClick={() => {
-                        setPageIndex(1);
+                      onClick={() => {
+                        onResultSortByTimeClick();
                       }}
-                    />
-                    {isSortActive ? (
-                      <Button
-                        className={styles.sort_button_active}
-                        disabled={isLoadingList}
-                        onClick={() => {
-                          onResultSortByTimeClick();
-                        }}
-                      >
-                        最新发表
-                        <Image
-                          className={styles.sort_button_icon}
-                          src={SortIcon}
-                        />
-                      </Button>
-                    ) : (
-                      <Button
-                        className={styles.sort_button}
-                        disabled={isLoadingList}
-                        onClick={() => {
-                          onResultSortByTimeClick();
-                        }}
-                      >
-                        最新发表
-                        <Image
-                          className={styles.sort_button_icon}
-                          src={SortIcon}
-                        />
-                      </Button>
-                    )}
-                  </ConfigProvider>
-                </div>
+                    >
+                      最新发表
+                      <Image
+                        className={styles.sort_button_icon}
+                        src={SortIcon}
+                      />
+                    </Button>
+                  ) : (
+                    <Button
+                      className={styles.sort_button}
+                      disabled={isLoadingList}
+                      onClick={() => {
+                        onResultSortByTimeClick();
+                      }}
+                    >
+                      最新发表
+                      <Image
+                        className={styles.sort_button_icon}
+                        src={SortIcon}
+                      />
+                    </Button>
+                  )}
+                </ConfigProvider>
+              </div>
               {isLoadingList &&
                 paperSkeletons.map((item) => (
                   <div
@@ -631,6 +643,18 @@ function Search() {
 
               <div>
                 <div>
+                  {isSearchPapersVisible && (
+                    <div className={styles.no_papers_tip}>
+                      <Image
+                        className={styles.no_papers_tip_icon}
+                        src={ErrorIcon}
+                      />
+                      <div className={styles.no_papers_tip_desc}>
+                        该主题没有检测到{mode === 'en' ? '英文' : '中文'}
+                        文献，尝试更换输入后再试试吧
+                      </div>
+                    </div>
+                  )}
                   {showPapers.map((item) => {
                     return (
                       <>
@@ -645,7 +669,7 @@ function Search() {
                     );
                   })}
                 </div>
-                {!isLoadingList && (
+                {!isLoadingList && !isPapersEmptyErrorVisible && (
                   <div>
                     <PageManager
                       pageIndex={pageIndex}
@@ -660,6 +684,18 @@ function Search() {
           </div>
         </div>
       </div>
+      <Modal
+        title="使用方法提示"
+        open={isNoEnoughModalVisible}
+        onCancel={() => {
+          setIsNoEnoughModalVisible(false);
+        }}
+        footer={null}
+        width={552}
+        wrapClassName={styles.not_enough_select_paper_modal}
+      >
+        <p>选中文献过少，选择10-20篇文献以获得更好的重写效果。</p>
+      </Modal>
     </div>
   );
 }

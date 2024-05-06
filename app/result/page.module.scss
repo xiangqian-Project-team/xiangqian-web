@@ -111,7 +111,7 @@
           text-align: center;
           background: rgba(255, 255, 255, 0.4);
           border-radius: 13px;
-          border: 1px solid #84C4B5;
+          border: 1px solid #84c4b5;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -183,11 +183,14 @@
           .fetch_selected_summary_button_container {
             display: flex;
             justify-content: center;
-            margin-top: 50px;
+            padding: 100px 0 70px;
             button {
               color: #0fbce2;
               background: none;
               border: none;
+              display: flex;
+              align-items: center;
+              cursor: pointer;
               .fetch_selected_summary_button_icon {
                 margin-right: 5px;
               }
@@ -236,6 +239,17 @@
         .search_content_data_papers {
           width: 63%;
           position: relative;
+
+          .no_papers_tip {
+            .no_papers_tip_icon {
+              display: block;
+              margin: 150px auto 20px;
+            }
+            .no_papers_tip_desc {
+              text-align: center;
+              color: #0fbce2;
+            }
+          }
 
           .content_button {
             display: flex;
@@ -292,6 +306,33 @@
               background-color: #99e0ed;
             }
           }
+        }
+      }
+    }
+  }
+}
+.not_enough_select_paper_modal {
+  :global {
+    .ant-modal {
+      border-radius: 14px;
+      .ant-modal-content {
+        padding: 0;
+        .ant-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 46px;
+          background: linear-gradient(
+            58deg,
+            #e1daff 0%,
+            #deebfd 50%,
+            #a4e5f0 100%
+          );
+        }
+        .ant-modal-body {
+          text-align: center;
+          font-size: 16px;
+          padding: 50px 0 50px;
         }
       }
     }
