@@ -7,6 +7,7 @@
  * @Description:
  */
 import Image from 'next/image';
+import Footer from './components/footer';
 import HomeTextArea from './components/homeTextArea';
 import LoginBtn from './components/loginBtn';
 import RecommendBtnListCom from './components/recommendBtnList';
@@ -351,7 +352,7 @@ export default function Home() {
           />
         </div>
       </div>
-
+      <Footer />
       <LoginBtn />
     </div>
   );

@@ -6,15 +6,15 @@
  * @FilePath: /xiangqian-web/app/components/footer.js
  * @Description:
  */
-import Image from 'next/image';
-import Logo2Icon from '../img/logo2.png';
+// import Image from 'next/image';
+// import Logo2Icon from '../img/logo2.png';
 import styles from './footer.module.scss';
 
 export default function Footer(props) {
   const { width = '100%' } = props;
   return (
     <div className={styles.footer} style={{ width }}>
-      <div className={styles.footer_message}>
+      {/* <div className={styles.footer_message}>
         <div className={styles.footer_message_line} />
         <div className={styles.footer_message_content}>
           <Image src={Logo2Icon.src} width={64} height={76} alt="logo2" />
@@ -31,12 +31,12 @@ export default function Footer(props) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className={styles.footer_footer}>
-        <span>Copyright © 2023-2024 GEMMED有限公司</span>
+        <span>Copyright © 2024-2025 南京相嵌科技有限公司.</span>
         <span>All Rights Reserved</span>
-        <span>京ICP备234294309</span>
+        <span>苏ICP备2024092953号</span>
       </div>
     </div>
   );
