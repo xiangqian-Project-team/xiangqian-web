@@ -13,7 +13,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
@@ -28,10 +28,7 @@ import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import EmptyIcon from '../img/empty.png';
-import {
-  modeAtom,
-  searchValueAtom,
-} from '../models/search';
+import { modeAtom, searchValueAtom } from '../models/search';
 import {
   getAnalysisPedia as getAnalysisPediaAsync,
   getPartPedia as getPartPediaAsync,
@@ -106,7 +103,7 @@ function Search() {
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [mode, setMode] = useAtom(modeAtom); // en | zh-cn | selected
-  const queryRef = useRef({queryEn: '', queryZh: ''});
+  const queryRef = useRef({ queryEn: '', queryZh: '' });
   const paperSkeletons = useMemo(
     () =>
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
@@ -160,7 +157,7 @@ function Search() {
     }
 
     const data = await res.json();
-    switch(currentMode) {
+    switch (currentMode) {
       case 'en':
         setSummary(data.answer);
         setBulletPoints(data.bulletPoints);
@@ -340,10 +337,10 @@ function Search() {
       nextPapers = data.papers;
       switch (currMode) {
         case 'en':
-          setPapers(nextPapers);
+          setPapers(nextPapers || []);
           break;
         case 'zh-cn':
-          setPapersZH(nextPapers);
+          setPapersZH(nextPapers || []);
           break;
       }
       await getAnalysisPedia(
@@ -505,34 +502,47 @@ function Search() {
                         总结
                       </div>
                       {mode === 'selected' && !showSummary.summary && (
-                        <div  className={styles.fetch_selected_summary_button_container}>
-                        <ConfigProvider
-                          theme={{
-                            token: {
-                              colorPrimary: '#000',
-                            },
-                            components: {
-                              Button: {
-                                paddingInlineSM: 34,
-                                borderRadius: 30,
-                                defaultColor: '#000',
-                                defaultBg: '#FFF',
-                                defaultHoverBg: '#99E0ED',
-                                defaultHoverBorderColor: '#EEE',
-                              },
-                            },
-                          }}
+                        <div
+                          className={
+                            styles.fetch_selected_summary_button_container
+                          }
                         >
-                          <Button onClick={() => {
-                            const papers = [...papers, ...papersZH].filter((item) =>
-                              checkedPapers.includes(item.id)
-                            );
-                             getAnalysisPedia(
-                              { papers, queryEn: queryRef.current.queryEn, queryZh: queryRef.current.queryZh},
-                              'selected'
-                            );
-                          }}>获取总结</Button>
-                        </ConfigProvider></div>
+                          <ConfigProvider
+                            theme={{
+                              token: {
+                                colorPrimary: '#000',
+                              },
+                              components: {
+                                Button: {
+                                  paddingInlineSM: 34,
+                                  borderRadius: 30,
+                                  defaultColor: '#000',
+                                  defaultBg: '#FFF',
+                                  defaultHoverBg: '#99E0ED',
+                                  defaultHoverBorderColor: '#EEE',
+                                },
+                              },
+                            }}
+                          >
+                            <Button
+                              onClick={() => {
+                                const papers = [...papers, ...papersZH].filter(
+                                  (item) => checkedPapers.includes(item.id)
+                                );
+                                getAnalysisPedia(
+                                  {
+                                    papers,
+                                    queryEn: queryRef.current.queryEn,
+                                    queryZh: queryRef.current.queryZh,
+                                  },
+                                  'selected'
+                                );
+                              }}
+                            >
+                              获取总结
+                            </Button>
+                          </ConfigProvider>
+                        </div>
                       )}
                       <div className={styles.content}>
                         {showSummary.summary && (
@@ -594,19 +604,33 @@ function Search() {
                           setPageIndex(1);
                         }}
                       />
-
-                      <Button
-                        className={styles.sort_button}
-                        onClick={() => {
-                          onResultSortByTimeClick();
-                        }}
-                      >
-                        最新发表
-                        <Image
-                          className={styles.sort_button_icon}
-                          src={SortIcon}
-                        />
-                      </Button>
+                      {isSortActive ? (
+                        <Button
+                          className={styles.sort_button_active}
+                          onClick={() => {
+                            onResultSortByTimeClick();
+                          }}
+                        >
+                          最新发表
+                          <Image
+                            className={styles.sort_button_icon}
+                            src={SortIcon}
+                          />
+                        </Button>
+                      ) : (
+                        <Button
+                          className={styles.sort_button}
+                          onClick={() => {
+                            onResultSortByTimeClick();
+                          }}
+                        >
+                          最新发表
+                          <Image
+                            className={styles.sort_button_icon}
+                            src={SortIcon}
+                          />
+                        </Button>
+                      )}
                     </ConfigProvider>
                   </div>
                   <div>
