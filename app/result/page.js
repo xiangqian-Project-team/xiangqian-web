@@ -197,6 +197,17 @@ function Search() {
     const processedMap = new Map(
       processedPapers.map((item) => [item.id, item])
     );
+    if (currMode === 'zh-cn') {
+      const newPapers = papersZH.map((item) => {
+        if (processedMap.has(item.id)) {
+          return { ...item, response: processedMap.get(item.id).response };
+        }
+        return item;
+      });
+      setPapersZH(newPapers);
+      return;
+    }
+
     const newPapers = papers.map((item) => {
       if (processedMap.has(item.id)) {
         return { ...item, response: processedMap.get(item.id).response };
@@ -207,6 +218,7 @@ function Search() {
   };
 
   const getResponsePedia = async () => {
+    const currMode = mode;
     const fetchList = [];
     showPapers.forEach((element) => {
       if (element.response) {
@@ -227,6 +239,17 @@ function Search() {
     const processedMap = new Map(
       processedPapers.map((item) => [item.id, item])
     );
+    if (currMode === 'zh-cn') {
+      const newPapers = papersZH.map((item) => {
+        if (processedMap.has(item.id)) {
+          return { ...item, response: processedMap.get(item.id).response };
+        }
+        return item;
+      });
+      setPapersZH(newPapers);
+      return;
+    }
+
     const newPapers = papers.map((item) => {
       if (processedMap.has(item.id)) {
         return { ...item, response: processedMap.get(item.id).response };
