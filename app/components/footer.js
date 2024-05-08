@@ -14,29 +14,10 @@ export default function Footer(props) {
   const { width = '100%' } = props;
   return (
     <div className={styles.footer} style={{ width }}>
-      {/* <div className={styles.footer_message}>
-        <div className={styles.footer_message_line} />
-        <div className={styles.footer_message_content}>
-          <Image src={Logo2Icon.src} width={64} height={76} alt="logo2" />
-
-          <div className={styles.footer_message_content_relation}>
-            <div style={{ marginBottom: '8px' }}>
-              <span>客服邮箱：support@xxxx.com</span>
-              <span>邮编：100023</span>
-            </div>
-
-            <div>
-              <span>官方微信：support@xxxx.com</span>
-              <span>地址：上海市长宁区xx路2343号</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className={styles.footer_footer}>
-        <span>Copyright © 2024-2025 南京相嵌科技有限公司</span>
-        <span>All Rights Reserved</span>
         <span>苏ICP备2024092953号</span>
+        <span>Copyright © 2024-2025 南京相嵌科技有限公司</span>
+        <span>苏公网安备32010602011503号</span>
       </div>
     </div>
   );
