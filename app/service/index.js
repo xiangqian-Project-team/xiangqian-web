@@ -11,7 +11,7 @@ import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
-  'https://gemmed-wlpv-serverllication-jmzyjbfvxt.us-west-1.fcapp.run';
+  'https://gemmed-unctions-knxybyvesh.us-west-1.fcapp.run';
 
 const request = async (url, method, params) => {
   const option = {
