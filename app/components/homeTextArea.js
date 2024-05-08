@@ -28,7 +28,7 @@ function HomeTextArea() {
     <div className={styles.homeTextArea}>
       <TextArea
         maxLength={150}
-        placeholder="支持中英文输入。观点或是问题，都有基于文献的回应..."
+        placeholder="整合Web of Science, CNKI等资源库，支持中英文输入......"
         style={{
           height: 138,
           width: 744,
@@ -60,7 +60,12 @@ function HomeTextArea() {
             setMode(e.target.value);
           }}
         />
-        <label htmlFor="en" className={mode === 'en' ? styles.lang_button_active : ''}>英文文献</label>
+        <label
+          htmlFor="en"
+          className={mode === 'en' ? styles.lang_button_active : ''}
+        >
+          英文文献
+        </label>
         <input
           type="radio"
           id="zh-cn"
@@ -71,7 +76,12 @@ function HomeTextArea() {
             setMode(e.target.value);
           }}
         />
-        <label htmlFor="zh-cn" className={mode === 'zh-cn' ? styles.lang_button_active : ''}>中文文献</label>
+        <label
+          htmlFor="zh-cn"
+          className={mode === 'zh-cn' ? styles.lang_button_active : ''}
+        >
+          中文文献
+        </label>
       </div>
 
       <div className={styles.homeTextArea_btn}>
