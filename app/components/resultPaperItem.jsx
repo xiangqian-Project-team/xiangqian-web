@@ -9,10 +9,7 @@ import SelectedWhiteButtonIcon from '../icons/selected_white_button_icon.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
-import {
-  fetchAbstract as fetchAbstractAsync,
-  fetchReferences as fetchReferencesAsync,
-} from '../service';
+import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
@@ -82,10 +79,8 @@ export default function ResultPaperItem(props) {
 
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
-  const [references, setReferences] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
-  const [isReferencesLoading, setIsReferencesLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
   const IsSelected = useCallback(
@@ -120,33 +115,6 @@ export default function ResultPaperItem(props) {
       console.error(error);
     } finally {
       setIsAbstractLoading(false);
-    }
-  };
-
-  const toggleReferences = async (id) => {
-    try {
-      if (contentStatus === 'references') {
-        setContentStatus('closed');
-        return;
-      }
-      if (references) {
-        setContentStatus('references');
-        return;
-      }
-
-      setIsReferencesLoading(true);
-
-      const res = await fetchReferencesAsync(id);
-      if (!res.ok) {
-        throw new Error('Failed search');
-      }
-      const { references: refs } = await res.json();
-      setReferences(refs);
-      setContentStatus('references');
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsReferencesLoading(false);
     }
   };
 
@@ -319,39 +287,6 @@ export default function ResultPaperItem(props) {
             },
           }}
         >
-          {isEn && (
-            <Button
-              size="small"
-              loading={isReferencesLoading}
-              onClick={() => {
-                toggleReferences(id);
-              }}
-            >
-              {contentStatus === 'references' ? (
-                <>
-                  收起
-                  <UpOutlined
-                    style={{
-                      color: '#00A650',
-                      fontSize: '8px',
-                      marginLeft: '5px',
-                    }}
-                  />
-                </>
-              ) : (
-                <>
-                  参考文献
-                  <DownOutlined
-                    style={{
-                      color: '#00A650',
-                      fontSize: '8px',
-                      marginLeft: '5px',
-                    }}
-                  />
-                </>
-              )}
-            </Button>
-          )}
           <Button
             size="small"
             loading={isAbstractLoading}
@@ -412,12 +347,6 @@ export default function ResultPaperItem(props) {
               由于版权问题，我们无法提供本文的摘要，请点击「查看原文」前往官网查看。
             </span>
           )}
-        </div>
-      )}
-
-      {contentStatus === 'references' && (
-        <div className={styles.content_card_paperAbstract}>
-          <span>{references}</span>
         </div>
       )}
 
