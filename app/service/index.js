@@ -11,7 +11,7 @@ import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
-  'https://gemmed-unctions-knxybyvesh.us-west-1.fcapp.run';
+  'https://gemmed-unctions-qhwhoxyzwh.us-west-1.fcapp.run';
 
 const request = async (url, method, params) => {
   const option = {
@@ -105,23 +105,7 @@ export const getResponsePedia = async (params) => {
 export const fetchAbstract = async (paperId) => {
   // Assuming the token is stored and should be included in the request if available
   const token = getItem('token');
-  const apiUrl = `${FUNCTION_BASE_URL}/abstract?paperId=${encodeURIComponent(paperId)}`;
-  const options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  if (token) {
-    options.headers.Authorization = `Bearer ${token}`;
-  }
-  return fetch(apiUrl, options);
-};
-
-export const fetchReferences = async (paperId) => {
-  const token = getItem('token');
-  const apiUrl = `${FUNCTION_BASE_URL}/paper_references?paperId=${encodeURIComponent(paperId)}`;
+  const apiUrl = `${FUNCTION_BASE_URL}/abstract?paper_id=${encodeURIComponent(paperId)}`;
   const options = {
     method: 'GET',
     headers: {
