@@ -319,9 +319,17 @@ function Search() {
       !isLoadingList &&
       !isLoadingSummary &&
       !summary &&
+      !summaryZh &&
       !showPapers.length
     );
-  }, [isLoadingList, isLoadingSummary, summary, showPapers]);
+  }, [
+    isInitialed,
+    isLoadingList,
+    isLoadingSummary,
+    summary,
+    summaryZh,
+    showPapers,
+  ]);
 
   const totalPapers = useMemo(() => {
     switch (mode) {
@@ -373,8 +381,8 @@ function Search() {
 
     let queryEn, queryZh, nextPapers;
     try {
-      const listRes = await getPartPediaAsync({ query: queryText }, currMode);
       setIsInitialed(true);
+      const listRes = await getPartPediaAsync({ query: queryText }, currMode);
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
@@ -526,196 +534,201 @@ function Search() {
             </div>
           )}
 
-          <div className={styles.search_content_data}>
-            <div className={styles.search_content_data_summary}>
-              {
-                <div>
-                  <Skeleton
-                    active
-                    loading={isLoadingSummary}
-                    style={{ padding: '20px' }}
-                    paragraph={{ rows: 16 }}
-                  >
-                    <>
-                      <div className={styles.header}>
-                        <Image
-                          alt=""
-                          className={styles.header_triangle}
-                          src={RoundedArrow}
-                        />
-                        总结
-                      </div>
-                      {mode === 'selected' && !showSummary.summary && (
-                        <div
-                          className={
-                            styles.fetch_selected_summary_button_container
-                          }
-                        >
-                          <button
-                            onClick={() => {
-                              const thePapers = [...papers, ...papersZH].filter(
-                                (item) => checkedPapers.includes(item.id)
-                              );
-                              if (thePapers.length < 10) {
-                                setIsNoEnoughModalVisible(true);
-                                return;
-                              }
-                              getAnalysisPedia(
-                                {
-                                  papers: thePapers,
-                                  queryEn: queryRef.current.queryEn,
-                                  queryZh: queryRef.current.queryZh,
-                                },
-                                'selected'
-                              );
-                            }}
-                          >
-                            <Image
-                              alt=""
-                              className={
-                                styles.fetch_selected_summary_button_icon
-                              }
-                              width={18}
-                              height={18}
-                              src={RefreshIcon.src}
-                            />
-                            用选中的文章生成总结，以获取更优结果
-                          </button>
-                        </div>
-                      )}
-                      <div className={styles.content}>
-                        {showSummary.summary && (
-                          <>
-                            <div className={styles.content_summary}>
-                              {getReplacedSummary(showSummary.summary)}
-                            </div>
-                            <div className={styles.content_summaryZh}>
-                              {getReplacedSummary(showSummary.bulletPoints)}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </>
-                  </Skeleton>
-                </div>
-              }
-            </div>
-
-            <div className={styles.search_content_data_papers}>
-              <div className={styles.content_button}>
-                <ConfigProvider
-                  theme={{
-                    token: {
-                      colorPrimary: '#000',
-                    },
-                    components: {
-                      Button: {
-                        paddingInlineSM: 34,
-                        defaultColor: '#000',
-                        defaultBg: '#FFF',
-                        defaultHoverBg: '#99E0ED',
-                        defaultHoverBorderColor: '#EEE',
-                      },
-                    },
-                  }}
-                >
-                  <ModeButtons
-                    disabled={isLoadingList || isLoadingSummary}
-                    mode={mode}
-                    setMode={setMode}
-                    onModeChangeClick={() => {
-                      setPageIndex(1);
-                    }}
-                  />
-                  {isSortActive ? (
-                    <Button
-                      className={styles.sort_button_active}
-                      disabled={isLoadingList || isLoadingSummary}
-                      onClick={() => {
-                        onResultSortByTimeClick();
-                      }}
+          {!isPapersEmptyErrorVisible && (
+            <div className={styles.search_content_data}>
+              <div className={styles.search_content_data_summary}>
+                {
+                  <div>
+                    <Skeleton
+                      active
+                      loading={isLoadingSummary}
+                      style={{ padding: '20px' }}
+                      paragraph={{ rows: 16 }}
                     >
-                      近期发表
-                      <Image
-                        className={styles.sort_button_icon}
-                        src={SortIcon}
-                      />
-                    </Button>
-                  ) : (
-                    <Button
-                      className={styles.sort_button}
-                      disabled={isLoadingList || isLoadingSummary}
-                      onClick={() => {
-                        onResultSortByTimeClick();
-                      }}
-                    >
-                      近期发表
-                      <Image
-                        className={styles.sort_button_icon}
-                        src={SortIcon}
-                      />
-                    </Button>
-                  )}
-                </ConfigProvider>
-              </div>
-              {isLoadingList &&
-                paperSkeletons.map((item) => (
-                  <div
-                    style={{
-                      background: 'white',
-                      margin: '0 0 10px',
-                      padding: '20px',
-                      borderRadius: '12px',
-                    }}
-                    key={item.id}
-                  >
-                    <Skeleton active />
-                  </div>
-                ))}
-
-              <div>
-                <div>
-                  {isSearchPapersVisible && (
-                    <div className={styles.no_papers_tip}>
-                      <Image
-                        className={styles.no_papers_tip_icon}
-                        src={ErrorIcon}
-                      />
-                      <div className={styles.no_papers_tip_desc}>
-                        该主题没有检测到{mode === 'en' ? '英文' : '中文'}
-                        文献，尝试更换输入后再试试吧
-                      </div>
-                    </div>
-                  )}
-                  {showPapers.map((item) => {
-                    return (
                       <>
-                        <ResultPaperItem
-                          key={item.id}
-                          data={item}
-                          isBorderVisible={true}
-                          checkedPapers={checkedPapers}
-                          setCheckedPapers={setCheckedPapers}
-                        />
+                        <div className={styles.header}>
+                          <Image
+                            alt=""
+                            className={styles.header_triangle}
+                            src={RoundedArrow}
+                          />
+                          总结
+                        </div>
+                        {mode === 'selected' && !showSummary.summary && (
+                          <div
+                            className={
+                              styles.fetch_selected_summary_button_container
+                            }
+                          >
+                            <button
+                              onClick={() => {
+                                const thePapers = [
+                                  ...papers,
+                                  ...papersZH,
+                                ].filter((item) =>
+                                  checkedPapers.includes(item.id)
+                                );
+                                if (thePapers.length < 10) {
+                                  setIsNoEnoughModalVisible(true);
+                                  return;
+                                }
+                                getAnalysisPedia(
+                                  {
+                                    papers: thePapers,
+                                    queryEn: queryRef.current.queryEn,
+                                    queryZh: queryRef.current.queryZh,
+                                  },
+                                  'selected'
+                                );
+                              }}
+                            >
+                              <Image
+                                alt=""
+                                className={
+                                  styles.fetch_selected_summary_button_icon
+                                }
+                                width={18}
+                                height={18}
+                                src={RefreshIcon.src}
+                              />
+                              用选中的文章生成总结，以获取更优结果
+                            </button>
+                          </div>
+                        )}
+                        <div className={styles.content}>
+                          {showSummary.summary && (
+                            <>
+                              <div className={styles.content_summary}>
+                                {getReplacedSummary(showSummary.summary)}
+                              </div>
+                              <div className={styles.content_summaryZh}>
+                                {getReplacedSummary(showSummary.bulletPoints)}
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </>
-                    );
-                  })}
+                    </Skeleton>
+                  </div>
+                }
+              </div>
+
+              <div className={styles.search_content_data_papers}>
+                <div className={styles.content_button}>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: '#000',
+                      },
+                      components: {
+                        Button: {
+                          paddingInlineSM: 34,
+                          defaultColor: '#000',
+                          defaultBg: '#FFF',
+                          defaultHoverBg: '#99E0ED',
+                          defaultHoverBorderColor: '#EEE',
+                        },
+                      },
+                    }}
+                  >
+                    <ModeButtons
+                      disabled={isLoadingList || isLoadingSummary}
+                      mode={mode}
+                      setMode={setMode}
+                      onModeChangeClick={() => {
+                        setPageIndex(1);
+                      }}
+                    />
+                    {isSortActive ? (
+                      <Button
+                        className={styles.sort_button_active}
+                        disabled={isLoadingList || isLoadingSummary}
+                        onClick={() => {
+                          onResultSortByTimeClick();
+                        }}
+                      >
+                        近期发表
+                        <Image
+                          className={styles.sort_button_icon}
+                          src={SortIcon}
+                        />
+                      </Button>
+                    ) : (
+                      <Button
+                        className={styles.sort_button}
+                        disabled={isLoadingList || isLoadingSummary}
+                        onClick={() => {
+                          onResultSortByTimeClick();
+                        }}
+                      >
+                        近期发表
+                        <Image
+                          className={styles.sort_button_icon}
+                          src={SortIcon}
+                        />
+                      </Button>
+                    )}
+                  </ConfigProvider>
                 </div>
-                {isInitialed &&
-                  !isLoadingList &&
-                  !isPapersEmptyErrorVisible && (
-                    <div>
-                      <PageManager
-                        pageIndex={pageIndex}
-                        total={totalPapers}
-                        pageSize={pageSize}
-                        setPageIndex={setPageIndex}
-                      />
+                {isLoadingList &&
+                  paperSkeletons.map((item) => (
+                    <div
+                      style={{
+                        background: 'white',
+                        margin: '0 0 10px',
+                        padding: '20px',
+                        borderRadius: '12px',
+                      }}
+                      key={item.id}
+                    >
+                      <Skeleton active />
                     </div>
-                  )}
+                  ))}
+
+                <div>
+                  <div>
+                    {isSearchPapersVisible && (
+                      <div className={styles.no_papers_tip}>
+                        <Image
+                          className={styles.no_papers_tip_icon}
+                          src={ErrorIcon}
+                        />
+                        <div className={styles.no_papers_tip_desc}>
+                          该主题没有检测到{mode === 'en' ? '英文' : '中文'}
+                          文献，尝试更换输入后再试试吧
+                        </div>
+                      </div>
+                    )}
+                    {showPapers.map((item) => {
+                      return (
+                        <>
+                          <ResultPaperItem
+                            key={item.id}
+                            data={item}
+                            isBorderVisible={true}
+                            checkedPapers={checkedPapers}
+                            setCheckedPapers={setCheckedPapers}
+                          />
+                        </>
+                      );
+                    })}
+                  </div>
+                  {isInitialed &&
+                    !isLoadingList &&
+                    !isPapersEmptyErrorVisible && (
+                      <div>
+                        <PageManager
+                          pageIndex={pageIndex}
+                          total={totalPapers}
+                          pageSize={pageSize}
+                          setPageIndex={setPageIndex}
+                        />
+                      </div>
+                    )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Modal
