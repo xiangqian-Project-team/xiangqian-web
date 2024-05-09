@@ -353,8 +353,10 @@ function Search() {
       setPapersZH([]);
       setSelectedSummary('');
       setPageIndex(1);
-      setMode('en');
-      currMode = 'en';
+      if (mode === 'selected') {
+        setMode('en');
+        currMode = 'en';
+      }
     } else {
       if (currMode === 'selected') {
         return;
