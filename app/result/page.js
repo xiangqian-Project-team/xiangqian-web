@@ -376,7 +376,6 @@ function Search() {
       if (!listRes.ok) {
         throw new Error('Failed search');
       }
-      setIsLoadingList(false);
       const data = await listRes.json();
       queryRef.current = { queryEn: data.queryEn, queryZh: data.queryZh };
       queryEn = data.queryEn;
@@ -390,6 +389,7 @@ function Search() {
           setPapersZH(nextPapers || []);
           break;
       }
+      setIsLoadingList(false);
       await getAnalysisPedia(
         { papers: nextPapers, queryEn, queryZh },
         currMode
