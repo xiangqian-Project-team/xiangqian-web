@@ -81,11 +81,11 @@ function Search() {
     const question = searchParams.get('q');
     setSearchValue(question);
     let clear = false;
-    if (prevQuestion !== question) {
+    if (prevQuestion !== question || !isInitialed) {
       clear = true;
     }
     getPedia(question, { clear });
-  }, [searchParams, mode]);
+  }, [searchParams, mode, prevQuestion]);
 
   const onResultSortByTimeClick = () => {
     setIsSortActive(!isSortActive);
