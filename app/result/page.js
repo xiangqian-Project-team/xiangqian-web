@@ -20,7 +20,18 @@ import SearchTextArea from '../components/searchTextArea';
 import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
-import { modeAtom, searchValueAtom } from '../models/search';
+import {
+  bulletPointsAtom,
+  bulletPointsZHAtom,
+  modeAtom,
+  papersAtom,
+  papersAtomZH,
+  searchValueAtom,
+  selectedBulletPointsAtom,
+  selectedSummaryAtom,
+  summaryAtom,
+  summaryZHAtom,
+} from '../models/search';
 import {
   getAnalysisPedia as getAnalysisPediaAsync,
   getPartPedia as getPartPediaAsync,
@@ -47,16 +58,16 @@ function Search() {
   );
   const [isSortActive, setIsSortActive] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [summary, setSummary] = useState('');
-  const [bulletPoints, setBulletPoints] = useState('');
-  const [summaryZh, setSummaryZh] = useState('');
-  const [bulletPointsZH, setBulletPointsZH] = useState('');
-  const [papers, setPapers] = useState([]);
-  const [papersZH, setPapersZH] = useState([]);
+  const [summary, setSummary] = useAtom(summaryAtom);
+  const [bulletPoints, setBulletPoints] = useAtom(bulletPointsAtom);
+  const [summaryZh, setSummaryZh] = useAtom(summaryZHAtom);
+  const [bulletPointsZH, setBulletPointsZH] = useAtom(bulletPointsZHAtom);
+  const [papers, setPapers] = useAtom(papersAtom);
+  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const setSearchValue = useSetAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useState([]);
-  const [selectedSummary, setSelectedSummary] = useState('');
-  const [selectedBulletPoints, setSelectedBulletPoints] = useState('');
+  const setSelectedSummary = useSetAtom(selectedSummaryAtom);
+  const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
   const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));

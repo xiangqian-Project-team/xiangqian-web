@@ -18,6 +18,8 @@ const summaryAtom = atom(''); // 概述
 const bulletPointsAtom = atom('');
 const summaryZHAtom = atom(''); // 概述
 const bulletPointsZHAtom = atom('');
+const selectedSummaryAtom = atom('');
+const selectedBulletPointsAtom = atom('');
 
 export {
   bulletPointsAtom,
@@ -26,6 +28,8 @@ export {
   papersAtom,
   papersAtomZH,
   searchValueAtom,
+  selectedBulletPointsAtom,
+  selectedSummaryAtom,
   summaryAtom,
   summaryZHAtom,
 };

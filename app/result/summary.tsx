@@ -1,24 +1,25 @@
 import { Popover, Skeleton } from 'antd';
+import { useAtom, useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import ResultPaperItem from '../components/resultPaperItem';
 import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
+import {
+  bulletPointsAtom,
+  bulletPointsZHAtom,
+  modeAtom,
+  papersAtom,
+  papersAtomZH,
+  selectedBulletPointsAtom,
+  selectedSummaryAtom,
+  summaryAtom,
+  summaryZHAtom,
+} from '../models/search';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 
 interface ISummaryProps {
-  mode: string;
-  summary: string;
-  summaryZh: string;
-  bulletPoints: string;
-  bulletPointsZH: string;
-  selectedSummary: string;
-  selectedBulletPoints: string;
-  papers: any[];
-  papersZH: any[];
-  setPapers: (papers: any[]) => void;
-  setPapersZH: (papers: any[]) => void;
   checkedPapers: string[];
   setCheckedPapers: (papers: string[]) => void;
   getAnalysisPedia: (params: any, mode: string) => void;
@@ -29,17 +30,6 @@ interface ISummaryProps {
 
 export default function Summary(props: ISummaryProps) {
   const {
-    mode,
-    summary,
-    papers,
-    papersZH,
-    bulletPoints,
-    summaryZh,
-    bulletPointsZH,
-    selectedSummary,
-    selectedBulletPoints,
-    setPapersZH,
-    setPapers,
     getAnalysisPedia,
     checkedPapers,
     setCheckedPapers,
@@ -47,6 +37,16 @@ export default function Summary(props: ISummaryProps) {
     isLoadingSummary,
     setIsNoEnoughModalVisible,
   } = props;
+
+  const mode = useAtomValue(modeAtom); // en | zh-cn | selected
+  const summary = useAtomValue(summaryAtom);
+  const summaryZh = useAtomValue(summaryZHAtom);
+  const [papers, setPapers] = useAtom(papersAtom);
+  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
+  const bulletPoints = useAtomValue(bulletPointsAtom);
+  const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
+  const selectedSummary = useAtomValue(selectedSummaryAtom);
+  const selectedBulletPoints = useAtomValue(selectedBulletPointsAtom);
 
   const showSummary = useMemo(() => {
     switch (mode) {
