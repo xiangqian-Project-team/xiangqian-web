@@ -20,10 +20,12 @@ const summaryZHAtom = atom(''); // 概述
 const bulletPointsZHAtom = atom('');
 const selectedSummaryAtom = atom('');
 const selectedBulletPointsAtom = atom('');
+const checkedPapersAtom = atomWithImmer([]); // 选中的引文列表
 
 export {
   bulletPointsAtom,
   bulletPointsZHAtom,
+  checkedPapersAtom,
   modeAtom,
   papersAtom,
   papersAtomZH,

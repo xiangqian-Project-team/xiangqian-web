@@ -8,6 +8,7 @@ import RoundedArrow from '../icons/rounded_arrow.svg';
 import {
   bulletPointsAtom,
   bulletPointsZHAtom,
+  checkedPapersAtom,
   modeAtom,
   papersAtom,
   papersAtomZH,
@@ -20,8 +21,6 @@ import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 
 interface ISummaryProps {
-  checkedPapers: string[];
-  setCheckedPapers: (papers: string[]) => void;
   getAnalysisPedia: (params: any, mode: string) => void;
   setIsNoEnoughModalVisible: (visible: boolean) => void;
   isLoadingSummary: boolean;
@@ -31,8 +30,6 @@ interface ISummaryProps {
 export default function Summary(props: ISummaryProps) {
   const {
     getAnalysisPedia,
-    checkedPapers,
-    setCheckedPapers,
     queryRef,
     isLoadingSummary,
     setIsNoEnoughModalVisible,
@@ -47,6 +44,7 @@ export default function Summary(props: ISummaryProps) {
   const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
   const selectedSummary = useAtomValue(selectedSummaryAtom);
   const selectedBulletPoints = useAtomValue(selectedBulletPointsAtom);
+  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
 
   const showSummary = useMemo(() => {
     switch (mode) {

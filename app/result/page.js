@@ -23,6 +23,7 @@ import userExpendIcon from '../icons/user_expend_icon.svg';
 import {
   bulletPointsAtom,
   bulletPointsZHAtom,
+  checkedPapersAtom,
   modeAtom,
   papersAtom,
   papersAtomZH,
@@ -65,7 +66,7 @@ function Search() {
   const [papers, setPapers] = useAtom(papersAtom);
   const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const setSearchValue = useSetAtom(searchValueAtom);
-  const [checkedPapers, setCheckedPapers] = useState([]);
+  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
   const setSelectedSummary = useSetAtom(selectedSummaryAtom);
   const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
