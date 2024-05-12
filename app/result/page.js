@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Button, ConfigProvider, Modal, Skeleton } from 'antd';
+import { Modal, Skeleton } from 'antd';
 import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -18,14 +18,7 @@ import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
 import ErrorIcon from '../icons/error_icon.svg';
-import LangCNIcon from '../icons/lang_cn.svg';
-import LangCNActiveIcon from '../icons/lang_cn_active.svg';
-import LangENIcon from '../icons/lang_en.svg';
-import LangENActiveIcon from '../icons/lang_en_active.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
-import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
-import SelectedButtonIcon from '../icons/selected_button_icon.svg';
-import SortIcon from '../icons/sort_icon.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import { modeAtom, searchValueAtom } from '../models/search';
 import {
@@ -33,75 +26,10 @@ import {
   getPartPedia as getPartPediaAsync,
   getResponsePedia as getResponsePediaAsync,
 } from '../service';
+import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
 import Summary from './summary';
-
-function ModeButtons(props) {
-  const [mode, setMode] = useAtom(modeAtom);
-
-  return (
-    <>
-      {mode === 'en' ? (
-        <Button className={styles.en_button_active} disabled={props.disabled}>
-          <Image src={LangENActiveIcon.src} width={18} height={18} />
-          英文文献
-        </Button>
-      ) : (
-        <Button
-          className={styles.en_button}
-          disabled={props.disabled}
-          onClick={() => {
-            setMode('en');
-            props.onModeChangeClick();
-          }}
-        >
-          <Image src={LangENIcon.src} width={18} height={18} />
-          英文文献
-        </Button>
-      )}
-      {mode === 'zh-cn' ? (
-        <Button className={styles.cn_button_active} disabled={props.disabled}>
-          <Image src={LangCNActiveIcon.src} width={18} height={18} />
-          中文文献
-        </Button>
-      ) : (
-        <Button
-          className={styles.cn_button}
-          disabled={props.disabled}
-          onClick={() => {
-            setMode('zh-cn');
-            props.onModeChangeClick();
-          }}
-        >
-          <Image src={LangCNIcon.src} width={18} height={18} />
-          中文文献
-        </Button>
-      )}
-      {mode === 'selected' ? (
-        <Button
-          className={styles.selected_button_active}
-          disabled={props.disabled}
-        >
-          <Image src={SelectedActiveButtonIcon.src} width={18} height={18} />
-          我选中的
-        </Button>
-      ) : (
-        <Button
-          className={styles.selected_button}
-          disabled={props.disabled}
-          onClick={() => {
-            setMode('selected');
-            props.onModeChangeClick();
-          }}
-        >
-          <Image src={SelectedButtonIcon.src} width={18} height={18} />
-          我选中的
-        </Button>
-      )}
-    </>
-  );
-}
 
 function Search() {
   const router = useRouter();
@@ -425,82 +353,6 @@ function Search() {
 
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
-              {/* <div className={styles.search_content_data_summary}>
-                {
-                  <div>
-                    <Skeleton
-                      active
-                      loading={isLoadingSummary}
-                      style={{ padding: '20px' }}
-                      paragraph={{ rows: 16 }}
-                    >
-                      <>
-                        <div className={styles.header}>
-                          <Image
-                            alt=""
-                            className={styles.header_triangle}
-                            src={RoundedArrow}
-                          />
-                          总结
-                        </div>
-                        {mode === 'selected' && !showSummary.summary && (
-                          <div
-                            className={
-                              styles.fetch_selected_summary_button_container
-                            }
-                          >
-                            <button
-                              onClick={() => {
-                                const thePapers = [
-                                  ...papers,
-                                  ...papersZH,
-                                ].filter((item) =>
-                                  checkedPapers.includes(item.id)
-                                );
-                                if (thePapers.length < 10) {
-                                  setIsNoEnoughModalVisible(true);
-                                  return;
-                                }
-                                getAnalysisPedia(
-                                  {
-                                    papers: thePapers,
-                                    queryEn: queryRef.current.queryEn,
-                                    queryZh: queryRef.current.queryZh,
-                                  },
-                                  'selected'
-                                );
-                              }}
-                            >
-                              <Image
-                                alt=""
-                                className={
-                                  styles.fetch_selected_summary_button_icon
-                                }
-                                width={18}
-                                height={18}
-                                src={RefreshIcon.src}
-                              />
-                              用选中的文章生成总结，以获取更优结果
-                            </button>
-                          </div>
-                        )}
-                        <div className={styles.content}>
-                          {showSummary.summary && (
-                            <>
-                              <div className={styles.content_summary}>
-                                {getReplacedSummary(showSummary.summary)}
-                              </div>
-                              <div className={styles.content_summaryZh}>
-                                {getReplacedSummary(showSummary.bulletPoints)}
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </>
-                    </Skeleton>
-                  </div>
-                }
-              </div> */}
               <Summary
                 mode={mode}
                 papersZH={papersZH}
@@ -521,60 +373,15 @@ function Search() {
 
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: '#000',
-                      },
-                      components: {
-                        Button: {
-                          paddingInlineSM: 34,
-                          defaultColor: '#000',
-                          defaultBg: '#FFF',
-                          defaultHoverBg: '#99E0ED',
-                          defaultHoverBorderColor: '#EEE',
-                        },
-                      },
+                  <ModeButtons
+                    disabled={isLoadingList || isLoadingSummary}
+                    mode={mode}
+                    setMode={setMode}
+                    onModeChangeClick={() => {
+                      setPageIndex(1);
                     }}
-                  >
-                    <ModeButtons
-                      disabled={isLoadingList || isLoadingSummary}
-                      mode={mode}
-                      setMode={setMode}
-                      onModeChangeClick={() => {
-                        setPageIndex(1);
-                      }}
-                    />
-                    {isSortActive ? (
-                      <Button
-                        className={styles.sort_button_active}
-                        disabled={isLoadingList || isLoadingSummary}
-                        onClick={() => {
-                          onResultSortByTimeClick();
-                        }}
-                      >
-                        近期发表
-                        <Image
-                          className={styles.sort_button_icon}
-                          src={SortIcon}
-                        />
-                      </Button>
-                    ) : (
-                      <Button
-                        className={styles.sort_button}
-                        disabled={isLoadingList || isLoadingSummary}
-                        onClick={() => {
-                          onResultSortByTimeClick();
-                        }}
-                      >
-                        近期发表
-                        <Image
-                          className={styles.sort_button_icon}
-                          src={SortIcon}
-                        />
-                      </Button>
-                    )}
-                  </ConfigProvider>
+                    onResultSortByTimeClick={onResultSortByTimeClick}
+                  />
                 </div>
                 {isLoadingList &&
                   paperSkeletons.map((item) => (
