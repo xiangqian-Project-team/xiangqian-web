@@ -8,7 +8,7 @@
  */
 'use client';
 
-import { Button, ConfigProvider, Modal, Popover, Skeleton } from 'antd';
+import { Button, ConfigProvider, Modal, Skeleton } from 'antd';
 import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
@@ -23,8 +23,6 @@ import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LangENIcon from '../icons/lang_en.svg';
 import LangENActiveIcon from '../icons/lang_en_active.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
-import RefreshIcon from '../icons/refresh_icon.svg';
-import RoundedArrow from '../icons/rounded_arrow.svg';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
@@ -37,6 +35,7 @@ import {
 } from '../service';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
+import Summary from './summary';
 
 function ModeButtons(props) {
   const [mode, setMode] = useAtom(modeAtom);
@@ -183,40 +182,6 @@ function Search() {
     setIsLoadingSummary(false);
   };
 
-  const getPopoverResponsePedia = async (paper) => {
-    if (!paper) {
-      return;
-    }
-    const res = await getResponsePediaAsync({
-      papers: [paper],
-    });
-    if (!res.ok) {
-      throw new Error('Failed get response');
-    }
-    const { papers: processedPapers } = await res.json();
-    const processedMap = new Map(
-      processedPapers.map((item) => [item.id, item])
-    );
-    if (currMode === 'zh-cn') {
-      const newPapers = papersZH.map((item) => {
-        if (processedMap.has(item.id)) {
-          return { ...item, response: processedMap.get(item.id).response };
-        }
-        return item;
-      });
-      setPapersZH(newPapers);
-      return;
-    }
-
-    const newPapers = papers.map((item) => {
-      if (processedMap.has(item.id)) {
-        return { ...item, response: processedMap.get(item.id).response };
-      }
-      return item;
-    });
-    setPapers(newPapers);
-  };
-
   const getResponsePedia = async () => {
     const currMode = mode;
     const fetchList = [];
@@ -258,32 +223,6 @@ function Search() {
     });
     setPapers(newPapers);
   };
-
-  const showSummary = useMemo(() => {
-    switch (mode) {
-      case 'en':
-        return {
-          summary,
-          bulletPoints,
-        };
-      case 'zh-cn':
-        return { summary: summaryZh, bulletPoints: bulletPointsZH };
-      case 'selected':
-        return {
-          summary: selectedSummary,
-          bulletPoints: selectedBulletPoints,
-        };
-    }
-    return {};
-  }, [
-    summary,
-    summaryZh,
-    bulletPoints,
-    bulletPointsZH,
-    selectedSummary,
-    selectedBulletPoints,
-    mode,
-  ]);
 
   const showPapers = useMemo(() => {
     let newList = [];
@@ -411,56 +350,6 @@ function Search() {
     }
   };
 
-  const getReplacedSummary = (text) => {
-    const pattern = /(\[.*?\])/g;
-    const splitText = (text || '').split(pattern);
-
-    if (splitText.length <= 1) {
-      return <pre>{text}</pre>;
-    }
-    const matches = text.match(pattern);
-
-    const formattedStr = splitText.reduce((arr, element) => {
-      if (matches.includes(element)) {
-        const id = element.replace(/^\[(.+)\]$/, '$1');
-        const paper = [...papers, ...papersZH].find((item) => item.id === id);
-        const authors = paper?.authors[0] || '';
-        const year = paper?.year || '';
-        return [
-          ...arr,
-          <Popover
-            key={Math.random()}
-            placement="rightTop"
-            trigger="click"
-            overlayStyle={{ padding: 0, maxWidth: 790 }}
-            onOpenChange={(visible) => {
-              if (visible) {
-                if (paper.response) {
-                  return;
-                }
-                getPopoverResponsePedia(paper);
-              }
-            }}
-            content={
-              <ResultPaperItem
-                data={paper}
-                checkedPapers={checkedPapers}
-                setCheckedPapers={setCheckedPapers}
-              />
-            }
-          >
-            <span className={styles.mark_author_year}>
-              （{authors} ，{year}）
-            </span>
-          </Popover>,
-        ];
-      }
-      return [...arr, element];
-    }, []);
-
-    return <pre>{formattedStr}</pre>;
-  };
-
   return (
     <div className={styles.search}>
       <div className={styles.search_main}>
@@ -536,7 +425,7 @@ function Search() {
 
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
-              <div className={styles.search_content_data_summary}>
+              {/* <div className={styles.search_content_data_summary}>
                 {
                   <div>
                     <Skeleton
@@ -611,7 +500,24 @@ function Search() {
                     </Skeleton>
                   </div>
                 }
-              </div>
+              </div> */}
+              <Summary
+                mode={mode}
+                papersZH={papersZH}
+                papers={papers}
+                setPapersZH={setPapersZH}
+                setPapers={setPapers}
+                summary={summary}
+                bulletPoints={bulletPoints}
+                summaryZh={summaryZh}
+                bulletPointsZH={bulletPointsZH}
+                checkedPapers={checkedPapers}
+                setCheckedPapers={setCheckedPapers}
+                getAnalysisPedia={getAnalysisPedia}
+                setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                isLoadingSummary={isLoadingSummary}
+                queryRef={queryRef}
+              />
 
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>
