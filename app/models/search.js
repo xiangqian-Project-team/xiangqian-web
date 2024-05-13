@@ -21,6 +21,7 @@ const bulletPointsZHAtom = atom('');
 const selectedSummaryAtom = atom('');
 const selectedBulletPointsAtom = atom('');
 const checkedPapersAtom = atomWithImmer([]); // 选中的引文列表
+const sortModeAtom = atom('default'); // 排序方式 default | relevance | time | level | quote
 
 export {
   bulletPointsAtom,
@@ -32,6 +33,7 @@ export {
   searchValueAtom,
   selectedBulletPointsAtom,
   selectedSummaryAtom,
+  sortModeAtom,
   summaryAtom,
   summaryZHAtom,
 };
