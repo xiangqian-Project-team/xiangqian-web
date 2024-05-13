@@ -9,7 +9,7 @@
 'use client';
 
 import { Modal, Skeleton } from 'antd';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -30,6 +30,7 @@ import {
   searchValueAtom,
   selectedBulletPointsAtom,
   selectedSummaryAtom,
+  sortModeAtom,
   summaryAtom,
   summaryZHAtom,
 } from '../models/search';
@@ -57,7 +58,7 @@ function Search() {
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
     []
   );
-  const [isSortActive, setIsSortActive] = useState(false);
+  const [sortMode, setSortMode] = useAtom(sortModeAtom);
   const [pageIndex, setPageIndex] = useState(1);
   const [summary, setSummary] = useAtom(summaryAtom);
   const [bulletPoints, setBulletPoints] = useAtom(bulletPointsAtom);
@@ -86,11 +87,6 @@ function Search() {
     }
     getPedia(question, { clear });
   }, [searchParams, mode, prevQuestion]);
-
-  const onResultSortByTimeClick = () => {
-    setIsSortActive(!isSortActive);
-    setPageIndex(1);
-  };
 
   const getAnalysisPedia = async (params, mode) => {
     const { papers, queryEn, queryZh } = params;
@@ -180,13 +176,22 @@ function Search() {
         break;
     }
 
-    if (isSortActive) {
-      return newList
-        .sort((a, b) => b.year - a.year)
-        .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+    switch (sortMode) {
+      case 'time':
+        return newList
+          .sort((a, b) => b.year - a.year)
+          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+      case 'relevance':
+        return newList
+          .sort((a, b) => b.relevance - a.relevance)
+          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+      case 'quote':
+        return newList
+          .sort((a, b) => b.citationCount - a.citationCount)
+          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     }
     return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [papers, papersZH, pageIndex, isSortActive, mode, checkedPapers]);
+  }, [papers, papersZH, pageIndex, sortMode, mode, checkedPapers]);
 
   const isSearchPapersVisible = useMemo(() => {
     return isInitialed && showPapers.length === 0 && !isLoadingList;
@@ -240,6 +245,7 @@ function Search() {
       setPapersZH([]);
       setSelectedSummary('');
       setPageIndex(1);
+      setSortMode('default')
       if (mode === 'selected') {
         setMode('en');
         currMode = 'en';
@@ -392,7 +398,6 @@ function Search() {
                     onModeChangeClick={() => {
                       setPageIndex(1);
                     }}
-                    onResultSortByTimeClick={onResultSortByTimeClick}
                   />
                 </div>
                 {isLoadingList &&

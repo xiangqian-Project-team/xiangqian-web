@@ -1,30 +1,41 @@
 import { Button, ConfigProvider } from 'antd';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
+import { useMemo, useState } from 'react';
 import LangCNIcon from '../icons/lang_cn.svg';
 import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LangENIcon from '../icons/lang_en.svg';
 import LangENActiveIcon from '../icons/lang_en_active.svg';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedButtonIcon from '../icons/selected_button_icon.svg';
-import { modeAtom } from '../models/search';
 import SortIcon from '../icons/sort_icon.svg';
+import { modeAtom, sortModeAtom } from '../models/search';
 import styles from './page.module.scss';
 
 interface IModeButtonsProps {
-  mode: string;
-  setMode: (mode: string) => void;
   disabled: boolean;
   onModeChangeClick: () => void;
-  onResultSortByTimeClick: () => void;
-  isLoadingList: boolean;
-  isLoadingSummary: boolean;
-  isSortActive: boolean;
   setPageIndex: (index: number) => void;
 }
 
 export default function ModeButtons(props: IModeButtonsProps) {
   const [mode, setMode] = useAtom(modeAtom);
+  const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
+  const [sortMode, setSortMode] = useAtom(sortModeAtom);
+
+  const sortModeText = useMemo(() => {
+    switch (sortMode) {
+      case 'relevance':
+        return '相关程度';
+      case 'time':
+        return '发表时间';
+      case 'level':
+        return '期刊级别';
+      case 'quote':
+        return '引用数量';
+    }
+    return '推荐排序';
+  }, [sortMode]);
 
   return (
     <>
@@ -111,28 +122,78 @@ export default function ModeButtons(props: IModeButtonsProps) {
             我选中的
           </Button>
         )}
-        {props.isSortActive ? (
-          <Button
-            className={styles.sort_button_active}
-            disabled={props.isLoadingList || props.isLoadingSummary}
-            onClick={() => {
-              props.onResultSortByTimeClick();
-            }}
-          >
-            近期发表
-            <Image className={styles.sort_button_icon} src={SortIcon} alt={''} />
-          </Button>
-        ) : (
-          <Button
-            className={styles.sort_button}
-            disabled={props.isLoadingList || props.isLoadingSummary}
-            onClick={() => {
-              props.onResultSortByTimeClick();
-            }}
-          >
-            近期发表
-            <Image className={styles.sort_button_icon} src={SortIcon} alt={''} />
-          </Button>
+        <Button
+          className={styles.sort_button}
+          disabled={props.disabled}
+          onClick={() => {
+            setIsSortMenuVisible(!isSortMenuVisible);
+          }}
+        >
+          {sortModeText}
+          <Image className={styles.sort_button_icon} src={SortIcon} alt={''} />
+        </Button>
+        {isSortMenuVisible && (
+          <div className={styles.popup_sort_buttons}>
+            <button
+              className={
+                sortMode === 'default' ? styles.popup_sort_button_active : ''
+              }
+              onClick={() => {
+                setSortMode('default');
+                setIsSortMenuVisible(false);
+                props.onModeChangeClick();
+              }}
+            >
+              推荐排序
+            </button>
+            <button
+              className={
+                sortMode === 'relevance' ? styles.popup_sort_button_active : ''
+              }
+              onClick={() => {
+                setSortMode('relevance');
+                setIsSortMenuVisible(false);
+                props.onModeChangeClick();
+              }}
+            >
+              相关程度
+            </button>
+            <button
+              className={
+                sortMode === 'time' ? styles.popup_sort_button_active : ''
+              }
+              onClick={() => {
+                setSortMode('time');
+                setIsSortMenuVisible(false);
+                props.onModeChangeClick();
+              }}
+            >
+              发表时间
+            </button>
+            {/* <button
+              className={
+                sortMode === 'level' ? styles.popup_sort_button_active : ''
+              }
+              onClick={() => {
+                setSortMode('level');
+                setIsSortMenuVisible(false);
+              }}
+            >
+              期刊级别
+            </button> */}
+            <button
+              className={
+                sortMode === 'quote' ? styles.popup_sort_button_active : ''
+              }
+              onClick={() => {
+                setSortMode('quote');
+                setIsSortMenuVisible(false);
+                props.onModeChangeClick();
+              }}
+            >
+              引用数量
+            </button>
+          </div>
         )}
       </ConfigProvider>
     </>
