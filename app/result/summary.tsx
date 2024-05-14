@@ -146,7 +146,7 @@ export default function Summary(props: ISummaryProps) {
             }
           >
             <span className={styles.mark_author_year}>
-              （{authors} ，{year}）
+              （{authors}，{year}）
             </span>
           </Popover>,
         ];
