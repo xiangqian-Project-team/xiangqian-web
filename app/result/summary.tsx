@@ -90,6 +90,7 @@ export default function Summary(props: ISummaryProps) {
     if (currMode === 'zh-cn') {
       const newPapers = papersZH.map((item) => {
         if (processedMap.has(item.id)) {
+          // @ts-ignore
           return { ...item, response: processedMap.get(item.id).response };
         }
         return item;
@@ -100,6 +101,7 @@ export default function Summary(props: ISummaryProps) {
 
     const newPapers = papers.map((item) => {
       if (processedMap.has(item.id)) {
+        // @ts-ignore
         return { ...item, response: processedMap.get(item.id).response };
       }
       return item;
