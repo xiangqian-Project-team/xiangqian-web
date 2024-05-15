@@ -104,15 +104,15 @@ function Search() {
     switch (currentMode) {
       case 'en':
         setSummary(data.answer);
-        setBulletPoints(data.bulletPoints);
+        setBulletPoints(data.bltpts);
         break;
       case 'zh-cn':
         setSummaryZh(data.answer);
-        setBulletPointsZH(data.bulletPoints);
+        setBulletPointsZH(data.bltpts);
         break;
       case 'selected':
         setSelectedSummary(data.answer);
-        setSelectedBulletPoints(data.bulletPoints);
+        setSelectedBulletPoints(data.bltpts);
         break;
     }
     setIsLoadingSummary(false);

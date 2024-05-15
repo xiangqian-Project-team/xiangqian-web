@@ -154,7 +154,7 @@ export default function Summary(props: ISummaryProps) {
       return [...arr, element];
     }, []);
 
-    return <pre>{formattedStr}</pre>;
+    return formattedStr;
   };
 
   return (
@@ -212,11 +212,13 @@ export default function Summary(props: ISummaryProps) {
                 {showSummary.summary && (
                   <>
                     <div className={styles.content_summary}>
-                      {getReplacedSummary(showSummary.summary)}
+                      {showSummary.summary}
                     </div>
-                    <div className={styles.content_summaryZh}>
-                      {getReplacedSummary(showSummary.bulletPoints)}
-                    </div>
+                    <ul className={styles.content_bullet_points}>
+                      {showSummary.bulletPoints.map(item => (
+                        <li>{getReplacedSummary(item)}</li>
+                      ))}
+                    </ul>
                   </>
                 )}
               </div>

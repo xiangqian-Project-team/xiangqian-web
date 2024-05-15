@@ -13,17 +13,19 @@ const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
   'https://gemmed-unctions-qhwhoxyzwh.us-west-1.fcapp.run';
 
-const request = async (url, method, params) => {
+const request = async (
+  url: string,
+  method: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE',
+  params: any
+) => {
+  const token = getItem('token');
   const option = {
     method,
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-
-  const token = getItem('token');
-
-  if (token) option.headers.Authorization = `Bearer ${token}`;
 
   if (method === 'GET')
     url = `${url}?${new URLSearchParams(params).toString()}`; // fetch不会自动把params参数拼接成查询字符串
@@ -51,9 +53,9 @@ export const getPedia = async (params) => {
     body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-  if (token) option.headers.Authorization = `Bearer ${token}`;
   return fetch(`${FUNCTION_BASE_URL}/search`, option);
   // return request(`${FUNCTION_BASE_URL}/search`, 'POST', params);
 };
@@ -70,23 +72,27 @@ export const getPartPedia = async (params, lang) => {
     body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-  if (token) option.headers.Authorization = `Bearer ${token}`;
   return fetch(`${FUNCTION_BASE_URL}${path}`, option);
 };
 
-export const getAnalysisPedia = async (params) => {
+export const getAnalysisPedia = async (params: {
+  papers: any[];
+  queryEn: string;
+  queryZh: string;
+}) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
     body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-  if (token) option.headers.Authorization = `Bearer ${token}`;
-  return fetch(`${FUNCTION_BASE_URL}/papers_analysis`, option);
+  return fetch(`${FUNCTION_BASE_URL}/papers_analysis_v2`, option);
 };
 
 export const getResponsePedia = async (params) => {
@@ -96,9 +102,9 @@ export const getResponsePedia = async (params) => {
     body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-  if (token) option.headers.Authorization = `Bearer ${token}`;
   return fetch(`${FUNCTION_BASE_URL}/paper_response`, option);
 };
 
@@ -110,12 +116,10 @@ export const fetchAbstract = async (paperId) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
 
-  if (token) {
-    options.headers.Authorization = `Bearer ${token}`;
-  }
   return fetch(apiUrl, options);
 };
 
@@ -127,12 +131,10 @@ export const fetchResponses = async (params) => {
     body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
 
-  if (token) {
-    options.headers.Authorization = `Bearer ${token}`;
-  }
   return fetch(apiUrl, options);
 };
 

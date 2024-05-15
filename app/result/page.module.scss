@@ -218,19 +218,18 @@
               }
             }
 
-            .content_summaryZh {
+            .content_bullet_points {
               font-weight: 400;
               font-size: 16px;
               color: #000000;
               line-height: 24px;
               margin-top: 24px;
-              pre {
-                white-space: pre-wrap;
-                .mark_author_year {
-                  text-decoration: none;
-                  color: #03a097;
-                  cursor: pointer;
-                }
+              list-style-type: disc;
+              list-style-position: inside;
+              .mark_author_year {
+                text-decoration: none;
+                color: #03a097;
+                cursor: pointer;
               }
             }
           }
