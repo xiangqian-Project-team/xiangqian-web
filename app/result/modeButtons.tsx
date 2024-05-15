@@ -66,6 +66,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
             disabled={props.disabled}
             onClick={() => {
               setMode('en');
+              setSortMode('default');
               props.onModeChangeClick();
             }}
           >
@@ -84,6 +85,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
             disabled={props.disabled}
             onClick={() => {
               setMode('zh-cn');
+              setSortMode('default');
               props.onModeChangeClick();
             }}
           >
@@ -110,6 +112,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
             disabled={props.disabled}
             onClick={() => {
               setMode('selected');
+              setSortMode('default');
               props.onModeChangeClick();
             }}
           >
