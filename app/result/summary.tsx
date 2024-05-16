@@ -8,12 +8,15 @@ import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import {
   bulletPointsAtom,
+  bulletPointsPrefixAtom,
   bulletPointsZHAtom,
+  bulletPointsZHPrefixAtom,
   checkedPapersAtom,
   modeAtom,
   papersAtom,
   papersAtomZH,
   selectedBulletPointsAtom,
+  selectedBulletPointsPrefixAtom,
   selectedSummaryAtom,
   summaryAtom,
   summaryZHAtom,
@@ -73,7 +76,7 @@ const FormattedSummary = (props: {
             );
             const authors = paper?.authors[0] || '';
             const year = paper?.year || '';
-            return [...arr,`（${authors}，${year}）`];
+            return [...arr, `（${authors}，${year}）`];
           }
           return [...arr, element];
         }, []);
@@ -243,9 +246,14 @@ export default function Summary(props: ISummaryProps) {
   const [papers, setPapers] = useAtom(papersAtom);
   const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const bulletPoints = useAtomValue(bulletPointsAtom);
+  const bulletPointsPrefix = useAtomValue(bulletPointsPrefixAtom);
   const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
+  const bulletPointsZHPrefix = useAtomValue(bulletPointsZHPrefixAtom);
   const selectedSummary = useAtomValue(selectedSummaryAtom);
   const selectedBulletPoints = useAtomValue(selectedBulletPointsAtom);
+  const selectedBulletPointsPrefix = useAtomValue(
+    selectedBulletPointsPrefixAtom
+  );
   const checkedPapers = useAtomValue(checkedPapersAtom);
 
   const showSummary = useMemo(() => {
@@ -254,13 +262,19 @@ export default function Summary(props: ISummaryProps) {
         return {
           summary,
           bulletPoints,
+          bulletPointsPrefix,
         };
       case 'zh-cn':
-        return { summary: summaryZh, bulletPoints: bulletPointsZH };
+        return {
+          summary: summaryZh,
+          bulletPoints: bulletPointsZH,
+          bulletPointsPrefix: bulletPointsZHPrefix,
+        };
       case 'selected':
         return {
           summary: selectedSummary,
           bulletPoints: selectedBulletPoints,
+          bulletPointsPrefix: selectedBulletPointsPrefix,
         };
     }
     return {};
@@ -271,6 +285,9 @@ export default function Summary(props: ISummaryProps) {
     bulletPointsZH,
     selectedSummary,
     selectedBulletPoints,
+    selectedBulletPointsPrefix,
+    bulletPointsZHPrefix,
+    bulletPointsPrefix,
     mode,
   ]);
 
