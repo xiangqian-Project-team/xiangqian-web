@@ -45,6 +45,19 @@ const request = async (
   return data;
 };
 
+export const getBulletPointsExpansion = async (params: {bltpt: string; papers: any[]}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/bltpt_expansion`, option);
+}
+
 //  搜索
 export const getPedia = async (params) => {
   const token = getItem('token');

@@ -310,7 +310,7 @@ export default function ResultPaperItem(props) {
                 查看摘要
                 <DownOutlined
                   style={{
-                    color: '#00A650',
+                    color: '#000',
                     fontSize: '8px',
                     marginLeft: '5px',
                   }}
