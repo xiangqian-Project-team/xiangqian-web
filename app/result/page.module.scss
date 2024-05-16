@@ -208,6 +208,7 @@
               line-height: 24px;
               padding-bottom: 14px;
               border-bottom: 1px solid #000;
+              text-indent: 40px;
               pre {
                 white-space: pre-wrap;
                 .mark_author_year {
@@ -216,6 +217,10 @@
                   cursor: pointer;
                 }
               }
+            }
+            .content_bullet_points_prefix {
+              margin-top: 15px;
+              text-indent: 40px;
             }
 
             .content_bullet_points {

@@ -385,6 +385,9 @@ export default function Summary(props: ISummaryProps) {
                     <div className={styles.content_summary}>
                       {showSummary.summary}
                     </div>
+                    <div className={styles.content_bullet_points_prefix}>
+                      {showSummary.bulletPointsPrefix}
+                    </div>
                     <ul className={styles.content_bullet_points}>
                       {showSummary.bulletPoints.map((item) => (
                         <FormattedSummary
