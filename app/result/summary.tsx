@@ -58,7 +58,23 @@ const FormattedSummary = (props: {
       throw new Error('Failed get response');
     }
     const data = await res.json();
-    setExpensionText(data.bltptExpansion);
+    setExpensionText(data.bltptExpansion)
+//     {
+//       const pattern = /(\[.*?\])/g;
+//       const matches = (data.bltptExpansion || '').match(pattern);
+//       const splitText = (data.bltptExpansion || '').split(pattern);
+// console.log(matches, splitText)
+//       const formattedStr = splitText.reduce((arr, element) => {
+//         if (matches.includes(element)) {
+//           const id = element.replace(/^\[(.+)\]$/, '$1');
+//           const paper = [...papers, ...papersZH].find((item) => item.id === id);
+//           const authors = paper?.authors[0] || '';
+//           const year = paper?.year || '';
+//           return `（${authors}，${year}）`;
+//         }
+//       });
+//       setExpensionText(formattedStr )
+//     }
   };
 
   const pattern = /(\[.*?\])/g;
