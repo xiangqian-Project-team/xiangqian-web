@@ -33,6 +33,7 @@ const FormattedSummary = (props: {
   const papersZH = useAtomValue(papersAtomZH);
   const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [expensionText, setExpensionText] = useState<string | undefined>(
     undefined
   );
@@ -50,31 +51,37 @@ const FormattedSummary = (props: {
     const thePapers = [...papers, ...papersZH].filter((item) => {
       return idSet.has(`${item.id}`);
     });
-    const res = await getBulletPointsExpansion({
-      bltpt: props.text,
-      papers: thePapers,
-    });
-    if (!res.ok) {
-      throw new Error('Failed get response');
+    setIsLoading(true);
+    try {
+      const res = await getBulletPointsExpansion({
+        bltpt: props.text,
+        papers: thePapers,
+      });
+      if (!res.ok) {
+        throw new Error('Failed get response');
+      }
+      const data = await res.json();
+      {
+        const pattern = /(\[.*?\])/g;
+        const matches = (data.bltptExpansion || '').match(pattern);
+        const splitText = (data.bltptExpansion || '').split(pattern);
+        const formattedStr = splitText.reduce((arr, element) => {
+          if (matches.includes(element)) {
+            const id = element.replace(/^\[(.+)\]$/, '$1');
+            const paper = [...papers, ...papersZH].find(
+              (item) => item.id === id
+            );
+            const authors = paper?.authors[0] || '';
+            const year = paper?.year || '';
+            return [...arr,`（${authors}，${year}）`];
+          }
+          return [...arr, element];
+        }, []);
+        setExpensionText(formattedStr);
+      }
+    } finally {
+      setIsLoading(false);
     }
-    const data = await res.json();
-    setExpensionText(data.bltptExpansion)
-//     {
-//       const pattern = /(\[.*?\])/g;
-//       const matches = (data.bltptExpansion || '').match(pattern);
-//       const splitText = (data.bltptExpansion || '').split(pattern);
-// console.log(matches, splitText)
-//       const formattedStr = splitText.reduce((arr, element) => {
-//         if (matches.includes(element)) {
-//           const id = element.replace(/^\[(.+)\]$/, '$1');
-//           const paper = [...papers, ...papersZH].find((item) => item.id === id);
-//           const authors = paper?.authors[0] || '';
-//           const year = paper?.year || '';
-//           return `（${authors}，${year}）`;
-//         }
-//       });
-//       setExpensionText(formattedStr )
-//     }
   };
 
   const pattern = /(\[.*?\])/g;
@@ -115,7 +122,7 @@ const FormattedSummary = (props: {
               active
               title={false}
               style={{ width: '80%' }}
-              loading={!expensionText}
+              loading={isLoading}
             >
               {expensionText}
             </Skeleton>
@@ -205,7 +212,7 @@ const FormattedSummary = (props: {
             active
             title={false}
             style={{ width: '80%' }}
-            loading={!expensionText}
+            loading={isLoading}
           >
             {expensionText}
           </Skeleton>
