@@ -9,7 +9,7 @@
 'use client';
 
 import { Modal, Skeleton } from 'antd';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
@@ -22,13 +22,16 @@ import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import {
   bulletPointsAtom,
+  bulletPointsPrefixAtom,
   bulletPointsZHAtom,
+  bulletPointsZHPrefixAtom,
   checkedPapersAtom,
   modeAtom,
   papersAtom,
   papersAtomZH,
   searchValueAtom,
   selectedBulletPointsAtom,
+  selectedBulletPointsPrefixAtom,
   selectedSummaryAtom,
   sortModeAtom,
   summaryAtom,
@@ -61,15 +64,20 @@ function Search() {
   const [sortMode, setSortMode] = useAtom(sortModeAtom);
   const [pageIndex, setPageIndex] = useState(1);
   const [summary, setSummary] = useAtom(summaryAtom);
-  const [bulletPoints, setBulletPoints] = useAtom(bulletPointsAtom);
+  const setBulletPoints = useSetAtom(bulletPointsAtom);
+  const setBulletPointsPrefix = useSetAtom(bulletPointsPrefixAtom);
   const [summaryZh, setSummaryZh] = useAtom(summaryZHAtom);
-  const [bulletPointsZH, setBulletPointsZH] = useAtom(bulletPointsZHAtom);
+  const setBulletPointsZH = useSetAtom(bulletPointsZHAtom);
+  const setBulletPointsZHPrefix = useSetAtom(bulletPointsZHPrefixAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [papersZH, setPapersZH] = useAtom(papersAtomZH);
   const setSearchValue = useSetAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
   const setSelectedSummary = useSetAtom(selectedSummaryAtom);
   const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
+  const setSelectedBulletPointsPrefix = useSetAtom(
+    selectedBulletPointsPrefixAtom
+  );
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
   const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
@@ -105,14 +113,17 @@ function Search() {
       case 'en':
         setSummary(data.answer);
         setBulletPoints(data.bltpts);
+        setBulletPointsPrefix(data.bltptsPrefix);
         break;
       case 'zh-cn':
         setSummaryZh(data.answer);
         setBulletPointsZH(data.bltpts);
+        setBulletPointsZHPrefix(data.bltptsPrefix);
         break;
       case 'selected':
         setSelectedSummary(data.answer);
         setSelectedBulletPoints(data.bltpts);
+        setSelectedBulletPointsPrefix(data.bltptsPrefix);
         break;
     }
     setIsLoadingSummary(false);
@@ -240,12 +251,15 @@ function Search() {
       setSummaryZh('');
       setBulletPoints('');
       setBulletPointsZH('');
+      setBulletPointsPrefix('');
+      setBulletPointsZHPrefix('');
+      setSelectedBulletPointsPrefix('');
       setCheckedPapers([]);
       setPapers([]);
       setPapersZH([]);
       setSelectedSummary('');
       setPageIndex(1);
-      setSortMode('default')
+      setSortMode('default');
       if (mode === 'selected') {
         setMode('en');
         currMode = 'en';
@@ -372,17 +386,6 @@ function Search() {
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
               <Summary
-                mode={mode}
-                papersZH={papersZH}
-                papers={papers}
-                setPapersZH={setPapersZH}
-                setPapers={setPapers}
-                summary={summary}
-                bulletPoints={bulletPoints}
-                summaryZh={summaryZh}
-                bulletPointsZH={bulletPointsZH}
-                checkedPapers={checkedPapers}
-                setCheckedPapers={setCheckedPapers}
                 getAnalysisPedia={getAnalysisPedia}
                 setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
                 isLoadingSummary={isLoadingSummary}
