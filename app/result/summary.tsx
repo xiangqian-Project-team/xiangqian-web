@@ -76,10 +76,38 @@ const FormattedSummary = (props: {
             );
             const authors = paper?.authors[0] || '';
             const year = paper?.year || '';
-            return [...arr, `（${authors}，${year}）`];
+            return [
+              ...arr,
+              <Popover
+                key={Math.random()}
+                placement="rightTop"
+                trigger="click"
+                overlayStyle={{ padding: 0, maxWidth: 790 }}
+                onOpenChange={(visible) => {
+                  if (visible) {
+                    if (paper.response) {
+                      return;
+                    }
+                    getPopoverResponsePedia(paper);
+                  }
+                }}
+                content={
+                  <ResultPaperItem
+                    data={paper}
+                    checkedPapers={checkedPapers}
+                    setCheckedPapers={setCheckedPapers}
+                  />
+                }
+              >
+                <span className={styles.mark_author_year}>
+                  （{authors}，{year}）
+                </span>
+              </Popover>,
+            ];
           }
           return [...arr, element];
         }, []);
+
         setExpensionText(formattedStr);
       }
     } finally {
