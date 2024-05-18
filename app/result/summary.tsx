@@ -66,8 +66,9 @@ const FormattedSummary = (props: {
       const data = await res.json();
       {
         const pattern = /(\[.*?\])/g;
-        const matches = (data.bltptExpansion || '').match(pattern);
-        const splitText = (data.bltptExpansion || '').split(pattern);
+        const bltptExpansion = data.bltptExpansion || '';
+        const matches = bltptExpansion.match(pattern) || [];
+        const splitText = bltptExpansion.split(pattern);
         const formattedStr = splitText.reduce((arr, element) => {
           if (matches.includes(element)) {
             const id = element.replace(/^\[(.+)\]$/, '$1');
