@@ -126,7 +126,7 @@ export default function ResultPaperItem(props) {
     >
       <div className={styles.content_card_title}>
         <Tooltip title={title}>
-          <span>{title}</span>
+          <h4>{title}</h4>
         </Tooltip>
         {IsSelected(id) ? (
           <ConfigProvider

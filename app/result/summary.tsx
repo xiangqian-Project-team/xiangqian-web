@@ -420,7 +420,7 @@ export default function Summary(props: ISummaryProps) {
                     <ul className={styles.content_bullet_points}>
                       {showSummary.bulletPoints.map((item) => (
                         <FormattedSummary
-                        key={Math.random()}
+                          key={Math.random()}
                           text={item}
                           getPopoverResponsePedia={getPopoverResponsePedia}
                         />

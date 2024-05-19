@@ -20,11 +20,12 @@
     align-items: center;
     justify-content: space-between;
 
-    span {
+    h4 {
       flex: 1;
-      overflow: hidden; //超出的文本隐藏
-      text-overflow: ellipsis; //溢出用省略号显示
-      white-space: nowrap; //溢出不换行
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 0;
     }
 
     .content_card_check,
