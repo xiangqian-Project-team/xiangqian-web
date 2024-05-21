@@ -30,8 +30,6 @@ import {
   papersAtom,
   papersAtomZH,
   searchValueAtom,
-  selectedBulletPointsAtom,
-  selectedBulletPointsPrefixAtom,
   selectedSummaryAtom,
   sortModeAtom,
   summaryAtom,
@@ -41,6 +39,7 @@ import {
   getAnalysisPedia as getAnalysisPediaAsync,
   getPartPedia as getPartPediaAsync,
   getResponsePedia as getResponsePediaAsync,
+  getLiteratureReview as getLiteratureReviewAsync
 } from '../service';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
@@ -74,10 +73,10 @@ function Search() {
   const setSearchValue = useSetAtom(searchValueAtom);
   const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
   const setSelectedSummary = useSetAtom(selectedSummaryAtom);
-  const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
-  const setSelectedBulletPointsPrefix = useSetAtom(
-    selectedBulletPointsPrefixAtom
-  );
+  // const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
+  // const setSelectedBulletPointsPrefix = useSetAtom(
+  //   selectedBulletPointsPrefixAtom
+  // );
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const searchParams = useSearchParams();
   const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
@@ -99,6 +98,7 @@ function Search() {
   const getAnalysisPedia = async (params, mode) => {
     const { papers, queryEn, queryZh } = params;
     const currentMode = mode;
+    setIsLoadingSummary(true);
     const res = await getAnalysisPediaAsync({
       papers,
       queryEn,
@@ -120,12 +120,24 @@ function Search() {
         setBulletPointsZH(data.bltpts);
         setBulletPointsZHPrefix(data.bltptsPrefix);
         break;
-      case 'selected':
-        setSelectedSummary(data.answer);
-        setSelectedBulletPoints(data.bltpts);
-        setSelectedBulletPointsPrefix(data.bltptsPrefix);
-        break;
     }
+    setIsLoadingSummary(false);
+  };
+
+  const getLiteratureReview = async (params) => {
+    const { papers, queryEn, queryZh } = params;
+    setIsLoadingSummary(true);
+    const res = await getLiteratureReviewAsync({
+      papers,
+      queryEn,
+      queryZh,
+    });
+    if (!res.ok) {
+      throw new Error('Failed get summary');
+    }
+
+    const data = await res.json();
+    setSelectedSummary(data.review);
     setIsLoadingSummary(false);
   };
 
@@ -253,7 +265,6 @@ function Search() {
       setBulletPointsZH('');
       setBulletPointsPrefix('');
       setBulletPointsZHPrefix('');
-      setSelectedBulletPointsPrefix('');
       setCheckedPapers([]);
       setPapers([]);
       setPapersZH([]);
@@ -386,7 +397,7 @@ function Search() {
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
               <Summary
-                getAnalysisPedia={getAnalysisPedia}
+                getLiteratureReview={getLiteratureReview}
                 setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
                 isLoadingSummary={isLoadingSummary}
                 queryRef={queryRef}

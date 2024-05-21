@@ -15,8 +15,6 @@ import {
   modeAtom,
   papersAtom,
   papersAtomZH,
-  selectedBulletPointsAtom,
-  selectedBulletPointsPrefixAtom,
   selectedSummaryAtom,
   summaryAtom,
   summaryZHAtom,
@@ -255,7 +253,7 @@ const FormattedSummary = (props: {
 };
 
 interface ISummaryProps {
-  getAnalysisPedia: (params: any, mode: string) => void;
+  getLiteratureReview: (params: any) => void;
   setIsNoEnoughModalVisible: (visible: boolean) => void;
   isLoadingSummary: boolean;
   queryRef: any;
@@ -263,7 +261,7 @@ interface ISummaryProps {
 
 export default function Summary(props: ISummaryProps) {
   const {
-    getAnalysisPedia,
+    getLiteratureReview,
     queryRef,
     isLoadingSummary,
     setIsNoEnoughModalVisible,
@@ -279,10 +277,6 @@ export default function Summary(props: ISummaryProps) {
   const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
   const bulletPointsZHPrefix = useAtomValue(bulletPointsZHPrefixAtom);
   const selectedSummary = useAtomValue(selectedSummaryAtom);
-  const selectedBulletPoints = useAtomValue(selectedBulletPointsAtom);
-  const selectedBulletPointsPrefix = useAtomValue(
-    selectedBulletPointsPrefixAtom
-  );
   const checkedPapers = useAtomValue(checkedPapersAtom);
 
   const showSummary = useMemo(() => {
@@ -302,8 +296,6 @@ export default function Summary(props: ISummaryProps) {
       case 'selected':
         return {
           summary: selectedSummary,
-          bulletPoints: selectedBulletPoints,
-          bulletPointsPrefix: selectedBulletPointsPrefix,
         };
     }
     return {};
@@ -313,8 +305,6 @@ export default function Summary(props: ISummaryProps) {
     bulletPoints,
     bulletPointsZH,
     selectedSummary,
-    selectedBulletPoints,
-    selectedBulletPointsPrefix,
     bulletPointsZHPrefix,
     bulletPointsPrefix,
     mode,
@@ -387,14 +377,11 @@ export default function Summary(props: ISummaryProps) {
                         setIsNoEnoughModalVisible(true);
                         return;
                       }
-                      getAnalysisPedia(
-                        {
-                          papers: thePapers,
-                          queryEn: queryRef.current.queryEn,
-                          queryZh: queryRef.current.queryZh,
-                        },
-                        'selected'
-                      );
+                      getLiteratureReview({
+                        papers: thePapers,
+                        queryEn: queryRef.current.queryEn,
+                        queryZh: queryRef.current.queryZh,
+                      });
                     }}
                   >
                     <Image
@@ -414,18 +401,22 @@ export default function Summary(props: ISummaryProps) {
                     <div className={styles.content_summary}>
                       {showSummary.summary}
                     </div>
-                    <div className={styles.content_bullet_points_prefix}>
-                      {showSummary.bulletPointsPrefix}
-                    </div>
-                    <ul className={styles.content_bullet_points}>
-                      {showSummary.bulletPoints.map((item) => (
-                        <FormattedSummary
-                          key={Math.random()}
-                          text={item}
-                          getPopoverResponsePedia={getPopoverResponsePedia}
-                        />
-                      ))}
-                    </ul>
+                    {showSummary.bulletPointsPrefix && (
+                      <div className={styles.content_bullet_points_prefix}>
+                        {showSummary.bulletPointsPrefix}
+                      </div>
+                    )}
+                    {showSummary.bulletPoints && (
+                      <ul className={styles.content_bullet_points}>
+                        {showSummary.bulletPoints.map((item) => (
+                          <FormattedSummary
+                            key={Math.random()}
+                            text={item}
+                            getPopoverResponsePedia={getPopoverResponsePedia}
+                          />
+                        ))}
+                      </ul>
+                    )}
                   </>
                 )}
               </div>

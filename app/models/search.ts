@@ -21,8 +21,8 @@ const summaryZHAtom = atom(''); // 概述
 const bulletPointsZHAtom = atomWithImmer<string[]>([]);
 const bulletPointsZHPrefixAtom = atom('');
 const selectedSummaryAtom = atom('');
-const selectedBulletPointsAtom = atomWithImmer<string[]>([]);
-const selectedBulletPointsPrefixAtom = atom('');
+// const selectedBulletPointsAtom = atomWithImmer<string[]>([]);
+// const selectedBulletPointsPrefixAtom = atom('');
 const checkedPapersAtom = atomWithImmer([]); // 选中的引文列表
 const sortModeAtom = atom('default'); // 排序方式 default | relevance | time | level | quote
 
@@ -36,8 +36,8 @@ export {
   papersAtom,
   papersAtomZH,
   searchValueAtom,
-  selectedBulletPointsAtom,
-  selectedBulletPointsPrefixAtom,
+  // selectedBulletPointsAtom,
+  // selectedBulletPointsPrefixAtom,
   selectedSummaryAtom,
   sortModeAtom,
   summaryAtom,

@@ -207,7 +207,6 @@
               color: #000000;
               line-height: 24px;
               padding-bottom: 14px;
-              border-bottom: 1px solid #000;
               text-indent: 40px;
               pre {
                 white-space: pre-wrap;
@@ -225,6 +224,7 @@
               line-height: 24px;
               margin-top: 15px;
               text-indent: 40px;
+              border-top: 1px solid #000;
             }
 
             .content_bullet_points {

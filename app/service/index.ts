@@ -12,6 +12,8 @@ import { getItem } from '../utils/storage';
 const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
   'https://gemmed-unctions-qhwhobnfgh.us-west-1.fcapp.run';
+  // const FUNCTION_BASE_URL =
+  //   'https://gemmed-unctions-qhwhoxyzwh.us-west-1.fcapp.run';
 
 const request = async (
   url: string,
@@ -45,7 +47,10 @@ const request = async (
   return data;
 };
 
-export const getBulletPointsExpansion = async (params: {bltpt: string; papers: any[]}) => {
+export const getBulletPointsExpansion = async (params: {
+  bltpt: string;
+  papers: any[];
+}) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
@@ -56,7 +61,7 @@ export const getBulletPointsExpansion = async (params: {bltpt: string; papers: a
     },
   };
   return fetch(`${FUNCTION_BASE_URL}/bltpt_expansion`, option);
-}
+};
 
 //  搜索
 export const getPedia = async (params) => {
@@ -89,6 +94,23 @@ export const getPartPedia = async (params, lang) => {
     },
   };
   return fetch(`${FUNCTION_BASE_URL}${path}`, option);
+};
+
+export const getLiteratureReview = async (params: {
+  papers: any[];
+  queryEn: string;
+  queryZh: string;
+}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/literature_review`, option);
 };
 
 export const getAnalysisPedia = async (params: {
