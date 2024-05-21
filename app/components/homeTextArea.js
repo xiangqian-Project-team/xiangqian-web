@@ -28,7 +28,7 @@ function HomeTextArea() {
     <div className={styles.homeTextArea}>
       <TextArea
         maxLength={150}
-        placeholder="整合Web of Science, CNKI等资源库，支持中英文输入......"
+        placeholder="支持中英文搜索......"
         style={{
           height: 138,
           width: 744,
