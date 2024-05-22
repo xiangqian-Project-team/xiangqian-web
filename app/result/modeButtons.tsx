@@ -1,3 +1,4 @@
+import { useSelector } from '@xstate/react';
 import { Button, ConfigProvider } from 'antd';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
@@ -9,17 +10,17 @@ import LangENActiveIcon from '../icons/lang_en_active.svg';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
-import { modeAtom, sortModeAtom } from '../models/search';
+import { sortModeAtom } from '../models/search';
+import { SearchMode, searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
 
 interface IModeButtonsProps {
   disabled: boolean;
-  onModeChangeClick: () => void;
-  setPageIndex: (index: number) => void;
 }
 
 export default function ModeButtons(props: IModeButtonsProps) {
-  const [mode, setMode] = useAtom(modeAtom);
+  // const [mode, setMode] = useAtom(modeAtom);
+  const mode = useSelector(searchActor, (state) => state.context.mode);
   const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
   const [sortMode, setSortMode] = useAtom(sortModeAtom);
 
@@ -39,6 +40,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
 
   return (
     <>
+      <h1>{mode}</h1>
       <ConfigProvider
         theme={{
           token: {
@@ -65,9 +67,11 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.en_button}
             disabled={props.disabled}
             onClick={() => {
-              setMode('en');
+              // setMode('en');
+              searchActor.send({ type: 'CHANGE_MODE', value: SearchMode.EN });
               setSortMode('default');
-              props.onModeChangeClick();
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              // props.onModeChangeClick();
             }}
           >
             <Image src={LangENIcon.src} width={18} height={18} alt={''} />
@@ -84,9 +88,14 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.cn_button}
             disabled={props.disabled}
             onClick={() => {
-              setMode('zh-cn');
+              // setMode('zh-cn');
+              searchActor.send({
+                type: 'CHANGE_MODE',
+                value: SearchMode.ZH_CN,
+              });
               setSortMode('default');
-              props.onModeChangeClick();
+              // props.onModeChangeClick();
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
             }}
           >
             <Image src={LangCNIcon.src} width={18} height={18} alt={''} />
@@ -111,9 +120,14 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.selected_button}
             disabled={props.disabled}
             onClick={() => {
-              setMode('selected');
+              // setMode('selected');
+              searchActor.send({
+                type: 'CHANGE_MODE',
+                value: SearchMode.SELECTED,
+              });
               setSortMode('default');
-              props.onModeChangeClick();
+              // props.onModeChangeClick();
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
             }}
           >
             <Image
@@ -144,7 +158,8 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 setSortMode('default');
                 setIsSortMenuVisible(false);
-                props.onModeChangeClick();
+                // props.onModeChangeClick();
+                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
             >
               推荐排序
@@ -156,7 +171,8 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 setSortMode('relevance');
                 setIsSortMenuVisible(false);
-                props.onModeChangeClick();
+                // props.onModeChangeClick();
+                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
             >
               相关程度
@@ -168,7 +184,8 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 setSortMode('time');
                 setIsSortMenuVisible(false);
-                props.onModeChangeClick();
+                // props.onModeChangeClick();
+                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
             >
               发表时间
@@ -191,7 +208,8 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 setSortMode('quote');
                 setIsSortMenuVisible(false);
-                props.onModeChangeClick();
+                // props.onModeChangeClick();
+                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
             >
               引用数量
