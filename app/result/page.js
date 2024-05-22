@@ -20,6 +20,7 @@ import SearchTextArea from '../components/searchTextArea';
 import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
+import FAQList from './faqList';
 import {
   bulletPointsAtom,
   bulletPointsPrefixAtom,
@@ -37,9 +38,9 @@ import {
 } from '../models/search';
 import {
   getAnalysisPedia as getAnalysisPediaAsync,
+  getLiteratureReview as getLiteratureReviewAsync,
   getPartPedia as getPartPediaAsync,
   getResponsePedia as getResponsePediaAsync,
-  getLiteratureReview as getLiteratureReviewAsync
 } from '../service';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
@@ -396,12 +397,15 @@ function Search() {
 
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
-              <Summary
-                getLiteratureReview={getLiteratureReview}
-                setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
-                isLoadingSummary={isLoadingSummary}
-                queryRef={queryRef}
-              />
+              <div className={styles.search_content_data_summary}>
+                <Summary
+                  getLiteratureReview={getLiteratureReview}
+                  setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                  isLoadingSummary={isLoadingSummary}
+                  queryRef={queryRef}
+                />
+                <FAQList />
+              </div>
 
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>

@@ -25,10 +25,10 @@ import {
 } from '../service';
 import styles from './page.module.scss';
 
-const FormattedSummary = (props: {
+function FormattedSummary(props: {
   text: string;
   getPopoverResponsePedia: any;
-}) => {
+}) {
   const { text, getPopoverResponsePedia } = props;
   const papers = useAtomValue(papersAtom);
   const papersZH = useAtomValue(papersAtomZH);
@@ -250,7 +250,7 @@ const FormattedSummary = (props: {
       )}
     </li>
   );
-};
+}
 
 interface ISummaryProps {
   getLiteratureReview: (params: any) => void;
@@ -348,7 +348,7 @@ export default function Summary(props: ISummaryProps) {
   };
 
   return (
-    <div className={styles.search_content_data_summary}>
+    <div className={styles.search_content_data_summary_content}>
       {
         <div>
           <Skeleton

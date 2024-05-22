@@ -1,0 +1,39 @@
+.faq {
+  width: 904px;
+  margin: 0 auto;
+  padding: 30px 0 30px 0;
+  display: flex;
+  .faq_list_item {
+    width: 600px;
+    padding: 15px 0;
+    border-top: 1px solid #efefef;
+    line-height: 25px;
+    font-size: 14px;
+    overflow: hidden;
+    max-height: 25px;
+    transition: all 0.5s;
+    .faq_list_item_title {
+      font-size: 15px;
+      font-weight: bold;
+      padding-bottom: 10px;
+      position: relative;
+      cursor: pointer;
+      .faq_list_item_drop_down {
+        position: absolute;
+        top: 7px;
+        right: 10px;
+        transition: all 0.5s;
+      }
+    }
+  }
+  .faq_icon {
+    margin: 0 20px 0 50px;
+  }
+  .faq_title {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+  .faq_list {
+    margin-top: 30px;
+  }
+}
