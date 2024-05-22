@@ -1,9 +1,7 @@
-import { DownOutlined } from '@ant-design/icons';
-import { Popover, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { useAtom, useAtomValue } from 'jotai';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import ResultPaperItem from '../components/resultPaperItem';
+import { useMemo } from 'react';
 import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
 import {
@@ -19,238 +17,9 @@ import {
   summaryAtom,
   summaryZHAtom,
 } from '../models/search';
-import {
-  getBulletPointsExpansion,
-  getResponsePedia as getResponsePediaAsync,
-} from '../service';
+import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
-
-function FormattedSummary(props: {
-  text: string;
-  getPopoverResponsePedia: any;
-}) {
-  const { text, getPopoverResponsePedia } = props;
-  const papers = useAtomValue(papersAtom);
-  const papersZH = useAtomValue(papersAtomZH);
-  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [expensionText, setExpensionText] = useState<string | undefined>(
-    undefined
-  );
-
-  const fetchBulletPointsExpansion = async () => {
-    if (expensionText) {
-      return;
-    }
-    const pattern = /\[(.*?)\]/g;
-    const matches = Array.from(text.matchAll(pattern));
-    let idSet = new Set();
-    for (let match of matches) {
-      idSet.add(match[1]);
-    }
-    const thePapers = [...papers, ...papersZH].filter((item) => {
-      return idSet.has(`${item.id}`);
-    });
-    setIsLoading(true);
-    try {
-      const res = await getBulletPointsExpansion({
-        bltpt: props.text,
-        papers: thePapers,
-      });
-      if (!res.ok) {
-        throw new Error('Failed get response');
-      }
-      const data = await res.json();
-      {
-        const pattern = /(\[.*?\])/g;
-        const bltptExpansion = data.bltptExpansion || '';
-        const matches = bltptExpansion.match(pattern) || [];
-        const splitText = bltptExpansion.split(pattern);
-        const formattedStr = splitText.reduce((arr, element) => {
-          if (matches.includes(element)) {
-            const id = element.replace(/^\[(.+)\]$/, '$1');
-            const paper = [...papers, ...papersZH].find(
-              (item) => item.id === id
-            );
-            const authors = paper?.authors[0] || '';
-            const year = paper?.year || '';
-            return [
-              ...arr,
-              <Popover
-                key={Math.random()}
-                placement="rightTop"
-                trigger="click"
-                overlayStyle={{ padding: 0, maxWidth: 790 }}
-                onOpenChange={(visible) => {
-                  if (visible) {
-                    if (paper.response) {
-                      return;
-                    }
-                    getPopoverResponsePedia(paper);
-                  }
-                }}
-                content={
-                  <ResultPaperItem
-                    data={paper}
-                    checkedPapers={checkedPapers}
-                    setCheckedPapers={setCheckedPapers}
-                  />
-                }
-              >
-                <span className={styles.mark_author_year}>
-                  （{authors}，{year}）
-                </span>
-              </Popover>,
-            ];
-          }
-          return [...arr, element];
-        }, []);
-
-        setExpensionText(formattedStr);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const pattern = /(\[.*?\])/g;
-  const splitText = (text || '').split(pattern);
-
-  if (splitText.length <= 1) {
-    return (
-      <li
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-      >
-        {isOpen ? (
-          <DownOutlined
-            className={styles.down_icon_active}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-              fetchBulletPointsExpansion();
-            }}
-          />
-        ) : (
-          <DownOutlined
-            className={styles.down_icon}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-              fetchBulletPointsExpansion();
-            }}
-          />
-        )}
-        {text}
-        {isOpen && (
-          <div className={styles.expension_text}>
-            <Skeleton
-              active
-              title={false}
-              style={{ width: '80%' }}
-              loading={isLoading}
-            >
-              {expensionText}
-            </Skeleton>
-          </div>
-        )}
-      </li>
-    );
-  }
-  const matches = text.match(pattern);
-
-  const formattedStr = splitText.reduce((arr, element) => {
-    if (matches.includes(element)) {
-      const id = element.replace(/^\[(.+)\]$/, '$1');
-      const paper = [...papers, ...papersZH].find((item) => item.id === id);
-      const authors = paper?.authors[0] || '';
-      const year = paper?.year || '';
-      return [
-        ...arr,
-        <Popover
-          key={Math.random()}
-          placement="rightTop"
-          trigger="click"
-          overlayStyle={{ padding: 0, maxWidth: 790 }}
-          onOpenChange={(visible) => {
-            if (visible) {
-              if (paper.response) {
-                return;
-              }
-              getPopoverResponsePedia(paper);
-            }
-          }}
-          content={
-            <ResultPaperItem
-              data={paper}
-              checkedPapers={checkedPapers}
-              setCheckedPapers={setCheckedPapers}
-            />
-          }
-        >
-          <span className={styles.mark_author_year}>
-            （{authors}，{year}）
-          </span>
-        </Popover>,
-      ];
-    }
-    return [...arr, element];
-  }, []);
-
-  return (
-    <li
-      onClick={(e) => {
-        // @ts-ignore TODO fix typo
-        if (e.target.tagName !== 'LI') {
-          return;
-        }
-        setIsOpen(!isOpen);
-        if (!isOpen) {
-          fetchBulletPointsExpansion();
-        }
-      }}
-    >
-      {isOpen ? (
-        <DownOutlined
-          className={styles.down_icon_active}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
-            fetchBulletPointsExpansion();
-          }}
-        />
-      ) : (
-        <DownOutlined
-          className={styles.down_icon}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
-            fetchBulletPointsExpansion();
-          }}
-        />
-      )}
-      {formattedStr}
-      {isOpen && (
-        <div className={styles.expension_text}>
-          <Skeleton
-            active
-            title={false}
-            style={{ width: '80%' }}
-            loading={isLoading}
-          >
-            {expensionText}
-          </Skeleton>
-        </div>
-      )}
-    </li>
-  );
-}
+import SummaryPopover from './summaryPopover';
 
 interface ISummaryProps {
   getLiteratureReview: (params: any) => void;
@@ -409,11 +178,13 @@ export default function Summary(props: ISummaryProps) {
                     {showSummary.bulletPoints && (
                       <ul className={styles.content_bullet_points}>
                         {showSummary.bulletPoints.map((item) => (
-                          <FormattedSummary
-                            key={Math.random()}
-                            text={item}
-                            getPopoverResponsePedia={getPopoverResponsePedia}
-                          />
+                          <li>
+                            <SummaryPopover
+                              key={Math.random()}
+                              text={item}
+                              getPopoverResponsePedia={getPopoverResponsePedia}
+                            />
+                          </li>
                         ))}
                       </ul>
                     )}

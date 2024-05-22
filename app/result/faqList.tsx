@@ -3,11 +3,9 @@ import DocumentIcon from '../icons/document_icon.svg';
 import DropdownIcon from '../icons/drop_down_icon.svg';
 
 import styles from './faqList.module.scss';
-
-const faqData = [
-  '镶嵌该怎么用？','镶嵌与GPT等对话式工具的比较优势?',
-'镶嵌有何成本?','我如何联系团队?',
-];
+import { useEffect, useState } from 'react';
+import { getRelatedSearch } from '../service';
+import { Skeleton } from 'antd';
 
 interface IFAQItemProps {
   title: string;
@@ -16,10 +14,15 @@ interface IFAQItemProps {
 function FAQItem(props: IFAQItemProps) {
   const onQuestionClick = () => {
     // TODO
-  }
+  };
 
   return (
-    <div className={styles.faq_list_item} onClick={() => {onQuestionClick()}}>
+    <div
+      className={styles.faq_list_item}
+      onClick={() => {
+        onQuestionClick();
+      }}
+    >
       <div className={styles.faq_list_item_title}>
         {props.title}
         <Image
@@ -35,6 +38,25 @@ function FAQItem(props: IFAQItemProps) {
 }
 
 export default function FAQList() {
+  const [questionList, setQuestionList] = useState<string[]>([])
+
+  useEffect(() => {
+   async function getQuestionList() {
+      
+      try {
+        const listRes = await getRelatedSearch();
+        if (!listRes.ok) {
+          throw new Error('Failed search');
+        }
+        const data = await listRes.json();
+        setQuestionList(data)
+      } catch (e) {
+      }
+    }
+
+    getQuestionList()
+  },[])
+
   return (
     <div className={styles.faq}>
       <div>
@@ -49,9 +71,10 @@ export default function FAQList() {
           相关研究问题
         </div>
         <div className={styles.faq_list}>
-          {faqData.map((item, index) => (
+          <Skeleton active title={false}>
+          {questionList.map((item, index) => (
             <FAQItem key={index} title={item} />
-          ))}
+          ))}</Skeleton>
         </div>
       </div>
     </div>
