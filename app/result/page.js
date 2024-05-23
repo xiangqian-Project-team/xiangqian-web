@@ -7,25 +7,24 @@
  * @Description:
  */
 'use client';
+import { Skeleton } from 'antd';
 import Image from 'next/image';
+import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import SearchTextArea from '../components/searchTextArea';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
+import Summary from './summary';
 
 // import { Modal, Skeleton } from 'antd';
 // import { useAtom, useSetAtom } from 'jotai';
 // import { useRouter } from 'next-nprogress-bar';
 // import { useSearchParams } from 'next/navigation';
 // import { useEffect, useMemo, useRef, useState } from 'react';
-// import LoginBtn from '../components/loginBtn';
 // import ResultPaperItem from '../components/resultPaperItem';
-// import SearchTextArea from '../components/searchTextArea';
 // import ErrorIcon from '../icons/error_icon.svg';
-// import LogoIcon2 from '../icons/main_logo.svg';
-// import userExpendIcon from '../icons/user_expend_icon.svg';
 // import FAQList from './faqList';
 // import {
 //   bulletPointsAtom,
@@ -503,18 +502,25 @@ import { useSelector } from '@xstate/react';
 import { searchActor } from '../models/searchMachine';
 
 function Search() {
-  const isSideBarOpen = useSelector(
-    searchActor,
-    (state) => state.context.isSideBarOpen
+  const state = useSelector(searchActor, (state) => state);
+  const isLoadingTheList = state.matches({ papers: 'fetching' });
+  const isLoadingSummary = state.matches({ summary: 'fetching' });
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const { isInitialed, isLoadingList } = state;
+  const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
+    const { isInitialed, isLoadingSummary, isLoadingList } = state.context;
+    return isInitialed && !isLoadingSummary && !isLoadingList;
+  });
+
+  const paperSkeletons = useMemo(
+    () =>
+      Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
+    []
   );
-  const isLoadingList  = useSelector(
-    searchActor,
-    (state) => state.context.isLoadingList
-  );
-  const  isLoadingSummary = useSelector(
-    searchActor,
-    (state) =>  state.context.isLoadingSummary
-  );
+
+  useEffect(() => {
+    searchActor.send({ type: 'FETCH_PAPERS' });
+  }, []);
 
   return (
     <div className={styles.search}>
@@ -547,10 +553,7 @@ function Search() {
               <button
                 className={styles.closeButton}
                 onClick={() => {
-                  searchActor.send({
-                    type: 'CHANGE_SIDEBAR',
-                    value: !isSideBarOpen,
-                  });
+                  setIsSideBarOpen(!isSideBarOpen);
                 }}
               >
                 <Image src={userExpendIcon} alt="userIcon" />
@@ -560,10 +563,7 @@ function Search() {
               <button
                 className={styles.openButton}
                 onClick={() => {
-                  searchActor.send({
-                    type: 'CHANGE_SIDEBAR',
-                    value: !isSideBarOpen,
-                  });
+                  setIsSideBarOpen(!isSideBarOpen);
                 }}
               >
                 <Image src={userExpendIcon} alt="userIcon" />
@@ -573,13 +573,58 @@ function Search() {
         </div>
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-          <div className={styles.search_content_data_papers}>
-            <div className={styles.content_button}>
-              <ModeButtons
-                disabled={isLoadingList || isLoadingSummary}
-              />
+          {isPapersEmptyErrorVisible && (
+            <div className={styles.search_content_empty}>
+              <div className={styles.search_content_empty_card}>
+                <div className={styles.text}>
+                  <h2>抱歉，这里好像出错了</h2>
+                  <h3>可能是这个问题太复杂了，换个问题再试试吧</h3>
+                </div>
+              </div>
+              <div className={styles.search_content_empty_contact}>
+                仍无法解决？请联系「镶嵌」用户服务：hello_xiangqian
+              </div>
             </div>
-          </div>
+          )}
+          {!isPapersEmptyErrorVisible && (
+            <div className={styles.search_content_data}>
+              <div className={styles.search_content_data_summary}>
+                <Summary
+                // getLiteratureReview={getLiteratureReview}
+                // setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                // isLoadingSummary={isLoadingSummary}
+                // queryRef={queryRef}
+                />
+                {/* <Summary
+                  getLiteratureReview={getLiteratureReview}
+                  setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                  isLoadingSummary={isLoadingSummary}
+                  queryRef={queryRef}
+                />
+                <FAQList /> */}
+              </div>
+              <div className={styles.search_content_data_papers}>
+                <div className={styles.content_button}>
+                  <ModeButtons disabled={isLoadingList || isLoadingSummary} />
+                </div>
+                {/* {isLoadingList && */}
+                {isLoadingTheList &&
+                  paperSkeletons.map((item) => (
+                    <div
+                      style={{
+                        background: 'white',
+                        margin: '0 0 10px',
+                        padding: '20px',
+                        borderRadius: '12px',
+                      }}
+                      key={item.id}
+                    >
+                      <Skeleton active />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

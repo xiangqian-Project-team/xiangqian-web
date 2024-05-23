@@ -10,34 +10,38 @@ import {
   bulletPointsZHAtom,
   bulletPointsZHPrefixAtom,
   checkedPapersAtom,
-  modeAtom,
+  // modeAtom,
   papersAtom,
   papersAtomZH,
   selectedSummaryAtom,
-  summaryAtom,
+  // summaryAtom,
   summaryZHAtom,
 } from '../models/search';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 import SummaryPopover from './summaryPopover';
+import { useSelector } from '@xstate/react';
+import { searchActor } from '../models/searchMachine';
 
 interface ISummaryProps {
-  getLiteratureReview: (params: any) => void;
-  setIsNoEnoughModalVisible: (visible: boolean) => void;
-  isLoadingSummary: boolean;
-  queryRef: any;
+  // getLiteratureReview: (params: any) => void;
+  // setIsNoEnoughModalVisible: (visible: boolean) => void;
+  // isLoadingSummary: boolean;
+  // queryRef: any;
 }
 
 export default function Summary(props: ISummaryProps) {
-  const {
-    getLiteratureReview,
-    queryRef,
-    isLoadingSummary,
-    setIsNoEnoughModalVisible,
-  } = props;
+  // const {
+  //   getLiteratureReview,
+  //   queryRef,
+  //   isLoadingSummary,
+  //   setIsNoEnoughModalVisible,
+  // } = props;
 
-  const mode = useAtomValue(modeAtom); // en | zh-cn | selected
-  const summary = useAtomValue(summaryAtom);
+  // const mode = useAtomValue(modeAtom); // en | zh-cn | selected
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const summary = useSelector(searchActor, (state) => state.context.summary);
+  // const summary = useAtomValue(summaryAtom);
   const summaryZh = useAtomValue(summaryZHAtom);
   const [papers, setPapers] = useAtom(papersAtom);
   const [papersZH, setPapersZH] = useAtom(papersAtomZH);
@@ -122,7 +126,7 @@ export default function Summary(props: ISummaryProps) {
         <div>
           <Skeleton
             active
-            loading={isLoadingSummary}
+            // loading={isLoadingSummary}
             style={{ padding: '20px' }}
             paragraph={{ rows: 16 }}
           >
@@ -142,15 +146,15 @@ export default function Summary(props: ISummaryProps) {
                       const thePapers = [...papers, ...papersZH].filter(
                         (item) => checkedPapers.includes(item.id)
                       );
-                      if (thePapers.length < 10) {
-                        setIsNoEnoughModalVisible(true);
-                        return;
-                      }
-                      getLiteratureReview({
-                        papers: thePapers,
-                        queryEn: queryRef.current.queryEn,
-                        queryZh: queryRef.current.queryZh,
-                      });
+                      // if (thePapers.length < 10) {
+                      //   setIsNoEnoughModalVisible(true);
+                      //   return;
+                      // }
+                      // getLiteratureReview({
+                      //   papers: thePapers,
+                      //   queryEn: queryRef.current.queryEn,
+                      //   queryZh: queryRef.current.queryZh,
+                      // });
                     }}
                   >
                     <Image
@@ -179,11 +183,11 @@ export default function Summary(props: ISummaryProps) {
                       <ul className={styles.content_bullet_points}>
                         {showSummary.bulletPoints.map((item) => (
                           <li>
-                            <SummaryPopover
+                            {/* <SummaryPopover
                               key={Math.random()}
                               text={item}
                               getPopoverResponsePedia={getPopoverResponsePedia}
-                            />
+                            /> */}
                           </li>
                         ))}
                       </ul>
