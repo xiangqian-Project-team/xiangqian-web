@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import RefreshIcon from '../icons/refresh_icon.svg';
@@ -13,8 +13,6 @@ import {
   // papersAtom,
   // papersAtomZH,
   selectedSummaryAtom,
-  // summaryAtom,
-  // summaryZHAtom,
 } from '../models/search';
 import { searchActor } from '../models/searchMachine';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
@@ -34,8 +32,14 @@ export default function Summary() {
     },
   });
   const mode = useSelector(searchActor, (state) => state.context.mode);
-  const paperInfo = useSelector(searchActor, (state) => state.context.paperInfo);
-  const paperZHInfo = useSelector( searchActor, (state) => state.context.paperZHInfo);
+  const paperInfo = useSelector(
+    searchActor,
+    (state) => state.context.paperInfo
+  );
+  const paperZHInfo = useSelector(
+    searchActor,
+    (state) => state.context.paperZHInfo
+  );
   const summaryInfo = useSelector(
     searchActor,
     (state) => state.context.summaryInfo
@@ -97,29 +101,32 @@ export default function Summary() {
       throw new Error('Failed get response');
     }
     const { papers: processedPapers } = await res.json();
-    const processedMap = new Map(
-      processedPapers.map((item) => [item.id, item])
-    );
+    // const processedMap = new Map(
+    //   processedPapers.map((item) => [item.id, item])
+    // );
+    console.log(processedPapers)
     if (currMode === 'zh-cn') {
-      const newPapers = paperZHInfo.papers.map((item) => {
-        if (processedMap.has(item.id)) {
-          // @ts-ignore
-          return { ...item, response: processedMap.get(item.id).response };
-        }
-        return item;
-      });
+      // const newPapers = paperZHInfo.papers.map((item) => {
+      //   if (processedMap.has(item.id)) {
+      //     // @ts-ignore
+      //     return { ...item, response: processedMap.get(item.id).response };
+      //   }
+      //   return item;
+      // });
       // setPapersZH(newPapers);
+      searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
       return;
     }
 
-    const newPapers = paperInfo.papers.map((item) => {
-      if (processedMap.has(item.id)) {
-        // @ts-ignore
-        return { ...item, response: processedMap.get(item.id).response };
-      }
-      return item;
-    });
+    // const newPapers = paperInfo.papers.map((item) => {
+    //   if (processedMap.has(item.id)) {
+    //     // @ts-ignore
+    //     return { ...item, response: processedMap.get(item.id).response };
+    //   }
+    //   return item;
+    // });
     // setPapers(newPapers);
+    searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
   };
 
   return (
@@ -146,9 +153,10 @@ export default function Summary() {
                 <div className={styles.fetch_selected_summary_button_container}>
                   <button
                     onClick={() => {
-                      const thePapers = [...paperInfo.papers, ...paperZHInfo.papers].filter(
-                        (item) => item.selected
-                      );
+                      const thePapers = [
+                        ...paperInfo.papers,
+                        ...paperZHInfo.papers,
+                      ].filter((item) => item.selected);
                       if (thePapers.length < 10) {
                         // setIsNoEnoughModalVisible(true);
                         return;

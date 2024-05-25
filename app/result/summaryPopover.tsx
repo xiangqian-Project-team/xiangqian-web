@@ -61,26 +61,43 @@ import styles from './page.module.scss';
 // }
 
 function PopoverItem(props: {
-  item: { type: 'text' | 'popover'; text: string; id?: string };
+  item: {
+    type: 'text' | 'popover';
+    text: string;
+    id?: string;
+    key: number;
+    isVisible: boolean;
+  };
   getPopoverResponsePedia: (paper: any) => void;
 }) {
   const { item, getPopoverResponsePedia } = props;
-  const papers = useSelector(searchActor, (state) => state.context.paperInfo.papers);
+  const papers = useSelector(
+    searchActor,
+    (state) => state.context.paperInfo.papers
+  );
+  const papersZH = useSelector(
+    searchActor,
+    (state) => state.context.paperZHInfo.papers
+  );
   // const [visibleSummaryPopoverID, setVisibleSummaryPopoverID] = useState(
   //   visibleSummaryPopoverIDAtom
   // );
 
-  const paper = [...papers].find((paper) => paper.id === item.id);
-  // const paper = [...papers, ...papersZH].find((item) => item.id === item.id);
-
   if (item.type === 'popover') {
+    const paper = [...papers, ...papersZH].find(
+      (paper) => paper.id === item.id
+    );
+    // const paper = [...papers, ...papersZH].find((item) => item.id === item.id);
+
     return (
       <Popover
         placement="rightTop"
         trigger="click"
+        open={item.isVisible}
         // open={visibleSummaryPopoverID === paper.id}
         overlayStyle={{ padding: 0, maxWidth: 790 }}
         onOpenChange={(visible) => {
+          searchActor.send({ type: 'TOGGLE_POPOVER_VISIBLE', value: { key: item.key, isVisible:visible } });
           if (!visible) {
             return;
           }
@@ -88,7 +105,7 @@ function PopoverItem(props: {
           if (paper.response) {
             return;
           }
-          // getPopoverResponsePedia(paper);
+          getPopoverResponsePedia(paper);
         }}
         content={
           <ResultPaperItem
@@ -104,6 +121,7 @@ function PopoverItem(props: {
       </Popover>
     );
   }
+
   return item.text;
 }
 
@@ -237,7 +255,7 @@ export default function SummaryPopover(props: {
       )}
       {list.map((item) => (
         <PopoverItem
-          key={Math.random()}
+          key={item.key}
           // text={text}
           item={item}
           getPopoverResponsePedia={getPopoverResponsePedia}

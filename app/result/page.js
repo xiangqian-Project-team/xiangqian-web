@@ -641,8 +641,7 @@ function Search() {
             <div className={styles.search_content_data}>
               <div className={styles.search_content_data_summary}>
                 <Summary />
-                {/* 
-                <FAQList /> */}
+                {/* <FAQList /> */}
               </div>
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>

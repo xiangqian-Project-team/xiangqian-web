@@ -27,7 +27,9 @@ function handlePopoverContent(contentList: string[], papers: any[]) {
           {
             text: `（${authors}，${year}）`,
             id,
+            key: Math.random(),
             type: 'popover',
+            isVisible: false,
           },
         ];
       }
@@ -35,7 +37,9 @@ function handlePopoverContent(contentList: string[], papers: any[]) {
         ...arr,
         {
           text: element,
+          key: Math.random(),
           type: 'text',
+          isVisible: false,
         },
       ];
     }, []);
@@ -142,7 +146,6 @@ const fetchAnalysisPedia = async ({
   }
   const data = await res.json();
 
-  // const formattedBulletPoints = handlePopoverContent(data.bltpts, [...papers, ...papersZH]);
   const formattedBulletPoints = handlePopoverContent(data.bltpts, [...papers]);
 
   return {
@@ -226,7 +229,9 @@ interface SearchContext {
     bulletPoints: {
       type: 'text' | 'popover';
       text: string;
+      key: number;
       id?: string;
+      isVisible: boolean;
     }[][];
     bulletPointsPrefix: string;
   };
@@ -235,7 +240,9 @@ interface SearchContext {
     bulletPoints: {
       type: 'text' | 'popover';
       text: string;
+      key: number;
       id?: string;
+      isVisible: boolean;
     }[][];
     bulletPointsPrefix: string;
   };
@@ -243,7 +250,9 @@ interface SearchContext {
     bulletPoints: {
       type: 'text' | 'popover';
       text: string;
+      key: number;
       id?: string;
+      isVisible: boolean;
     }[][];
   };
   showPapers: any[];
@@ -281,6 +290,11 @@ const searchMachine = setup({
       | ChangeSortModeEvent
       | ChangeSummaryEvent
       | SetQuestionEvent
+      | { type: 'SET_RESPONSE_PEDIA'; value: any }
+      | {
+          type: 'TOGGLE_POPOVER_VISIBLE';
+          value: { key: number; isVisible: boolean };
+        }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
       | { type: 'FETCH_SUMMARY_ZH' }
@@ -633,6 +647,41 @@ const searchMachine = setup({
           ].forEach((item) => {
             if (item.id === id) {
               item.selected = !item.selected;
+            }
+          });
+        });
+      }),
+    },
+    TOGGLE_POPOVER_VISIBLE: {
+      actions: assign(({ event, context }) => {
+        return produce(context, (draft) => {
+          const { key, isVisible } = event.value;
+          [
+            ...draft.summaryInfo.bulletPoints.flat(),
+            ...draft.summaryZHInfo.bulletPoints.flat(),
+            ...draft.summarySelectedInfo.bulletPoints.flat(),
+          ].forEach((item) => {
+            if (item.key === key) {
+              item.isVisible = isVisible;
+            }
+          });
+        });
+      }),
+    },
+    SET_RESPONSE_PEDIA: {
+      actions: assign(({ event, context }) => {
+        return produce(context, (draft) => {
+          const processedPapers = event.value;
+          const processedMap = new Map(
+            processedPapers.map((item) => [item.id, item])
+          );
+          [
+            ...draft.paperInfo.papers,
+            ...draft.paperZHInfo.papers,
+            ...draft.showPapers,
+          ].forEach((item) => {
+            if (processedMap.has(item.id)) {
+              item.response = processedMap.get(item.id).response;
             }
           });
         });
