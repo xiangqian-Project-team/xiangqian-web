@@ -12,6 +12,7 @@ import UserIcon from '../img/user.png';
 import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
+import { searchActor } from '../models/searchMachine';
 
 const QuoteIcon = () => (
   <svg
@@ -73,6 +74,7 @@ export default function ResultPaperItem(props) {
     bibtex,
     doi,
     isEn,
+    selected,
   } = props.data;
 
   const { isBorderVisible } = props;
@@ -83,12 +85,13 @@ export default function ResultPaperItem(props) {
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
-  const IsSelected = useCallback(
-    (id) => {
-      return props.checkedPapers.includes(id);
-    },
-    [props.checkedPapers]
-  );
+  // const IsSelected = useCallback(
+  //   (id) => {
+  //     return props.checkedPapers.includes(id);
+  //   },
+  //   [props.checkedPapers]
+  // );
+
 
   const toggleAbstract = async (id) => {
     try {
@@ -128,7 +131,8 @@ export default function ResultPaperItem(props) {
         <Tooltip title={title}>
           <h4>{title}</h4>
         </Tooltip>
-        {IsSelected(id) ? (
+        {/* {IsSelected(id) ? ( */}
+        {selected ? (
           <ConfigProvider
             theme={{
               token: {
@@ -150,10 +154,11 @@ export default function ResultPaperItem(props) {
               className={styles.content_card_checked}
               active
               onClick={() => {
-                const newCheckedPapers = props.checkedPapers.filter(
-                  (item) => item !== id
-                );
-                props.setCheckedPapers(newCheckedPapers);
+                // const newCheckedPapers = props.checkedPapers.filter(
+                //   (item) => item !== id
+                // );
+                // props.setCheckedPapers(newCheckedPapers);
+                searchActor.send({ type: 'TOGGLE_SELECT', value: id })
               }}
             >
               <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
@@ -181,8 +186,9 @@ export default function ResultPaperItem(props) {
             <Button
               className={styles.content_card_check}
               onClick={() => {
-                const newCheckedPapers = [...props.checkedPapers, id];
-                props.setCheckedPapers(newCheckedPapers);
+                // const newCheckedPapers = [...props.checkedPapers, id];
+                // props.setCheckedPapers(newCheckedPapers);
+                searchActor.send({ type: 'TOGGLE_SELECT', value: id })
               }}
             >
               <Image
@@ -210,7 +216,7 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_authors}>
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
-          {authors[0]}等
+          {/* {authors[0]}等 */}
         </div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_years}>{year || 2000}</div>

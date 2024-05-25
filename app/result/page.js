@@ -9,22 +9,23 @@
 'use client';
 import { Skeleton } from 'antd';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
+import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
+import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
+import PageManager from './pageManager';
 import Summary from './summary';
 
 // import { Modal, Skeleton } from 'antd';
 // import { useAtom, useSetAtom } from 'jotai';
 // import { useRouter } from 'next-nprogress-bar';
-// import { useSearchParams } from 'next/navigation';
 // import { useEffect, useMemo, useRef, useState } from 'react';
-// import ResultPaperItem from '../components/resultPaperItem';
-// import ErrorIcon from '../icons/error_icon.svg';
 // import FAQList from './faqList';
 // import {
 //   bulletPointsAtom,
@@ -503,24 +504,74 @@ import { searchActor } from '../models/searchMachine';
 
 function Search() {
   const state = useSelector(searchActor, (state) => state);
-  const isLoadingTheList = state.matches({ papers: 'fetching' });
-  const isLoadingSummary = state.matches({ summary: 'fetching' });
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const { isInitialed, isLoadingList } = state;
-  const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
-    const { isInitialed, isLoadingSummary, isLoadingList } = state.context;
-    return isInitialed && !isLoadingSummary && !isLoadingList;
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const showPapers = useSelector(
+    searchActor,
+    (state) => state.context.showPapers
+  );
+  const isLoadingList = state.matches({
+    viewing: { fetchingPapers: 'fetching' },
   });
-
+  const isLoadingSummary = state.matches({
+    viewing: { fetchingSummary: 'fetching' },
+  });
+  const isInitialed = !state.matches('init');
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
+    return (
+      isInitialed && !isLoadingSummary && !isLoadingList && !showPapers.length
+    );
+  });
+  const searchParams = useSearchParams();
   const paperSkeletons = useMemo(
     () =>
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
     []
   );
+  const isSearchPapersVisible = useMemo(() => {
+    return isInitialed && showPapers.length === 0 && !isLoadingList;
+  }, [isInitialed, showPapers.length, isLoadingList]);
 
   useEffect(() => {
-    searchActor.send({ type: 'FETCH_PAPERS' });
-  }, []);
+    const question = searchParams.get('q');
+    searchActor.send({ type: 'SET_QUESTION', value: question });
+    searchActor.send({ type: 'INIT_FETCH' });
+  }, [searchParams]);
+
+  // const showPapers = useMemo(() => {
+  //   let newList = [];
+  //   switch (mode) {
+  //     case 'en':
+  //       newList = [...paperInfo.papers];
+  //       break;
+  //     case 'zh-cn':
+  //       // newList = [...papersZH];
+  //       newList = [...paperInfo.papers];
+  //       break;
+  //     case 'selected':
+  //       // newList = [...papers, ...papersZH].filter((item) =>
+  //       //   checkedPapers.includes(item.id)
+  //       // );
+  //       newList = [...paperInfo.papers];
+  //       break;
+  //   }
+
+  //   // switch (sortMode) {
+  //   //   case 'time':
+  //   //     return newList
+  //   //       .sort((a, b) => b.year - a.year)
+  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  //   //   case 'relevance':
+  //   //     return newList
+  //   //       .sort((a, b) => b.relevance - a.relevance)
+  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  //   //   case 'quote':
+  //   //     return newList
+  //   //       .sort((a, b) => b.citationCount - a.citationCount)
+  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  //   // }
+  //   return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+  // }, [mode, pageIndex, pageSize, paperInfo.papers]);
 
   return (
     <div className={styles.search}>
@@ -589,26 +640,15 @@ function Search() {
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
               <div className={styles.search_content_data_summary}>
-                <Summary
-                // getLiteratureReview={getLiteratureReview}
-                // setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
-                // isLoadingSummary={isLoadingSummary}
-                // queryRef={queryRef}
-                />
-                {/* <Summary
-                  getLiteratureReview={getLiteratureReview}
-                  setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
-                  isLoadingSummary={isLoadingSummary}
-                  queryRef={queryRef}
-                />
+                <Summary />
+                {/* 
                 <FAQList /> */}
               </div>
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>
                   <ModeButtons disabled={isLoadingList || isLoadingSummary} />
                 </div>
-                {/* {isLoadingList && */}
-                {isLoadingTheList &&
+                {isLoadingList &&
                   paperSkeletons.map((item) => (
                     <div
                       style={{
@@ -622,6 +662,39 @@ function Search() {
                       <Skeleton active />
                     </div>
                   ))}
+                <div>
+                  <div>
+                    {isSearchPapersVisible && (
+                      <div className={styles.no_papers_tip}>
+                        <Image
+                          className={styles.no_papers_tip_icon}
+                          src={ErrorIcon}
+                          alt=""
+                        />
+                        <div className={styles.no_papers_tip_desc}>
+                          该主题没有检测到{mode === 'en' ? '英文' : '中文'}
+                          文献，尝试更换输入后再试试吧
+                        </div>
+                      </div>
+                    )}
+                    {showPapers.map((item) => {
+                      return (
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          isBorderVisible={true}
+                        />
+                      );
+                    })}
+                    {isInitialed &&
+                      !isLoadingList &&
+                      !isPapersEmptyErrorVisible && (
+                        <div>
+                          <PageManager />
+                        </div>
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
           )}

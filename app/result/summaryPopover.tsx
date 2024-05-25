@@ -1,112 +1,118 @@
 import { DownOutlined } from '@ant-design/icons';
+import { useSelector } from '@xstate/react';
 import { Popover, Skeleton } from 'antd';
-import { useAtom, useAtomValue } from 'jotai';
-import { ReactElement, useMemo, useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { useState } from 'react';
 import ResultPaperItem from '../components/resultPaperItem';
-import {
-  checkedPapersAtom,
-  papersAtom,
-  papersAtomZH,
-  visibleSummaryPopoverIDAtom,
-} from '../models/search';
-import { getBulletPointsExpansion } from '../service';
+import { papersAtom, papersAtomZH } from '../models/search';
+import { searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
 
-function PopoverItemSon(props: {
-  paper: any;
-  authors: string;
-  year: string;
+// function PopoverItemSon(props: {
+//   paper: any;
+//   authors: string;
+//   year: string;
+//   getPopoverResponsePedia: (paper: any) => void;
+// }) {
+//   const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
+//   // const [visibleSummaryPopoverID, setVisibleSummaryPopoverID] = useAtom(
+//   //   visibleSummaryPopoverIDAtom
+//   // );
+
+//   const {
+//     paper,
+//     authors,
+//     year,
+//     getPopoverResponsePedia,
+//   } = props;
+
+//   return (
+//     <>
+//       <Popover
+//         // key={paper.id}
+//         placement="rightTop"
+//         trigger="click"
+//         // open={visibleSummaryPopoverID === paper.id}
+//         overlayStyle={{ padding: 0, maxWidth: 790 }}
+//         onOpenChange={(visible) => {
+//           if (!visible) {
+//             return;
+//           }
+//           // setVisibleSummaryPopoverID(paper.id);
+//           if (paper.response) {
+//             return;
+//           }
+//           getPopoverResponsePedia(paper);
+//         }}
+//         // content={
+//         //   <ResultPaperItem
+//         //     data={paper}
+//         //     checkedPapers={checkedPapers}
+//         //     setCheckedPapers={setCheckedPapers}
+//         //   />
+//         // }
+//       >
+//         <span className={styles.mark_author_year}>
+//           （{authors}，{year}）
+//         </span>
+//       </Popover>
+//     </>
+//   );
+// }
+
+function PopoverItem(props: {
+  item: { type: 'text' | 'popover'; text: string; id?: string };
   getPopoverResponsePedia: (paper: any) => void;
 }) {
-  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
-  const [visibleSummaryPopoverID, setVisibleSummaryPopoverID] = useAtom(
-    visibleSummaryPopoverIDAtom
-  );
+  const { item, getPopoverResponsePedia } = props;
+  const papers = useSelector(searchActor, (state) => state.context.paperInfo.papers);
+  // const [visibleSummaryPopoverID, setVisibleSummaryPopoverID] = useState(
+  //   visibleSummaryPopoverIDAtom
+  // );
 
-  const {
-    paper,
-    authors,
-    year,
-    getPopoverResponsePedia,
-  } = props;
+  const paper = [...papers].find((paper) => paper.id === item.id);
+  // const paper = [...papers, ...papersZH].find((item) => item.id === item.id);
 
-  return (
-    <>
+  if (item.type === 'popover') {
+    return (
       <Popover
-        key={paper.id}
         placement="rightTop"
         trigger="click"
-        open={visibleSummaryPopoverID === paper.id}
+        // open={visibleSummaryPopoverID === paper.id}
         overlayStyle={{ padding: 0, maxWidth: 790 }}
         onOpenChange={(visible) => {
           if (!visible) {
             return;
           }
-          setVisibleSummaryPopoverID(paper.id);
+          // setVisibleSummaryPopoverID(paper.id);
           if (paper.response) {
             return;
           }
-          getPopoverResponsePedia(paper);
+          // getPopoverResponsePedia(paper);
         }}
         content={
           <ResultPaperItem
             data={paper}
-            checkedPapers={checkedPapers}
-            setCheckedPapers={setCheckedPapers}
+            checkedPapers={[]}
+            setCheckedPapers={() => {}}
+            // checkedPapers={checkedPapers}
+            // setCheckedPapers={setCheckedPapers}
           />
         }
       >
-        <span className={styles.mark_author_year}>
-          （{authors}，{year}）
-        </span>
+        <span className={styles.mark_author_year}>{item.text}</span>
       </Popover>
-    </>
-  );
-}
-
-function PopoverItem(props: {
-  text: string;
-  getPopoverResponsePedia: (paper: any) => void;
-}) {
-  const { text, getPopoverResponsePedia } = props;
-  const papers = useAtomValue(papersAtom);
-  const papersZH = useAtomValue(papersAtomZH);
-
-  const pattern = /(\[.*?\])/g;
-  const matches = text.match(pattern) || [];
-  const splitText = text.split(pattern);
-  const formattedStr = splitText.reduce<(string | ReactElement)[]>(
-    (arr, element) => {
-      // @ts-ignore
-      if (matches.includes(element)) {
-        const id = element.replace(/^\[(.+)\]$/, '$1');
-        const paper = [...papers, ...papersZH].find((item) => item.id === id);
-        const authors = paper?.authors[0] || '';
-        const year = paper?.year || '';
-        return [
-          ...arr,
-          <PopoverItemSon
-            key={id}
-            paper={paper}
-            authors={authors}
-            year={year}
-            getPopoverResponsePedia={getPopoverResponsePedia}
-          />,
-        ];
-      }
-      return [...arr, element];
-    },
-    []
-  );
-
-  return formattedStr;
+    );
+  }
+  return item.text;
 }
 
 export default function SummaryPopover(props: {
-  text: string;
+  // text: string;
+  list: { type: 'text' | 'popover'; text: string; id?: string }[];
   getPopoverResponsePedia: any;
 }) {
-  const { text, getPopoverResponsePedia } = props;
+  const { list, getPopoverResponsePedia } = props;
   const [openList, setOpenList] = useState<string[]>([]);
   const papers = useAtomValue(papersAtom);
   const papersZH = useAtomValue(papersAtomZH);
@@ -117,41 +123,41 @@ export default function SummaryPopover(props: {
   );
 
   const fetchBulletPointsExpansion = async () => {
-    if (expensionText) {
-      return;
-    }
-    const pattern = /\[(.*?)\]/g;
-    const matches = Array.from(text.matchAll(pattern));
-    let idSet = new Set();
-    for (let match of matches) {
-      idSet.add(match[1]);
-    }
-    const thePapers = [...papers, ...papersZH].filter((item) => {
-      return idSet.has(`${item.id}`);
-    });
-    setIsLoading(true);
-    try {
-      const res = await getBulletPointsExpansion({
-        bltpt: props.text,
-        papers: thePapers,
-      });
-      if (!res.ok) {
-        throw new Error('Failed get response');
-      }
-      const data = await res.json();
-      setExpensionText(data.bltptExpansion);
-    } finally {
-      setIsLoading(false);
-    }
+    // if (expensionText) {
+    //   return;
+    // }
+    // const pattern = /\[(.*?)\]/g;
+    // const matches = Array.from(text.matchAll(pattern));
+    // let idSet = new Set();
+    // for (let match of matches) {
+    //   idSet.add(match[1]);
+    // }
+    // const thePapers = [...papers, ...papersZH].filter((item) => {
+    //   return idSet.has(`${item.id}`);
+    // });
+    // setIsLoading(true);
+    // try {
+    //   const res = await getBulletPointsExpansion({
+    //     bltpt: props.text,
+    //     papers: thePapers,
+    //   });
+    //   if (!res.ok) {
+    //     throw new Error('Failed get response');
+    //   }
+    //   const data = await res.json();
+    //   setExpensionText(data.bltptExpansion);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
-  const splitText = useMemo(() => {
-    const pattern = /(\[.*?\])/g;
-    const splitText = (text || '').split(pattern);
-    return splitText;
-  }, [text]);
+  // const splitText = useMemo(() => {
+  //   const pattern = /(\[.*?\])/g;
+  //   const splitText = (text || '').split(pattern);
+  //   return splitText;
+  // }, [text]);
 
-  if (splitText.length <= 1) {
+  if (list.length <= 1) {
     return (
       <div
         onClick={() => {
@@ -178,7 +184,7 @@ export default function SummaryPopover(props: {
             }}
           />
         )}
-        {text}
+        {list.map((item) => item.text)}
         {isOpen && (
           <div className={styles.expension_text}>
             <Skeleton
@@ -229,11 +235,16 @@ export default function SummaryPopover(props: {
           }}
         />
       )}
-      <PopoverItem
-        text={text}
-        getPopoverResponsePedia={getPopoverResponsePedia}
-      />
-      {isOpen && (
+      {list.map((item) => (
+        <PopoverItem
+          key={Math.random()}
+          // text={text}
+          item={item}
+          getPopoverResponsePedia={getPopoverResponsePedia}
+        />
+      ))}
+
+      {/* {isOpen && (
         <div className={styles.expension_text}>
           <Skeleton
             active
@@ -247,7 +258,7 @@ export default function SummaryPopover(props: {
             />
           </Skeleton>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

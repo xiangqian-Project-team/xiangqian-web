@@ -7,20 +7,22 @@
  * @Description:
  */
 'use client';
+import { useSelector } from '@xstate/react';
+import { searchActor } from '../models/searchMachine';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
-import { searchValueAtom } from '../models/search';
+// import { searchValueAtom } from '../models/search';
 import styles from './searchTextArea.module.scss';
 const { TextArea } = Input;
 
 function SearchTextArea(props) {
   const router = useRouter();
 
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  // const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  const searchValue = useSelector(searchActor, (state) => state.context.question);
 
   return (
     <div className={styles.searchContainer}>
@@ -31,7 +33,8 @@ function SearchTextArea(props) {
           className={styles.searchTextArea_input}
           value={searchValue}
           onChange={(e) => {
-            setSearchValue(e.target.value);
+            // setSearchValue(e.target.value);
+            searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
           }}
           onKeyDown={(e) => {
             if (e.code === 'Enter') {

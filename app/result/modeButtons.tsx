@@ -19,10 +19,18 @@ interface IModeButtonsProps {
 
 export default function ModeButtons(props: IModeButtonsProps) {
   // const [mode, setMode] = useAtom(modeAtom);
-  const mode = useSelector(searchActor, (state) => state.context.mode);
+  // const state = useSelector(searchActor, (state) => state);
+  // const mode = useSelector(searchActor, (state) => state.value.mode);
   const sortMode = useSelector(searchActor, (state) => state.context.sortMode);
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  // const sortMode = useSelector(searchActor, (state) => state.context.sortMode);
   const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
   // const [sortMode, setSortMode] = useAtom(sortModeAtom);
+  // const isENMode = state.matches({mode: 'en'})
+  // const isZHCNMode = state.matches({mode: 'zh-cn'})
+  // const isSelectedMode = state.matches({mode: 'selected'})
+
+  // console.log(state.matches({mode: 'en'}))
 
   const sortModeText = useMemo(() => {
     switch (sortMode) {
@@ -56,7 +64,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
           },
         }}
       >
-        {mode === 'en' ? (
+        {mode ==='en' ? (
           <Button className={styles.en_button_active} disabled={props.disabled}>
             <Image src={LangENActiveIcon.src} width={18} height={18} alt={''} />
             英文文献
@@ -69,9 +77,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               // setMode('en');
               // setSortMode('default');
               // props.onModeChangeClick();
-              searchActor.send({ type: 'CHANGE_MODE', value: SearchMode.EN });
+              searchActor.send({ type: 'CHANGE_MODE.EN' });
               searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
             <Image src={LangENIcon.src} width={18} height={18} alt={''} />
@@ -91,12 +100,14 @@ export default function ModeButtons(props: IModeButtonsProps) {
               // setMode('zh-cn');
               // setSortMode('default');
               // props.onModeChangeClick();
-              searchActor.send({
-                type: 'CHANGE_MODE',
-                value: SearchMode.ZH_CN,
-              });
+              // searchActor.send({
+              //   type: 'CHANGE_MODE',
+              //   value: SearchMode.ZH_CN,
+              // });
+              searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
               searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
             <Image src={LangCNIcon.src} width={18} height={18} alt={''} />
@@ -124,10 +135,11 @@ export default function ModeButtons(props: IModeButtonsProps) {
               // setMode('selected');
               // setSortMode('default');
               // props.onModeChangeClick();
-              searchActor.send({
-                type: 'CHANGE_MODE',
-                value: SearchMode.SELECTED,
-              });
+              // searchActor.send({
+              //   type: 'CHANGE_MODE',
+              //   value: SearchMode.SELECTED,
+              // });
+              searchActor.send({ type: 'CHANGE_MODE.SELECTED' });
               searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
             }}
