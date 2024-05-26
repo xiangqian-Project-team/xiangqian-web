@@ -531,6 +531,7 @@ function Search() {
     );
   });
   const searchParams = useSearchParams();
+  const question = searchParams.get('q');
   const paperSkeletons = useMemo(
     () =>
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
@@ -540,12 +541,14 @@ function Search() {
     return isInitialed && showPapers.length === 0 && !isLoadingList;
   }, [isInitialed, showPapers.length, isLoadingList]);
 
+  console.log('question1',question)
   useEffect(() => {
-    const question = searchParams.get('q');
+    console.log('question2',question)
     searchActor.send({ type: 'SET_QUESTION', value: question });
+    searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });
     searchActor.send({ type: 'FETCH_PAPERS' });
-  }, [searchParams]);
+  }, [question]);
 
   useEffect(() => {
     if (isFetchPapersSuccess) {
