@@ -8,6 +8,7 @@ import { searchActor } from '../models/searchMachine';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 import SummaryPopover from './summaryPopover';
+import PopoverItem from './summaryPopoverItem';
 
 export default function Summary(props: {
   setIsNoEnoughModalVisible: (isVisible: boolean) => void;
@@ -44,16 +45,6 @@ export default function Summary(props: {
     searchActor,
     (state) => state.context.summarySelectedInfo
   );
-  // const summary = useAtomValue(summaryAtom);
-  // const summaryZh = useAtomValue(summaryZHAtom);
-  // const [papers, setPapers] = useAtom(papersAtom);
-  // const [papersZH, setPapersZH] = useAtom(papersAtomZH);
-  // const bulletPoints = useAtomValue(bulletPointsAtom);
-  // const bulletPointsPrefix = useAtomValue(bulletPointsPrefixAtom);
-  // const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
-  // const bulletPointsZHPrefix = useAtomValue(bulletPointsZHPrefixAtom);
-  // const selectedSummary = useAtomValue(selectedSummaryAtom);
-  // const checkedPapers = useAtomValue(checkedPapersAtom);
 
   const showSummary = useMemo(() => {
     switch (mode) {
@@ -123,36 +114,35 @@ export default function Summary(props: {
                 />
                 总结
               </div>
-              {mode === 'selected' && !showSummary.bulletPoints.length && (
-                <div className={styles.fetch_selected_summary_button_container}>
-                  <button
-                    onClick={() => {
-                      const thePapers = [
-                        ...paperInfo.papers,
-                        ...paperZHInfo.papers,
-                      ].filter((item) => item.selected);
-                      if (thePapers.length < 10) {
-                        props.setIsNoEnoughModalVisible(true);
-                        return;
-                      }
-                      // getLiteratureReview({
-                      //   papers: thePapers,
-                      //   queryEn: queryRef.current.queryEn,
-                      //   queryZh: queryRef.current.queryZh,
-                      // });
-                    }}
+              {mode === 'selected' &&
+                summarySelectedInfo.bulletPoints.length === 0 && (
+                  <div
+                    className={styles.fetch_selected_summary_button_container}
                   >
-                    <Image
-                      alt=""
-                      className={styles.fetch_selected_summary_button_icon}
-                      width={18}
-                      height={18}
-                      src={RefreshIcon.src}
-                    />
-                    用选中的文章生成总结，以获取更优结果
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={() => {
+                        const thePapers = [
+                          ...paperInfo.papers,
+                          ...paperZHInfo.papers,
+                        ].filter((item) => item.selected);
+                        if (thePapers.length < 10) {
+                          props.setIsNoEnoughModalVisible(true);
+                          return;
+                        }
+                        searchActor.send({ type: 'FETCH_LITERATURE_REVIEW' });
+                      }}
+                    >
+                      <Image
+                        alt=""
+                        className={styles.fetch_selected_summary_button_icon}
+                        width={18}
+                        height={18}
+                        src={RefreshIcon.src}
+                      />
+                      用选中的文章生成总结，以获取更优结果
+                    </button>
+                  </div>
+                )}
               <div className={styles.content}>
                 {mode !== 'selected' && showSummary.summary && (
                   <>
@@ -167,9 +157,9 @@ export default function Summary(props: {
                     {showSummary.bulletPoints && (
                       <ul className={styles.content_bullet_points}>
                         {showSummary.bulletPoints.map((item) => (
-                          <li key={Math.random()}>
+                          <li key={item.key}>
                             <SummaryPopover
-                              list={item}
+                              data={item}
                               getPopoverResponsePedia={getPopoverResponsePedia}
                             />
                           </li>
@@ -178,19 +168,20 @@ export default function Summary(props: {
                     )}
                   </>
                 )}
-                {mode === 'selected' && showSummary.bulletPoints.length && (
-                  <>
+                {mode === 'selected' &&
+                  summarySelectedInfo.bulletPoints.length > 0 && (
                     <div className={styles.content_summary}>
-                      {showSummary.bulletPoints.map((item) => (
-                        <SummaryPopover
-                          key={Math.random()}
-                          list={item}
-                          getPopoverResponsePedia={getPopoverResponsePedia}
-                        />
-                      ))}
+                      {summarySelectedInfo.bulletPoints.map((info) =>
+                        info.popoverList.map((item) => (
+                          <PopoverItem
+                            key={item.key}
+                            item={item}
+                            getPopoverResponsePedia={getPopoverResponsePedia}
+                          />
+                        ))
+                      )}
                     </div>
-                  </>
-                )}
+                  )}
               </div>
             </>
           </Skeleton>

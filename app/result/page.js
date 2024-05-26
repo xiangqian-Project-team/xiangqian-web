@@ -523,7 +523,11 @@ function Search() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
     return (
-      isInitialed && !isLoadingSummary && !isLoadingList && !showPapers.length
+      isInitialed &&
+      !isLoadingSummary &&
+      !isLoadingList &&
+      !showPapers.length &&
+      mode !== 'selected'
     );
   });
   const searchParams = useSearchParams();
@@ -651,7 +655,7 @@ function Search() {
                   ))}
                 <div>
                   <div>
-                    {isSearchPapersVisible && (
+                    {isSearchPapersVisible && mode !== 'selected' && (
                       <div className={styles.no_papers_tip}>
                         <Image
                           className={styles.no_papers_tip_icon}
@@ -675,7 +679,8 @@ function Search() {
                     })}
                     {isInitialed &&
                       !isLoadingList &&
-                      !isPapersEmptyErrorVisible && (
+                      !isPapersEmptyErrorVisible &&
+                      showPapers.length > 0 && (
                         <div>
                           <PageManager />
                         </div>

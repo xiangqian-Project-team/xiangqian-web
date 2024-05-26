@@ -88,7 +88,6 @@ export default function PageManager(props) {
           if (pageIndex <= 1) {
             return;
           }
-          // setPageIndex(pageIndex - 1);
           searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex - 1 });
           searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
@@ -99,7 +98,7 @@ export default function PageManager(props) {
         <button
           className={styles.page_index}
           onClick={() => {
-            // setPageIndex(1);
+            searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
           }}
         >
           1
@@ -116,7 +115,6 @@ export default function PageManager(props) {
             key={Math.random()}
             className={styles.page_index}
             onClick={() => {
-              // setPageIndex(item);
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: item });
               searchActor.send({ type: 'FETCH_RESPONSE' });
             }}

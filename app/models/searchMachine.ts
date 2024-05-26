@@ -16,45 +16,61 @@ interface IPopoverItem {
   isVisible: boolean;
 }
 
-function handlePopoverContent(contentList: string[], papers: any[]) {
-  const formattedContentList: IPopoverItem[][] = [];
-  contentList.forEach((content: string) => {
-    const pattern = /(\[.*?\])/g;
-    const matches = content.match(pattern) || [];
-    const splitText = content.split(pattern);
-    const list = splitText.reduce<IPopoverItem[]>((arr, element) => {
-      // @ts-ignore
-      if (matches.includes(element)) {
-        const id = element.replace(/^\[(.+)\]$/, '$1');
-        const paper = papers.find((item) => item.id === id);
-        const authors = paper?.authors[0] || '';
-        const year = paper?.year || '';
+export interface IPopoverInfo {
+  expensionPopoverList: IPopoverItem[];
+  key: number;
+  popoverList: IPopoverItem[];
+}
 
-        return [
-          ...arr,
-          {
-            text: `（${authors}，${year}）`,
-            id,
-            key: Math.random(),
-            type: 'popover',
-            isVisible: false,
-          },
-        ];
-      }
+const initPopoverContent = (contentList: string[], papers: any[]) => {
+  const formattedContentList: IPopoverInfo[] = [];
+  contentList.forEach((content: string) => {
+    const info = {
+      key: Math.random(),
+      popoverList: [],
+      expensionPopoverList: [],
+    };
+    info.popoverList = handlePopoverContent(content, papers);
+    formattedContentList.push(info);
+  });
+  return formattedContentList;
+};
+
+function handlePopoverContent(content: string, papers: any[]) {
+  const pattern = /(\[.*?\])/g;
+  const matches = content.match(pattern) || [];
+  const splitText = content.split(pattern);
+  const list = splitText.reduce<IPopoverItem[]>((arr, element) => {
+    // @ts-ignore
+    if (matches.includes(element)) {
+      const id = element.replace(/^\[(.+)\]$/, '$1');
+      const paper = papers.find((item) => item.id === id);
+      const authors = paper?.authors[0] || '';
+      const year = paper?.year || '';
+
       return [
         ...arr,
         {
-          text: element,
+          text: `（${authors}，${year}）`,
+          id,
           key: Math.random(),
-          type: 'text',
+          type: 'popover',
           isVisible: false,
         },
       ];
-    }, []);
+    }
+    return [
+      ...arr,
+      {
+        text: element,
+        key: Math.random(),
+        type: 'text',
+        isVisible: false,
+      },
+    ];
+  }, []);
 
-    formattedContentList.push(list);
-  });
-  return formattedContentList;
+  return list;
 }
 
 function calcShowPapers(data: {
@@ -154,7 +170,7 @@ const fetchAnalysisPedia = async ({
   }
   const data = await res.json();
 
-  const formattedBulletPoints = handlePopoverContent(data.bltpts, [...papers]);
+  const formattedBulletPoints = initPopoverContent(data.bltpts, [...papers]);
 
   return {
     summary: data.answer as string,
@@ -184,8 +200,8 @@ const fetchLiteratureReview = async ({
     throw new Error('Failed get summary');
   }
 
-  const data = (await res.json()) as string;
-  const formattedBulletPoints = handlePopoverContent([data], [...papers]);
+  const data = (await res.json()) as { review: string };
+  const formattedBulletPoints = initPopoverContent([data.review], [...papers]);
   return formattedBulletPoints;
 };
 
@@ -274,16 +290,16 @@ interface SearchContext {
   };
   summaryInfo: {
     summary: string;
-    bulletPoints: IPopoverItem[][];
+    bulletPoints: IPopoverInfo[];
     bulletPointsPrefix: string;
   };
   summaryZHInfo: {
     summary: string;
-    bulletPoints: IPopoverItem[][];
+    bulletPoints: IPopoverInfo[];
     bulletPointsPrefix: string;
   };
   summarySelectedInfo: {
-    bulletPoints: IPopoverItem[][];
+    bulletPoints: IPopoverInfo[];
   };
   showPapers: any[];
   faqList: string[];
@@ -326,6 +342,7 @@ const searchMachine = setup({
           type: 'TOGGLE_POPOVER_VISIBLE';
           value: { key: number; isVisible: boolean };
         }
+      | { type: 'SET_EXPENSION_TEXT'; value: { text: string; key: number } }
       | { type: 'RESET' }
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
@@ -335,7 +352,8 @@ const searchMachine = setup({
       | { type: 'CHANGE_MODE.EN' }
       | { type: 'CHANGE_MODE.SELECTED' }
       | { type: 'CHANGE_MODE.ZH_CN' }
-      | { type: 'FETCH_RESPONSE' };
+      | { type: 'FETCH_RESPONSE' }
+      | { type: 'FETCH_LITERATURE_REVIEW' };
   },
   actors: {
     fetchLiteratureReview: fromPromise(fetchLiteratureReview),
@@ -578,7 +596,7 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
-            FETCH_SUMMARY: {
+            FETCH_LITERATURE_REVIEW: {
               target: '.fetching',
             },
           },
@@ -771,9 +789,13 @@ const searchMachine = setup({
             ...draft.summaryZHInfo.bulletPoints.flat(),
             ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
-            if (item.key === key) {
-              item.isVisible = isVisible;
-            }
+            [...item.popoverList, ...item.expensionPopoverList].forEach(
+              (element) => {
+                if (element.key === key) {
+                  element.isVisible = isVisible;
+                }
+              }
+            );
           });
         });
       }),
@@ -792,6 +814,26 @@ const searchMachine = setup({
           ].forEach((item) => {
             if (processedMap.has(item.id)) {
               item.response = processedMap.get(item.id).response;
+            }
+          });
+        });
+      }),
+    },
+    SET_EXPENSION_TEXT: {
+      actions: assign(({ event, context }) => {
+        return produce(context, (draft) => {
+          const { text, key } = event.value;
+          [
+            ...draft.summaryInfo.bulletPoints.flat(),
+            ...draft.summaryZHInfo.bulletPoints.flat(),
+            ...draft.summarySelectedInfo.bulletPoints.flat(),
+          ].forEach((item) => {
+            if (item.key === key) {
+              item.expensionPopoverList = handlePopoverContent(text, [
+                ...draft.paperInfo.papers,
+                ...draft.paperZHInfo.papers,
+                ...draft.showPapers,
+              ]);
             }
           });
         });
