@@ -1,25 +1,17 @@
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
-import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
-import {
-  // bulletPointsZHAtom,
-  // bulletPointsZHPrefixAtom,
-  checkedPapersAtom,
-  // modeAtom,
-  // papersAtom,
-  // papersAtomZH,
-  selectedSummaryAtom,
-} from '../models/search';
 import { searchActor } from '../models/searchMachine';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 import SummaryPopover from './summaryPopover';
 
-export default function Summary() {
+export default function Summary(props: {
+  setIsNoEnoughModalVisible: (isVisible: boolean) => void;
+}) {
   const state = useSelector(searchActor, (state) => state);
   const isLoadingPapers = state.matches({
     viewing: {
@@ -56,8 +48,8 @@ export default function Summary() {
   // const bulletPointsPrefix = useAtomValue(bulletPointsPrefixAtom);
   // const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
   // const bulletPointsZHPrefix = useAtomValue(bulletPointsZHPrefixAtom);
-  const selectedSummary = useAtomValue(selectedSummaryAtom);
-  const checkedPapers = useAtomValue(checkedPapersAtom);
+  // const selectedSummary = useAtomValue(selectedSummaryAtom);
+  // const checkedPapers = useAtomValue(checkedPapersAtom);
 
   const showSummary = useMemo(() => {
     switch (mode) {
@@ -87,7 +79,7 @@ export default function Summary() {
     //     };
     // }
     // return {};
-  }, [mode, selectedSummary, summaryInfo, summaryZHInfo]);
+  }, [mode, summaryInfo, summaryZHInfo]);
 
   const getPopoverResponsePedia = async (paper) => {
     if (!paper) {
@@ -104,7 +96,7 @@ export default function Summary() {
     // const processedMap = new Map(
     //   processedPapers.map((item) => [item.id, item])
     // );
-    console.log(processedPapers)
+    console.log(processedPapers);
     if (currMode === 'zh-cn') {
       // const newPapers = paperZHInfo.papers.map((item) => {
       //   if (processedMap.has(item.id)) {
@@ -158,7 +150,7 @@ export default function Summary() {
                         ...paperZHInfo.papers,
                       ].filter((item) => item.selected);
                       if (thePapers.length < 10) {
-                        // setIsNoEnoughModalVisible(true);
+                        props.setIsNoEnoughModalVisible(true);
                         return;
                       }
                       // getLiteratureReview({

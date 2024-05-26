@@ -12,8 +12,8 @@ import { getItem } from '../utils/storage';
 const BASE_URL = 'http://121.43.97.68:8091';
 // const FUNCTION_BASE_URL =
 //   'https://gemmed-unctions-qhwhobnfgh.us-west-1.fcapp.run';
-  const FUNCTION_BASE_URL =
-    'https://gemmed-unctions-qhwhoxyzwh.us-west-1.fcapp.run';
+const FUNCTION_BASE_URL =
+  'https://gemmed-unctions-qhwhoxyzwh.us-west-1.fcapp.run';
 
 const request = async (
   url: string,
@@ -47,10 +47,11 @@ const request = async (
   return data;
 };
 
-export const getRelatedSearch = async () => {
+export const getRelatedSearch = async (params: { answer: string }) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
+    body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
       Authorization: token ? `Bearer ${token}` : undefined,

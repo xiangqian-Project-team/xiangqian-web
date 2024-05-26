@@ -7,7 +7,7 @@
  * @Description:
  */
 'use client';
-import { Skeleton } from 'antd';
+import { Modal, Skeleton } from 'antd';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -17,16 +17,14 @@ import SearchTextArea from '../components/searchTextArea';
 import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
+import FAQList from './faqList';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
 import Summary from './summary';
 
-// import { Modal, Skeleton } from 'antd';
-// import { useAtom, useSetAtom } from 'jotai';
 // import { useRouter } from 'next-nprogress-bar';
 // import { useEffect, useMemo, useRef, useState } from 'react';
-// import FAQList from './faqList';
 // import {
 //   bulletPointsAtom,
 //   bulletPointsPrefixAtom,
@@ -503,6 +501,7 @@ import { useSelector } from '@xstate/react';
 import { searchActor } from '../models/searchMachine';
 
 function Search() {
+  const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
   const state = useSelector(searchActor, (state) => state);
   const mode = useSelector(searchActor, (state) => state.context.mode);
   const showPapers = useSelector(
@@ -515,6 +514,13 @@ function Search() {
   const isLoadingSummary = state.matches({
     viewing: { fetchingSummary: 'fetching' },
   });
+  const isFetchPapersSuccess = state.matches('viewing.fetchingPapers.success');
+  const isFetchSummarySuccess = state.matches(
+    'viewing.fetchingSummary.success'
+  );
+  const isFetchRelatedSearchSuccess = state.matches(
+    'viewing.fetchingRelatedSearch.success'
+  );
   const isInitialed = !state.matches('init');
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
@@ -536,7 +542,24 @@ function Search() {
     const question = searchParams.get('q');
     searchActor.send({ type: 'SET_QUESTION', value: question });
     searchActor.send({ type: 'INIT_FETCH' });
+    searchActor.send({ type: 'FETCH_PAPERS' });
   }, [searchParams]);
+
+  useEffect(() => {
+    if (isFetchPapersSuccess) {
+      searchActor.send({ type: 'FETCH_SUMMARY' });
+      searchActor.send({ type: 'FETCH_RESPONSE' });
+    }
+  }, [isFetchPapersSuccess]);
+
+  useEffect(() => {
+    if (isFetchRelatedSearchSuccess) {
+      return;
+    }
+    if (isFetchSummarySuccess) {
+      searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
+    }
+  }, [isFetchSummarySuccess, isFetchRelatedSearchSuccess]);
 
   // const showPapers = useMemo(() => {
   //   let newList = [];
@@ -640,8 +663,10 @@ function Search() {
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
               <div className={styles.search_content_data_summary}>
-                <Summary />
-                {/* <FAQList /> */}
+                <Summary
+                  setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                />
+                <FAQList />
               </div>
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>
@@ -699,6 +724,18 @@ function Search() {
           )}
         </div>
       </div>
+      <Modal
+        title="使用方法提示"
+        open={isNoEnoughModalVisible}
+        onCancel={() => {
+          setIsNoEnoughModalVisible(false);
+        }}
+        footer={null}
+        width={552}
+        wrapClassName={styles.not_enough_select_paper_modal}
+      >
+        <p>选中文献过少，选择10-20篇文献以获得更好的重写效果。</p>
+      </Modal>
     </div>
   );
 }

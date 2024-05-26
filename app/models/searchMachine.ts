@@ -1,20 +1,27 @@
 import { produce } from 'immer';
 import { assign, createActor, fromPromise, setup } from 'xstate';
-import { getAnalysisPedia, getPartPedia, getResponsePedia } from '../service';
+import {
+  getAnalysisPedia,
+  getPartPedia,
+  getRelatedSearch,
+  getResponsePedia,
+} from '../service';
+
+interface IPopoverItem {
+  text: string;
+  id?: string;
+  type: 'text' | 'popover';
+  key: number;
+  isVisible: boolean;
+}
 
 function handlePopoverContent(contentList: string[], papers: any[]) {
-  const formattedContentList: {
-    text: string;
-    id?: string;
-    type: 'text' | 'popover';
-  }[][] = [];
+  const formattedContentList: IPopoverItem[][] = [];
   contentList.forEach((content: string) => {
     const pattern = /(\[.*?\])/g;
     const matches = content.match(pattern) || [];
     const splitText = content.split(pattern);
-    const list = splitText.reduce<
-      { text: string; id?: string; type: 'text' | 'popover' }[]
-    >((arr, element) => {
+    const list = splitText.reduce<IPopoverItem[]>((arr, element) => {
       // @ts-ignore
       if (matches.includes(element)) {
         const id = element.replace(/^\[(.+)\]$/, '$1');
@@ -190,6 +197,26 @@ const fetchResponsePedia = async ({
   return papers;
 };
 
+const fetchRelatedSearch = async ({
+  input,
+}: {
+  input: {
+    summary: string;
+  };
+}) => {
+  const { summary } = input;
+  try {
+    const listRes = await getRelatedSearch({ answer: summary });
+    if (!listRes.ok) {
+      throw new Error('Failed search');
+    }
+    const data = (await listRes.json()) as string[];
+    return data;
+  } catch (e) {
+    throw new Error('Failed search');
+  }
+};
+
 export enum SearchMode {
   EN = 'en',
   ZH_CN = 'zh-cn',
@@ -226,36 +253,19 @@ interface SearchContext {
   };
   summaryInfo: {
     summary: string;
-    bulletPoints: {
-      type: 'text' | 'popover';
-      text: string;
-      key: number;
-      id?: string;
-      isVisible: boolean;
-    }[][];
+    bulletPoints: IPopoverItem[][];
     bulletPointsPrefix: string;
   };
   summaryZHInfo: {
     summary: string;
-    bulletPoints: {
-      type: 'text' | 'popover';
-      text: string;
-      key: number;
-      id?: string;
-      isVisible: boolean;
-    }[][];
+    bulletPoints: IPopoverItem[][];
     bulletPointsPrefix: string;
   };
   summarySelectedInfo: {
-    bulletPoints: {
-      type: 'text' | 'popover';
-      text: string;
-      key: number;
-      id?: string;
-      isVisible: boolean;
-    }[][];
+    bulletPoints: IPopoverItem[][];
   };
   showPapers: any[];
+  faqList: string[];
 }
 
 type ChangeSortModeEvent = {
@@ -295,6 +305,8 @@ const searchMachine = setup({
           type: 'TOGGLE_POPOVER_VISIBLE';
           value: { key: number; isVisible: boolean };
         }
+        |{type: 'RESET'}
+      | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
       | { type: 'FETCH_SUMMARY_ZH' }
@@ -308,6 +320,7 @@ const searchMachine = setup({
     fetchSummary: fromPromise(fetchAnalysisPedia),
     fetchPapers: fromPromise(fetchPartPedia),
     fetchResponsePedia: fromPromise(fetchResponsePedia),
+    fetchRelatedSearch: fromPromise(fetchRelatedSearch),
   },
 }).createMachine({
   id: 'search',
@@ -345,6 +358,7 @@ const searchMachine = setup({
       bulletPoints: [],
     },
     showPapers: [],
+    faqList: [],
   },
   initial: 'init',
   states: {
@@ -387,33 +401,9 @@ const searchMachine = setup({
       type: 'parallel',
       states: {
         fetchingPapers: {
-          initial: 'fetching',
+          initial: 'idle',
           states: {
-            idle: {
-              on: {
-                FETCH_PAPERS: {
-                  target: 'fetching',
-                  guard: ({ context }) => {
-                    if (!context.question) {
-                      return false;
-                    }
-                    if (
-                      context.mode === 'en' &&
-                      context.paperInfo.papers.length > 0
-                    ) {
-                      return false;
-                    }
-                    if (
-                      context.mode === 'zh-cn' &&
-                      context.paperZHInfo.papers.length > 0
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  },
-                },
-              },
-            },
+            idle: {},
             fetching: {
               invoke: {
                 src: 'fetchPapers',
@@ -423,11 +413,12 @@ const searchMachine = setup({
                 }),
                 onDone: [
                   {
-                    target: [
-                      'idle',
-                      '#search.viewing.fetchingSummary.fetching',
-                      '#search.viewing.fetchingResponse.fetching',
-                    ],
+                    target: 'success',
+                    // target: [
+                    //   'idle',
+                    //   '#search.viewing.fetchingSummary.fetching',
+                    //   '#search.viewing.fetchingResponse.fetching',
+                    // ],
                     actions: assign(({ context, event }) => {
                       return produce(context, (draft) => {
                         switch (context.mode) {
@@ -461,18 +452,37 @@ const searchMachine = setup({
                 onError: 'idle',
               },
             },
+            success: {},
+            fail: {},
+          },
+          on: {
+            FETCH_PAPERS: {
+              target: '.fetching',
+              guard: ({ context }) => {
+                if (!context.question) {
+                  return false;
+                }
+                if (
+                  context.mode === 'en' &&
+                  context.paperInfo.papers.length > 0
+                ) {
+                  return false;
+                }
+                if (
+                  context.mode === 'zh-cn' &&
+                  context.paperZHInfo.papers.length > 0
+                ) {
+                  return false;
+                }
+                return true;
+              },
+            },
           },
         },
         fetchingSummary: {
           initial: 'idle',
           states: {
-            idle: {
-              on: {
-                FETCH_SUMMARY: {
-                  target: 'fetching',
-                },
-              },
-            },
+            idle: {},
             fetching: {
               invoke: {
                 src: 'fetchSummary',
@@ -482,7 +492,7 @@ const searchMachine = setup({
                   paperZHInfo: context.paperZHInfo,
                 }),
                 onDone: {
-                  target: 'idle',
+                  target: 'success',
                   actions: assign(({ context, event }) => {
                     return produce(context, (draft) => {
                       switch (context.mode) {
@@ -504,8 +514,15 @@ const searchMachine = setup({
                     });
                   }),
                 },
-                onError: 'idle',
+                onError: 'fail',
               },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            FETCH_SUMMARY: {
+              target: '.fetching',
             },
           },
         },
@@ -513,11 +530,6 @@ const searchMachine = setup({
           initial: 'idle',
           states: {
             idle: {
-              on: {
-                FETCH_RESPONSE: {
-                  target: 'fetching',
-                },
-              },
             },
             fetching: {
               invoke: {
@@ -526,7 +538,7 @@ const searchMachine = setup({
                   showPapers: context.showPapers,
                 }),
                 onDone: {
-                  target: 'idle',
+                  target: 'success',
                   actions: assign(({ context, event }) => {
                     return produce(context, (draft) => {
                       const processedPapers = event.output;
@@ -545,8 +557,48 @@ const searchMachine = setup({
                     });
                   }),
                 },
-                onError: 'idle',
+                onError: 'fail',
               },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            FETCH_RESPONSE: {
+              target: '.fetching',
+            },
+          },
+        },
+        fetchingRelatedSearch: {
+          initial: 'idle',
+          states: {
+            idle: {
+              on: {
+              },
+            },
+            fetching: {
+              invoke: {
+                src: 'fetchRelatedSearch',
+                input: ({ context }) => ({
+                  summary: context.summaryInfo.summary,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      draft.faqList = event.output;
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            FETCH_RELATED_SEARCH: {
+              target: '.fetching',
             },
           },
         },
@@ -554,6 +606,9 @@ const searchMachine = setup({
     },
   },
   on: {
+    RESET: {
+      target: '.init',
+    },
     SET_QUESTION: {
       actions: assign({
         question: ({ event }) => event.value,

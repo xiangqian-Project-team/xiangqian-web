@@ -97,7 +97,10 @@ function PopoverItem(props: {
         // open={visibleSummaryPopoverID === paper.id}
         overlayStyle={{ padding: 0, maxWidth: 790 }}
         onOpenChange={(visible) => {
-          searchActor.send({ type: 'TOGGLE_POPOVER_VISIBLE', value: { key: item.key, isVisible:visible } });
+          searchActor.send({
+            type: 'TOGGLE_POPOVER_VISIBLE',
+            value: { key: item.key, isVisible: visible },
+          });
           if (!visible) {
             return;
           }
@@ -110,8 +113,8 @@ function PopoverItem(props: {
         content={
           <ResultPaperItem
             data={paper}
-            checkedPapers={[]}
-            setCheckedPapers={() => {}}
+            // checkedPapers={[]}
+            // setCheckedPapers={() => {}}
             // checkedPapers={checkedPapers}
             // setCheckedPapers={setCheckedPapers}
           />
@@ -126,8 +129,13 @@ function PopoverItem(props: {
 }
 
 export default function SummaryPopover(props: {
-  // text: string;
-  list: { type: 'text' | 'popover'; text: string; id?: string }[];
+  list: {
+    type: 'text' | 'popover';
+    text: string;
+    id?: string;
+    key: number;
+    isVisible: boolean;
+  }[];
   getPopoverResponsePedia: any;
 }) {
   const { list, getPopoverResponsePedia } = props;

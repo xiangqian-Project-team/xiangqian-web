@@ -14,14 +14,12 @@ import { Button, Input } from 'antd';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
-// import { searchValueAtom } from '../models/search';
 import styles from './searchTextArea.module.scss';
 const { TextArea } = Input;
 
 function SearchTextArea(props) {
   const router = useRouter();
 
-  // const [searchValue, setSearchValue] = useAtom(searchValueAtom);
   const searchValue = useSelector(searchActor, (state) => state.context.question);
 
   return (
@@ -33,7 +31,6 @@ function SearchTextArea(props) {
           className={styles.searchTextArea_input}
           value={searchValue}
           onChange={(e) => {
-            // setSearchValue(e.target.value);
             searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
           }}
           onKeyDown={(e) => {

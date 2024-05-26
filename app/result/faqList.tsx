@@ -2,10 +2,10 @@ import Image from 'next/image';
 import DocumentIcon from '../icons/document_icon.svg';
 import DropdownIcon from '../icons/drop_down_icon.svg';
 
-import styles from './faqList.module.scss';
-import { useEffect, useState } from 'react';
-import { getRelatedSearch } from '../service';
+import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
+import { searchActor } from '../models/searchMachine';
+import styles from './faqList.module.scss';
 
 interface IFAQItemProps {
   title: string;
@@ -13,7 +13,11 @@ interface IFAQItemProps {
 
 function FAQItem(props: IFAQItemProps) {
   const onQuestionClick = () => {
-    // TODO
+    console.log(props.title)
+    searchActor.send({ type: 'SET_QUESTION', value: props.title });
+    searchActor.send({ type: 'RESET' });
+    searchActor.send({ type: 'INIT_FETCH' });
+    searchActor.send({ type: 'FETCH_PAPERS' });
   };
 
   return (
@@ -38,24 +42,11 @@ function FAQItem(props: IFAQItemProps) {
 }
 
 export default function FAQList() {
-  const [questionList, setQuestionList] = useState<string[]>([])
-
-  useEffect(() => {
-   async function getQuestionList() {
-      
-      try {
-        const listRes = await getRelatedSearch();
-        if (!listRes.ok) {
-          throw new Error('Failed search');
-        }
-        const data = await listRes.json();
-        setQuestionList(data)
-      } catch (e) {
-      }
-    }
-
-    getQuestionList()
-  },[])
+  const state = useSelector(searchActor, (state) => state);
+  const faqList = useSelector(searchActor, (state) => state.context.faqList);
+  const isFetchRelatedSearchSuccess = state.matches({
+    viewing: { fetchingRelatedSearch: 'success' },
+  });
 
   return (
     <div className={styles.faq}>
@@ -71,10 +62,15 @@ export default function FAQList() {
           相关研究问题
         </div>
         <div className={styles.faq_list}>
-          <Skeleton active title={false}>
-          {questionList.map((item, index) => (
-            <FAQItem key={index} title={item} />
-          ))}</Skeleton>
+          <Skeleton
+            active
+            title={false}
+            loading={!isFetchRelatedSearchSuccess}
+          >
+            {faqList.map((item, index) => (
+              <FAQItem key={index} title={item} />
+            ))}
+          </Skeleton>
         </div>
       </div>
     </div>
