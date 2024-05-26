@@ -13,7 +13,6 @@ interface IFAQItemProps {
 
 function FAQItem(props: IFAQItemProps) {
   const onQuestionClick = () => {
-    console.log(props.title)
     searchActor.send({ type: 'SET_QUESTION', value: props.title });
     searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });

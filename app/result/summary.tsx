@@ -40,6 +40,10 @@ export default function Summary(props: {
     searchActor,
     (state) => state.context.summaryZHInfo
   );
+  const summarySelectedInfo = useSelector(
+    searchActor,
+    (state) => state.context.summarySelectedInfo
+  );
   // const summary = useAtomValue(summaryAtom);
   // const summaryZh = useAtomValue(summaryZHAtom);
   // const [papers, setPapers] = useAtom(papersAtom);
@@ -57,8 +61,6 @@ export default function Summary(props: {
         return summaryInfo;
       case 'zh-cn':
         return summaryZHInfo;
-      // case 'selected':
-      //   return selectedSummary;
     }
     // switch (mode) {
     //   case 'en':
@@ -93,31 +95,11 @@ export default function Summary(props: {
       throw new Error('Failed get response');
     }
     const { papers: processedPapers } = await res.json();
-    // const processedMap = new Map(
-    //   processedPapers.map((item) => [item.id, item])
-    // );
-    console.log(processedPapers);
     if (currMode === 'zh-cn') {
-      // const newPapers = paperZHInfo.papers.map((item) => {
-      //   if (processedMap.has(item.id)) {
-      //     // @ts-ignore
-      //     return { ...item, response: processedMap.get(item.id).response };
-      //   }
-      //   return item;
-      // });
-      // setPapersZH(newPapers);
       searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
       return;
     }
 
-    // const newPapers = paperInfo.papers.map((item) => {
-    //   if (processedMap.has(item.id)) {
-    //     // @ts-ignore
-    //     return { ...item, response: processedMap.get(item.id).response };
-    //   }
-    //   return item;
-    // });
-    // setPapers(newPapers);
     searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
   };
 
@@ -141,7 +123,7 @@ export default function Summary(props: {
                 />
                 总结
               </div>
-              {mode === 'selected' && !showSummary.summary && (
+              {mode === 'selected' && !showSummary.bulletPoints.length && (
                 <div className={styles.fetch_selected_summary_button_container}>
                   <button
                     onClick={() => {
@@ -172,7 +154,7 @@ export default function Summary(props: {
                 </div>
               )}
               <div className={styles.content}>
-                {showSummary.summary && (
+                {mode !== 'selected' && showSummary.summary && (
                   <>
                     <div className={styles.content_summary}>
                       {showSummary.summary}
@@ -187,7 +169,6 @@ export default function Summary(props: {
                         {showSummary.bulletPoints.map((item) => (
                           <li key={Math.random()}>
                             <SummaryPopover
-                              key={Math.random()}
                               list={item}
                               getPopoverResponsePedia={getPopoverResponsePedia}
                             />
@@ -195,6 +176,19 @@ export default function Summary(props: {
                         ))}
                       </ul>
                     )}
+                  </>
+                )}
+                {mode === 'selected' && showSummary.bulletPoints.length && (
+                  <>
+                    <div className={styles.content_summary}>
+                      {showSummary.bulletPoints.map((item) => (
+                        <SummaryPopover
+                          key={Math.random()}
+                          list={item}
+                          getPopoverResponsePedia={getPopoverResponsePedia}
+                        />
+                      ))}
+                    </div>
                   </>
                 )}
               </div>

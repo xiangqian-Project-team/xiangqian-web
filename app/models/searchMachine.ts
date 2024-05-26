@@ -2,6 +2,7 @@ import { produce } from 'immer';
 import { assign, createActor, fromPromise, setup } from 'xstate';
 import {
   getAnalysisPedia,
+  getLiteratureReview,
   getPartPedia,
   getRelatedSearch,
   getResponsePedia,
@@ -168,6 +169,26 @@ const fetchAnalysisPedia = async ({
   // };
 };
 
+const fetchLiteratureReview = async ({
+  input,
+}: {
+  input: { papers: any[]; queryEn: string; queryZh: string };
+}) => {
+  const { papers, queryEn, queryZh } = input;
+  const res = await getLiteratureReview({
+    papers,
+    queryEn,
+    queryZh,
+  });
+  if (!res.ok) {
+    throw new Error('Failed get summary');
+  }
+
+  const data = (await res.json()) as string;
+  const formattedBulletPoints = handlePopoverContent([data], [...papers]);
+  return formattedBulletPoints;
+};
+
 const fetchResponsePedia = async ({
   input,
 }: {
@@ -305,7 +326,7 @@ const searchMachine = setup({
           type: 'TOGGLE_POPOVER_VISIBLE';
           value: { key: number; isVisible: boolean };
         }
-        |{type: 'RESET'}
+      | { type: 'RESET' }
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
@@ -317,6 +338,7 @@ const searchMachine = setup({
       | { type: 'FETCH_RESPONSE' };
   },
   actors: {
+    fetchLiteratureReview: fromPromise(fetchLiteratureReview),
     fetchSummary: fromPromise(fetchAnalysisPedia),
     fetchPapers: fromPromise(fetchPartPedia),
     fetchResponsePedia: fromPromise(fetchResponsePedia),
@@ -526,11 +548,45 @@ const searchMachine = setup({
             },
           },
         },
+        fetchingLiteratureReview: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchLiteratureReview',
+                input: ({ context }) => ({
+                  papers: [
+                    ...context.paperInfo.papers,
+                    ...context.paperZHInfo.papers,
+                  ].filter((item) => item.selected),
+                  queryEn: context.paperInfo.queryEn,
+                  queryZh: context.paperInfo.queryZh,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      draft.summarySelectedInfo.bulletPoints = event.output;
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            FETCH_SUMMARY: {
+              target: '.fetching',
+            },
+          },
+        },
         fetchingResponse: {
           initial: 'idle',
           states: {
-            idle: {
-            },
+            idle: {},
             fetching: {
               invoke: {
                 src: 'fetchResponsePedia',
@@ -573,8 +629,7 @@ const searchMachine = setup({
           initial: 'idle',
           states: {
             idle: {
-              on: {
-              },
+              on: {},
             },
             fetching: {
               invoke: {
@@ -743,221 +798,7 @@ const searchMachine = setup({
       }),
     },
   },
-  // states: {
-  //   idle: {
-  //     on: {
-  //       FETCH_PAPERS: {
-  //         target: 'initFetchingPapers',
-  //       },
-  //     },
-  //   },
-  //   initFetchingPapers: {
-  //     invoke: {
-  //       src: 'fetchPapers',
-  //       input: ({ context }) => ({
-  //         question: context.question,
-  //         mode: context.mode,
-  //       }),
-  //       onDone: {
-  //         target: 'fetchingSummary',
-  //         actions: assign({
-  //           paperInfo: ({ event }) => event.output,
-  //           showPapers: ({ event, context }) => {
-  //             return calcShowPapers(
-  //               context.mode,
-  //               context.sortMode,
-  //               event.output.papers,
-  //               context.pageIndex
-  //             );
-  //           },
-  //         }),
-  //       },
-  //       onError: 'idle',
-  //     },
-  //   },
-  //   fetchingSummary: {
-  //     invoke: {
-  //       src: 'fetchSummary',
-  //       input: ({ context }) => ({
-  //         mode: context.mode,
-  //         paperInfo: context.paperInfo,
-  //       }),
-  //       onDone: {
-  //         target: 'fetchingResponse',
-  //         actions: assign({
-  //           summaryInfo: ({ event, context }) =>
-  //             produce(context.summaryInfo, (draft) => {
-  //               draft.summary = event.output.summary;
-  //               draft.bulletPoints = event.output.bulletPoints;
-  //               draft.bulletPointsPrefix = event.output.bulletPointsPrefix;
-  //             }),
-  //         }),
-  //       },
-  //       onError: 'idle',
-  //     },
-  //   },
-  //   fetchingResponse: {
-  //     invoke: {
-  //       src: 'fetchResponsePedia',
-  //       input: ({ context }) => ({
-  //         showPapers: context.showPapers,
-  //       }),
-  //       onDone: {
-  //         target: 'idle',
-  //         actions: assign({
-  //           paperInfo: ({ event, context }) =>
-  //             produce(context.paperInfo, (draft) => {
-  //               const processedPapers = event.output;
-  //               const processedMap = new Map(
-  //                 processedPapers.map((item) => [item.id, item])
-  //               );
-  //               // if (mode === 'zh-cn') {
-  //               //   const newPapers = papersZH.map((item) => {
-  //               //     if (processedMap.has(item.id)) {
-  //               //       return { ...item, response: processedMap.get(item.id).response };
-  //               //     }
-  //               //     return item;
-  //               //   });
-  //               //   return;
-  //               // }
-
-  //               draft.papers.forEach((item) => {
-  //                 if (processedMap.has(item.id)) {
-  //                   item.response = processedMap.get(item.id).response;
-  //                 }
-  //               });
-  //             }),
-  //           showPapers: ({ event, context }) =>
-  //             produce(context.showPapers, (draft) => {
-  //               const processedPapers = event.output;
-  //               const processedMap = new Map(
-  //                 processedPapers.map((item) => [item.id, item])
-  //               );
-  //               draft.forEach((item) => {
-  //                 if (processedMap.has(item.id)) {
-  //                   item.response = processedMap.get(item.id).response;
-  //                 }
-  //               });
-  //             }),
-  //         }),
-  //       },
-  //       onError: 'idle',
-  //     },
-  //   },
-  // },
-  // on: {
-  // 'CHANGE_MODE.ZH_CN': {
-  //   target: 'fetchingZHPapers',
-  //   actions: assign({
-  //     mode: () => SearchMode.EN,
-  //   }),
-  // },
-  // CHANGE_MODE: {
-  //   target: 'fetchingPapers',
-  //   actions: assign({
-  //     mode: ({ event }) => event.value,
-  //   }),
-  // },
 });
-// states: {
-//   summaryZH: {
-//     initial: 'idle',
-//     states: {
-//       idle: {
-//         on: {
-//           FETCH_SUMMARY_ZH: {
-//             target: 'fetching',
-//           },
-//         },
-//       },
-//       fetching: {
-//         invoke: {
-//           src: 'fetchSummary',
-//           input: ({ context }) => ({ name: context.summaryZH }),
-//           onDone: {
-//             target: 'idle',
-//             actions: assign({
-//               summaryZH: ({ event }) => event.output,
-//             }),
-//           },
-//           onError: 'idle',
-//         },
-//       },
-//     },
-//   },
-//   summary: {
-//     initial: 'idle',
-//     states: {
-//       idle: {
-//         on: {
-//           FETCH_SUMMARY: {
-//             target: 'fetching',
-//           },
-//         },
-//       },
-//       fetching: {
-//         invoke: {
-//           src: 'fetchSummary',
-//           input: ({ context }) => ({ name: context.summary }),
-//           onDone: {
-//             target: 'idle',
-//             actions: assign({
-//               summary: ({ event }) => event.output,
-//             }),
-//           },
-//           onError: 'idle',
-//         },
-//       },
-//     },
-//   },
-//   papers: {
-//     initial: 'idle',
-//     states: {
-//       idle: {
-//         on: {
-//           FETCH_PAPERS: {
-//             target: 'fetching',
-//           },
-//         },
-//       },
-//       fetching: {
-//         invoke: {
-//           src: 'fetchPapers',
-//           input: ({ context }) => ({ name: context.papers }),
-//           onDone: {
-//             target: 'idle',
-//             actions: assign({
-//               papers: ({ event }) => event.output,
-//             }),
-//           },
-//           onError: 'idle',
-//         },
-//       },
-//     },
-//   },
-// },
-// on: {
-// CHANGE_MODE: {
-//   actions: assign({
-//     mode: ({ event }) => event.value,
-//   }),
-// },
-// CHANGE_INITIALED: {
-//   actions: assign({
-//     isInitialed: true,
-//   }),
-// },
-// CHANGE_PAGE_INDEX: {
-//   actions: assign({
-//     pageIndex: ({ event }) => event.value,
-//   }),
-// },
-// CHANGE_SUMMARY: {
-//   actions: assign({
-//     summary: true,
-//   }),
-// }
-// },
 
 export const searchActor = createActor(searchMachine);
 searchActor.start();

@@ -8,6 +8,7 @@
  */
 'use client';
 import { Modal, Skeleton } from 'antd';
+import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -23,7 +24,6 @@ import styles from './page.module.scss';
 import PageManager from './pageManager';
 import Summary from './summary';
 
-// import { useRouter } from 'next-nprogress-bar';
 // import { useEffect, useMemo, useRef, useState } from 'react';
 // import {
 //   bulletPointsAtom,
@@ -66,10 +66,6 @@ import Summary from './summary';
 //       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
 //     []
 //   );
-//   const [sortMode, setSortMode] = useAtom(sortModeAtom);
-//   const [pageIndex, setPageIndex] = useState(1);
-//   const [summary, setSummary] = useAtom(summaryAtom);
-//   const setBulletPoints = useSetAtom(bulletPointsAtom);
 //   const setBulletPointsPrefix = useSetAtom(bulletPointsPrefixAtom);
 //   const [summaryZh, setSummaryZh] = useAtom(summaryZHAtom);
 //   const setBulletPointsZH = useSetAtom(bulletPointsZHAtom);
@@ -82,7 +78,6 @@ import Summary from './summary';
 //   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 //   const searchParams = useSearchParams();
 //   const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
-//   const [state, send] = useMachine(searchMachine);
 
 //   useEffect(() => {
 //     setPrevQuestion((prevQuestion) => searchParams.get('q'));
@@ -502,6 +497,7 @@ import { searchActor } from '../models/searchMachine';
 
 function Search() {
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
+  const router = useRouter();
   const state = useSelector(searchActor, (state) => state);
   const mode = useSelector(searchActor, (state) => state.context.mode);
   const showPapers = useSelector(
@@ -514,13 +510,15 @@ function Search() {
   const isLoadingSummary = state.matches({
     viewing: { fetchingSummary: 'fetching' },
   });
-  const isFetchPapersSuccess = state.matches('viewing.fetchingPapers.success');
-  const isFetchSummarySuccess = state.matches(
-    'viewing.fetchingSummary.success'
-  );
-  const isFetchRelatedSearchSuccess = state.matches(
-    'viewing.fetchingRelatedSearch.success'
-  );
+  const isFetchPapersSuccess = state.matches({
+    viewing: { fetchingPapers: 'success' },
+  });
+  const isFetchSummarySuccess = state.matches({
+    viewing: { fetchingSummary: 'success' },
+  });
+  const isFetchRelatedSearchSuccess = state.matches({
+    viewing: { fetchingRelatedSearch: 'success' },
+  });
   const isInitialed = !state.matches('init');
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
@@ -560,41 +558,6 @@ function Search() {
       searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
     }
   }, [isFetchSummarySuccess, isFetchRelatedSearchSuccess]);
-
-  // const showPapers = useMemo(() => {
-  //   let newList = [];
-  //   switch (mode) {
-  //     case 'en':
-  //       newList = [...paperInfo.papers];
-  //       break;
-  //     case 'zh-cn':
-  //       // newList = [...papersZH];
-  //       newList = [...paperInfo.papers];
-  //       break;
-  //     case 'selected':
-  //       // newList = [...papers, ...papersZH].filter((item) =>
-  //       //   checkedPapers.includes(item.id)
-  //       // );
-  //       newList = [...paperInfo.papers];
-  //       break;
-  //   }
-
-  //   // switch (sortMode) {
-  //   //   case 'time':
-  //   //     return newList
-  //   //       .sort((a, b) => b.year - a.year)
-  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  //   //   case 'relevance':
-  //   //     return newList
-  //   //       .sort((a, b) => b.relevance - a.relevance)
-  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  //   //   case 'quote':
-  //   //     return newList
-  //   //       .sort((a, b) => b.citationCount - a.citationCount)
-  //   //       .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  //   // }
-  //   return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  // }, [mode, pageIndex, pageSize, paperInfo.papers]);
 
   return (
     <div className={styles.search}>

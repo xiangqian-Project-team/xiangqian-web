@@ -1,6 +1,5 @@
 import { useSelector } from '@xstate/react';
 import { Button, ConfigProvider } from 'antd';
-import { useAtom } from 'jotai';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import LangCNIcon from '../icons/lang_cn.svg';
@@ -10,7 +9,7 @@ import LangENActiveIcon from '../icons/lang_en_active.svg';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
-import { SearchMode, SortMode, searchActor } from '../models/searchMachine';
+import { SortMode, searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
 
 interface IModeButtonsProps {
@@ -18,19 +17,9 @@ interface IModeButtonsProps {
 }
 
 export default function ModeButtons(props: IModeButtonsProps) {
-  // const [mode, setMode] = useAtom(modeAtom);
-  // const state = useSelector(searchActor, (state) => state);
-  // const mode = useSelector(searchActor, (state) => state.value.mode);
   const sortMode = useSelector(searchActor, (state) => state.context.sortMode);
   const mode = useSelector(searchActor, (state) => state.context.mode);
-  // const sortMode = useSelector(searchActor, (state) => state.context.sortMode);
   const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
-  // const [sortMode, setSortMode] = useAtom(sortModeAtom);
-  // const isENMode = state.matches({mode: 'en'})
-  // const isZHCNMode = state.matches({mode: 'zh-cn'})
-  // const isSelectedMode = state.matches({mode: 'selected'})
-
-  // console.log(state.matches({mode: 'en'}))
 
   const sortModeText = useMemo(() => {
     switch (sortMode) {
@@ -64,7 +53,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
           },
         }}
       >
-        {mode ==='en' ? (
+        {mode === 'en' ? (
           <Button className={styles.en_button_active} disabled={props.disabled}>
             <Image src={LangENActiveIcon.src} width={18} height={18} alt={''} />
             英文文献
@@ -78,7 +67,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               // setSortMode('default');
               // props.onModeChangeClick();
               searchActor.send({ type: 'CHANGE_MODE.EN' });
-              searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
+              searchActor.send({
+                type: 'CHANGE_SORT_MODE',
+                value: SortMode.DEFAULT,
+              });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               searchActor.send({ type: 'FETCH_PAPERS' });
             }}
@@ -105,7 +97,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               //   value: SearchMode.ZH_CN,
               // });
               searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
-              searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
+              searchActor.send({
+                type: 'CHANGE_SORT_MODE',
+                value: SortMode.DEFAULT,
+              });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               searchActor.send({ type: 'FETCH_PAPERS' });
             }}
@@ -140,7 +135,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               //   value: SearchMode.SELECTED,
               // });
               searchActor.send({ type: 'CHANGE_MODE.SELECTED' });
-              searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
+              searchActor.send({
+                type: 'CHANGE_SORT_MODE',
+                value: SortMode.DEFAULT,
+              });
               searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
             }}
           >
@@ -172,7 +170,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 // setSortMode('default');
                 // props.onModeChangeClick();
-                searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.DEFAULT });
+                searchActor.send({
+                  type: 'CHANGE_SORT_MODE',
+                  value: SortMode.DEFAULT,
+                });
                 setIsSortMenuVisible(false);
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
@@ -186,7 +187,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               onClick={() => {
                 // setSortMode('relevance');
                 // props.onModeChangeClick();
-                searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.RELEVANCE });
+                searchActor.send({
+                  type: 'CHANGE_SORT_MODE',
+                  value: SortMode.RELEVANCE,
+                });
                 setIsSortMenuVisible(false);
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
               }}
@@ -199,7 +203,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               }
               onClick={() => {
                 // setSortMode('time');
-                searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.TIME });
+                searchActor.send({
+                  type: 'CHANGE_SORT_MODE',
+                  value: SortMode.TIME,
+                });
                 setIsSortMenuVisible(false);
                 // props.onModeChangeClick();
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
@@ -224,7 +231,10 @@ export default function ModeButtons(props: IModeButtonsProps) {
               }
               onClick={() => {
                 // setSortMode('quote');
-                searchActor.send({ type: 'CHANGE_SORT_MODE', value: SortMode.QUOTE });
+                searchActor.send({
+                  type: 'CHANGE_SORT_MODE',
+                  value: SortMode.QUOTE,
+                });
                 setIsSortMenuVisible(false);
                 // props.onModeChangeClick();
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
