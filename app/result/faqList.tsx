@@ -2,24 +2,29 @@ import Image from 'next/image';
 import DocumentIcon from '../icons/document_icon.svg';
 import DropdownIcon from '../icons/drop_down_icon.svg';
 
+import { useSelector } from '@xstate/react';
+import { Skeleton } from 'antd';
+import { searchActor } from '../models/searchMachine';
+import { useRouter } from 'next/navigation';
 import styles from './faqList.module.scss';
-
-const faqData = [
-  '镶嵌该怎么用？','镶嵌与GPT等对话式工具的比较优势?',
-'镶嵌有何成本?','我如何联系团队?',
-];
 
 interface IFAQItemProps {
   title: string;
 }
 
 function FAQItem(props: IFAQItemProps) {
+  const router = useRouter();
   const onQuestionClick = () => {
-    // TODO
-  }
+    router.push(`./result?q=${props.title}`);
+  };
 
   return (
-    <div className={styles.faq_list_item} onClick={() => {onQuestionClick()}}>
+    <div
+      className={styles.faq_list_item}
+      onClick={() => {
+        onQuestionClick();
+      }}
+    >
       <div className={styles.faq_list_item_title}>
         {props.title}
         <Image
@@ -35,6 +40,12 @@ function FAQItem(props: IFAQItemProps) {
 }
 
 export default function FAQList() {
+  const state = useSelector(searchActor, (state) => state);
+  const faqList = useSelector(searchActor, (state) => state.context.faqList);
+  const isFetchRelatedSearchSuccess = state.matches({
+    viewing: { fetchingRelatedSearch: 'success' },
+  });
+
   return (
     <div className={styles.faq}>
       <div>
@@ -49,9 +60,15 @@ export default function FAQList() {
           相关研究问题
         </div>
         <div className={styles.faq_list}>
-          {faqData.map((item, index) => (
-            <FAQItem key={index} title={item} />
-          ))}
+          <Skeleton
+            active
+            title={false}
+            loading={!isFetchRelatedSearchSuccess}
+          >
+            {faqList.map((item, index) => (
+              <FAQItem key={index} title={item} />
+            ))}
+          </Skeleton>
         </div>
       </div>
     </div>

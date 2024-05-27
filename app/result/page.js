@@ -7,13 +7,11 @@
  * @Description:
  */
 'use client';
-
 import { Modal, Skeleton } from 'antd';
-import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import LoginBtn from '../components/loginBtn';
 import ResultPaperItem from '../components/resultPaperItem';
 import SearchTextArea from '../components/searchTextArea';
@@ -21,306 +19,97 @@ import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import FAQList from './faqList';
-import {
-  bulletPointsAtom,
-  bulletPointsPrefixAtom,
-  bulletPointsZHAtom,
-  bulletPointsZHPrefixAtom,
-  checkedPapersAtom,
-  modeAtom,
-  papersAtom,
-  papersAtomZH,
-  searchValueAtom,
-  selectedSummaryAtom,
-  sortModeAtom,
-  summaryAtom,
-  summaryZHAtom,
-} from '../models/search';
-import {
-  getAnalysisPedia as getAnalysisPediaAsync,
-  getLiteratureReview as getLiteratureReviewAsync,
-  getPartPedia as getPartPediaAsync,
-  getResponsePedia as getResponsePediaAsync,
-} from '../service';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
 import Summary from './summary';
 
+import { useSelector } from '@xstate/react';
+import { searchActor } from '../models/searchMachine';
+
 function Search() {
-  const router = useRouter();
-  const [pageSize] = useState(10);
-  const [isInitialed, setIsInitialed] = useState(false);
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
-  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
-  const [isLoadingList, setIsLoadingList] = useState(false);
-  const [mode, setMode] = useAtom(modeAtom); // en | zh-cn | selected
-  const queryRef = useRef({ queryEn: '', queryZh: '' });
+  const router = useRouter();
+  const state = useSelector(searchActor, (state) => state);
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const showPapers = useSelector(
+    searchActor,
+    (state) => state.context.showPapers
+  );
+  const isLoadingList = state.matches({
+    viewing: { fetchingPapers: 'fetching' },
+  });
+  const isLoadingSummary = state.matches({
+    viewing: { fetchingSummary: 'fetching' },
+  });
+  const isFetchPapersSuccess = state.matches({
+    viewing: { fetchingPapers: 'success' },
+  });
+  const isFetchSummarySuccess = state.matches({
+    viewing: { fetchingSummary: 'success' },
+  });
+  const isFetchRelatedSearchSuccess = state.matches({
+    viewing: { fetchingRelatedSearch: 'success' },
+  });
+  const isInitialed = !state.matches('init');
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const isPapersEmptyErrorVisible = useSelector(searchActor, (state) => {
+    return (
+      isInitialed &&
+      !isLoadingSummary &&
+      !isLoadingList &&
+      !showPapers.length &&
+      mode !== 'selected'
+    );
+  });
+  const searchParams = useSearchParams();
+  const question = searchParams.get('q');
   const paperSkeletons = useMemo(
     () =>
       Array.from({ length: 3 }).map((item) => (item = { id: Math.random() })),
     []
   );
-  const [sortMode, setSortMode] = useAtom(sortModeAtom);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [summary, setSummary] = useAtom(summaryAtom);
-  const setBulletPoints = useSetAtom(bulletPointsAtom);
-  const setBulletPointsPrefix = useSetAtom(bulletPointsPrefixAtom);
-  const [summaryZh, setSummaryZh] = useAtom(summaryZHAtom);
-  const setBulletPointsZH = useSetAtom(bulletPointsZHAtom);
-  const setBulletPointsZHPrefix = useSetAtom(bulletPointsZHPrefixAtom);
-  const [papers, setPapers] = useAtom(papersAtom);
-  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
-  const setSearchValue = useSetAtom(searchValueAtom);
-  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
-  const setSelectedSummary = useSetAtom(selectedSummaryAtom);
-  // const setSelectedBulletPoints = useSetAtom(selectedBulletPointsAtom);
-  // const setSelectedBulletPointsPrefix = useSetAtom(
-  //   selectedBulletPointsPrefixAtom
-  // );
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const searchParams = useSearchParams();
-  const [prevQuestion, setPrevQuestion] = useState(searchParams.get('q'));
-
-  useEffect(() => {
-    setPrevQuestion((prevQuestion) => searchParams.get('q'));
-  }, [searchParams]);
-
-  useEffect(() => {
-    const question = searchParams.get('q');
-    setSearchValue(question);
-    let clear = false;
-    if (prevQuestion !== question || !isInitialed) {
-      clear = true;
-    }
-    getPedia(question, { clear });
-  }, [searchParams, mode, prevQuestion]);
-
-  const getAnalysisPedia = async (params, mode) => {
-    const { papers, queryEn, queryZh } = params;
-    const currentMode = mode;
-    setIsLoadingSummary(true);
-    const res = await getAnalysisPediaAsync({
-      papers,
-      queryEn,
-      queryZh,
-    });
-    if (!res.ok) {
-      throw new Error('Failed get summary');
-    }
-
-    const data = await res.json();
-    switch (currentMode) {
-      case 'en':
-        setSummary(data.answer);
-        setBulletPoints(data.bltpts);
-        setBulletPointsPrefix(data.bltptsPrefix);
-        break;
-      case 'zh-cn':
-        setSummaryZh(data.answer);
-        setBulletPointsZH(data.bltpts);
-        setBulletPointsZHPrefix(data.bltptsPrefix);
-        break;
-    }
-    setIsLoadingSummary(false);
-  };
-
-  const getLiteratureReview = async (params) => {
-    const { papers, queryEn, queryZh } = params;
-    setIsLoadingSummary(true);
-    const res = await getLiteratureReviewAsync({
-      papers,
-      queryEn,
-      queryZh,
-    });
-    if (!res.ok) {
-      throw new Error('Failed get summary');
-    }
-
-    const data = await res.json();
-    setSelectedSummary(data.review);
-    setIsLoadingSummary(false);
-  };
-
-  const getResponsePedia = async () => {
-    const currMode = mode;
-    const fetchList = [];
-    showPapers.forEach((element) => {
-      if (element.response) {
-        return;
-      }
-      fetchList.push(element);
-    });
-    if (fetchList.length === 0) {
-      return;
-    }
-    const res = await getResponsePediaAsync({
-      papers: fetchList,
-    });
-    if (!res.ok) {
-      throw new Error('Failed get response');
-    }
-    const { papers: processedPapers } = await res.json();
-    const processedMap = new Map(
-      processedPapers.map((item) => [item.id, item])
-    );
-    if (currMode === 'zh-cn') {
-      const newPapers = papersZH.map((item) => {
-        if (processedMap.has(item.id)) {
-          return { ...item, response: processedMap.get(item.id).response };
-        }
-        return item;
-      });
-      setPapersZH(newPapers);
-      return;
-    }
-
-    const newPapers = papers.map((item) => {
-      if (processedMap.has(item.id)) {
-        return { ...item, response: processedMap.get(item.id).response };
-      }
-      return item;
-    });
-    setPapers(newPapers);
-  };
-
-  const showPapers = useMemo(() => {
-    let newList = [];
-    switch (mode) {
-      case 'en':
-        newList = [...papers];
-        break;
-      case 'zh-cn':
-        newList = [...papersZH];
-        break;
-      case 'selected':
-        newList = [...papers, ...papersZH].filter((item) =>
-          checkedPapers.includes(item.id)
-        );
-        break;
-    }
-
-    switch (sortMode) {
-      case 'time':
-        return newList
-          .sort((a, b) => b.year - a.year)
-          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-      case 'relevance':
-        return newList
-          .sort((a, b) => b.relevance - a.relevance)
-          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-      case 'quote':
-        return newList
-          .sort((a, b) => b.citationCount - a.citationCount)
-          .slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-    }
-    return newList.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-  }, [papers, papersZH, pageIndex, sortMode, mode, checkedPapers]);
-
   const isSearchPapersVisible = useMemo(() => {
     return isInitialed && showPapers.length === 0 && !isLoadingList;
-  }, [showPapers, isLoadingList]);
+  }, [isInitialed, showPapers.length, isLoadingList]);
 
-  const isPapersEmptyErrorVisible = useMemo(() => {
-    return (
-      isInitialed &&
-      !isLoadingList &&
-      !isLoadingSummary &&
-      !summary &&
-      !summaryZh &&
-      !showPapers.length
-    );
-  }, [
-    isInitialed,
-    isLoadingList,
-    isLoadingSummary,
-    summary,
-    summaryZh,
-    showPapers,
-  ]);
-
-  const totalPapers = useMemo(() => {
-    switch (mode) {
-      case 'en':
-        return papers.length;
-      case 'zh-cn':
-        return papersZH.length;
-      case 'selected':
-        return checkedPapers.length;
-    }
-    return 0;
-  }, [mode, papers, papersZH, checkedPapers]);
+  // reset all state when quit
+  useEffect(() => {
+    return () => {
+      searchActor.send({ type: 'RESET_FETCH_PAPERS' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+      searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+      searchActor.send({ type: 'RESET_FETCH_RELATED' });
+      searchActor.send({ type: 'RESET' });
+    };
+  }, [])
 
   useEffect(() => {
-    getResponsePedia();
-  }, [showPapers]);
+    searchActor.send({ type: 'SET_QUESTION', value: question });
+    searchActor.send({ type: 'RESET_FETCH_PAPERS' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+    searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+    searchActor.send({ type: 'RESET_FETCH_RELATED' });
+    searchActor.send({ type: 'RESET' });
+    searchActor.send({ type: 'INIT_FETCH' });
+    searchActor.send({ type: 'FETCH_PAPERS' });
+  }, [question]);
 
-  const getPedia = async (queryText, options) => {
-    if (isLoadingList || isLoadingSummary) return;
-    let currMode = mode;
-
-    if (options.clear) {
-      setSummary('');
-      setSummaryZh('');
-      setBulletPoints('');
-      setBulletPointsZH('');
-      setBulletPointsPrefix('');
-      setBulletPointsZHPrefix('');
-      setCheckedPapers([]);
-      setPapers([]);
-      setPapersZH([]);
-      setSelectedSummary('');
-      setPageIndex(1);
-      setSortMode('default');
-      if (mode === 'selected') {
-        setMode('en');
-        currMode = 'en';
-      }
-    } else {
-      if (currMode === 'selected') {
-        return;
-      }
-      if (currMode === 'zh-cn' && papersZH.length) {
-        return;
-      }
-      if (currMode === 'en' && papers.length) {
-        return;
-      }
+  useEffect(() => {
+    if (isFetchPapersSuccess) {
+      searchActor.send({ type: 'FETCH_SUMMARY' });
+      searchActor.send({ type: 'FETCH_RESPONSE' });
     }
-    setIsLoadingSummary(true);
-    setIsLoadingList(true);
+  }, [isFetchPapersSuccess]);
 
-    let queryEn, queryZh, nextPapers;
-    try {
-      setIsInitialed(true);
-      const listRes = await getPartPediaAsync({ query: queryText }, currMode);
-      if (!listRes.ok) {
-        throw new Error('Failed search');
-      }
-      const data = await listRes.json();
-      queryRef.current = { queryEn: data.queryEn, queryZh: data.queryZh };
-      queryEn = data.queryEn;
-      queryZh = data.queryZh;
-      nextPapers = data.papers;
-      switch (currMode) {
-        case 'en':
-          setPapers(nextPapers || []);
-          break;
-        case 'zh-cn':
-          setPapersZH(nextPapers || []);
-          break;
-      }
-      setIsLoadingList(false);
-      await getAnalysisPedia(
-        { papers: nextPapers, queryEn, queryZh },
-        currMode
-      );
-      setIsLoadingSummary(false);
-    } catch (e) {
-      setIsLoadingList(false);
-      setIsLoadingSummary(false);
+  useEffect(() => {
+    if (isFetchRelatedSearchSuccess) {
+      return;
     }
-  };
+    if (isFetchSummarySuccess) {
+      searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
+    }
+  }, [isFetchSummarySuccess, isFetchRelatedSearchSuccess]);
 
   return (
     <div className={styles.search}>
@@ -340,7 +129,6 @@ function Search() {
                 router.push('/');
               }}
             />
-
             <LoginBtn
               style={{
                 marginTop: 30,
@@ -349,11 +137,6 @@ function Search() {
                 // left: getItem('token') ? 20 : 8,
               }}
               isOpen={isSideBarOpen}
-              // style={{
-              //   position: 'absolute',
-              //   bottom: 24,
-              //   left: getItem('token') ? 20 : 8,
-              // }}
             />
             {isSideBarOpen && (
               <button
@@ -377,10 +160,8 @@ function Search() {
             )}
           </div>
         </div>
-
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-
           {isPapersEmptyErrorVisible && (
             <div className={styles.search_content_empty}>
               <div className={styles.search_content_empty_card}>
@@ -394,29 +175,17 @@ function Search() {
               </div>
             </div>
           )}
-
           {!isPapersEmptyErrorVisible && (
             <div className={styles.search_content_data}>
               <div className={styles.search_content_data_summary}>
                 <Summary
-                  getLiteratureReview={getLiteratureReview}
                   setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
-                  isLoadingSummary={isLoadingSummary}
-                  queryRef={queryRef}
                 />
                 <FAQList />
               </div>
-
               <div className={styles.search_content_data_papers}>
                 <div className={styles.content_button}>
-                  <ModeButtons
-                    disabled={isLoadingList || isLoadingSummary}
-                    mode={mode}
-                    setMode={setMode}
-                    onModeChangeClick={() => {
-                      setPageIndex(1);
-                    }}
-                  />
+                  <ModeButtons disabled={isLoadingList || isLoadingSummary} />
                 </div>
                 {isLoadingList &&
                   paperSkeletons.map((item) => (
@@ -432,14 +201,14 @@ function Search() {
                       <Skeleton active />
                     </div>
                   ))}
-
                 <div>
                   <div>
-                    {isSearchPapersVisible && (
+                    {isSearchPapersVisible && mode !== 'selected' && (
                       <div className={styles.no_papers_tip}>
                         <Image
                           className={styles.no_papers_tip_icon}
                           src={ErrorIcon}
+                          alt=""
                         />
                         <div className={styles.no_papers_tip_desc}>
                           该主题没有检测到{mode === 'en' ? '英文' : '中文'}
@@ -449,30 +218,22 @@ function Search() {
                     )}
                     {showPapers.map((item) => {
                       return (
-                        <>
-                          <ResultPaperItem
-                            key={item.id}
-                            data={item}
-                            isBorderVisible={true}
-                            checkedPapers={checkedPapers}
-                            setCheckedPapers={setCheckedPapers}
-                          />
-                        </>
+                        <ResultPaperItem
+                          key={item.id}
+                          data={item}
+                          isBorderVisible={true}
+                        />
                       );
                     })}
+                    {isInitialed &&
+                      !isLoadingList &&
+                      !isPapersEmptyErrorVisible &&
+                      showPapers.length > 0 && (
+                        <div>
+                          <PageManager />
+                        </div>
+                      )}
                   </div>
-                  {isInitialed &&
-                    !isLoadingList &&
-                    !isPapersEmptyErrorVisible && (
-                      <div>
-                        <PageManager
-                          pageIndex={pageIndex}
-                          total={totalPapers}
-                          pageSize={pageSize}
-                          setPageIndex={setPageIndex}
-                        />
-                      </div>
-                    )}
                 </div>
               </div>
             </div>

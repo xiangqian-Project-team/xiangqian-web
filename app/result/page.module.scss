@@ -211,11 +211,11 @@
               text-indent: 40px;
               pre {
                 white-space: pre-wrap;
-                .mark_author_year {
-                  text-decoration: none;
-                  color: #03a097;
-                  cursor: pointer;
-                }
+              }
+              .mark_author_year {
+                text-decoration: none;
+                color: #03a097;
+                cursor: pointer;
               }
             }
             .content_bullet_points_prefix {
@@ -257,11 +257,11 @@
                 .down_icon_active {
                   transform: rotateZ(180deg);
                 }
-              }
-              .mark_author_year {
-                text-decoration: none;
-                color: #03a097;
-                cursor: pointer;
+                .mark_author_year {
+                  text-decoration: none;
+                  color: #03a097;
+                  cursor: pointer;
+                }
               }
             }
           }

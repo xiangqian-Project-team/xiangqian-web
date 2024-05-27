@@ -1,10 +1,33 @@
 'use client';
+import { useSelector } from '@xstate/react';
 import { useMemo, useState } from 'react';
+import { searchActor } from '../models/searchMachine';
 import styles from './pageManager.module.scss';
 
 export default function PageManager(props) {
   const [typeCount] = useState(5);
-  const { pageIndex, total, pageSize, setPageIndex } = props;
+  const pageIndex = useSelector(
+    searchActor,
+    (state) => state.context.pageIndex
+  );
+  const pageSize = useSelector(searchActor, (state) => state.context.pageSize);
+  const context = useSelector(searchActor, (state) => state.context);
+  // const { pageIndex, total, pageSize, setPageIndex } = props;
+  const total = useMemo(() => {
+    switch (context.mode) {
+      case 'en':
+        return context.paperInfo.papers.length;
+      case 'zh-cn':
+        return context.paperZHInfo.papers.length;
+      case 'selected':
+        return [
+          ...context.paperInfo.papers,
+          ...context.paperZHInfo.papers,
+        ].filter((item) => item.selected).length;
+      default:
+        return 0;
+    }
+  }, [context.mode, context.paperInfo.papers, context.paperZHInfo.papers]);
 
   const totalPage = useMemo(() => {
     return pageSize > 0 ? Math.ceil(total / pageSize) : 0;
@@ -15,21 +38,21 @@ export default function PageManager(props) {
       return true;
     }
     return false;
-  }, [pageIndex]);
+  }, [pageIndex, typeCount]);
 
   const isPrevMore = useMemo(() => {
     if (pageIndex >= typeCount) {
       return true;
     }
     return false;
-  }, [pageIndex]);
+  }, [pageIndex, typeCount]);
 
   const isNextMore = useMemo(() => {
     if (pageIndex < totalPage) {
       return true;
     }
     return false;
-  }, [pageIndex, total, pageSize]);
+  }, [pageIndex, totalPage]);
 
   const pageList = useMemo(() => {
     const list = [];
@@ -55,7 +78,7 @@ export default function PageManager(props) {
     }
 
     return list;
-  }, [pageIndex, total, pageSize]);
+  }, [typeCount, totalPage, pageIndex]);
 
   return (
     <>
@@ -65,7 +88,8 @@ export default function PageManager(props) {
           if (pageIndex <= 1) {
             return;
           }
-          setPageIndex(pageIndex - 1);
+          searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex - 1 });
+          searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
       >
         上一页
@@ -74,7 +98,7 @@ export default function PageManager(props) {
         <button
           className={styles.page_index}
           onClick={() => {
-            setPageIndex(1);
+            searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
           }}
         >
           1
@@ -91,7 +115,8 @@ export default function PageManager(props) {
             key={Math.random()}
             className={styles.page_index}
             onClick={() => {
-              setPageIndex(item);
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: item });
+              searchActor.send({ type: 'FETCH_RESPONSE' });
             }}
           >
             {item}
@@ -105,7 +130,9 @@ export default function PageManager(props) {
           if (pageIndex + 1 > totalPage) {
             return;
           }
-          setPageIndex(pageIndex + 1);
+          // setPageIndex(pageIndex + 1);
+          searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex + 1 });
+          searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
       >
         下一页

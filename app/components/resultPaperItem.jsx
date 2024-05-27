@@ -3,12 +3,13 @@
 import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
 import SelectedWhiteButtonIcon from '../icons/selected_white_button_icon.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
+import { searchActor } from '../models/searchMachine';
 import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
@@ -73,6 +74,7 @@ export default function ResultPaperItem(props) {
     bibtex,
     doi,
     isEn,
+    selected,
   } = props.data;
 
   const { isBorderVisible } = props;
@@ -82,13 +84,6 @@ export default function ResultPaperItem(props) {
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
-
-  const IsSelected = useCallback(
-    (id) => {
-      return props.checkedPapers.includes(id);
-    },
-    [props.checkedPapers]
-  );
 
   const toggleAbstract = async (id) => {
     try {
@@ -128,7 +123,7 @@ export default function ResultPaperItem(props) {
         <Tooltip title={title}>
           <h4>{title}</h4>
         </Tooltip>
-        {IsSelected(id) ? (
+        {selected ? (
           <ConfigProvider
             theme={{
               token: {
@@ -150,13 +145,15 @@ export default function ResultPaperItem(props) {
               className={styles.content_card_checked}
               active
               onClick={() => {
-                const newCheckedPapers = props.checkedPapers.filter(
-                  (item) => item !== id
-                );
-                props.setCheckedPapers(newCheckedPapers);
+                searchActor.send({ type: 'TOGGLE_SELECT', value: id });
               }}
             >
-              <Image src={SelectedWhiteButtonIcon.src} width={18} height={18} />
+              <Image
+                src={SelectedWhiteButtonIcon.src}
+                width={18}
+                height={18}
+                alt=""
+              />
               已选中
             </Button>
           </ConfigProvider>
@@ -181,14 +178,14 @@ export default function ResultPaperItem(props) {
             <Button
               className={styles.content_card_check}
               onClick={() => {
-                const newCheckedPapers = [...props.checkedPapers, id];
-                props.setCheckedPapers(newCheckedPapers);
+                searchActor.send({ type: 'TOGGLE_SELECT', value: id });
               }}
             >
               <Image
                 src={SelectedActiveButtonIcon.src}
                 width={18}
                 height={18}
+                alt=""
               />
               选中本文
             </Button>

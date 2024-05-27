@@ -1,314 +1,83 @@
-import { DownOutlined } from '@ant-design/icons';
-import { Popover, Skeleton } from 'antd';
-import { useAtom, useAtomValue } from 'jotai';
+import { useSelector } from '@xstate/react';
+import { Skeleton } from 'antd';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import ResultPaperItem from '../components/resultPaperItem';
+import { useMemo } from 'react';
 import RefreshIcon from '../icons/refresh_icon.svg';
 import RoundedArrow from '../icons/rounded_arrow.svg';
-import {
-  bulletPointsAtom,
-  bulletPointsPrefixAtom,
-  bulletPointsZHAtom,
-  bulletPointsZHPrefixAtom,
-  checkedPapersAtom,
-  modeAtom,
-  papersAtom,
-  papersAtomZH,
-  selectedSummaryAtom,
-  summaryAtom,
-  summaryZHAtom,
-} from '../models/search';
-import {
-  getBulletPointsExpansion,
-  getResponsePedia as getResponsePediaAsync,
-} from '../service';
+import { searchActor } from '../models/searchMachine';
+import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
+import SummaryPopover from './summaryPopover';
+import PopoverItem from './summaryPopoverItem';
 
-function FormattedSummary(props: {
-  text: string;
-  getPopoverResponsePedia: any;
+export default function Summary(props: {
+  setIsNoEnoughModalVisible: (isVisible: boolean) => void;
 }) {
-  const { text, getPopoverResponsePedia } = props;
-  const papers = useAtomValue(papersAtom);
-  const papersZH = useAtomValue(papersAtomZH);
-  const [checkedPapers, setCheckedPapers] = useAtom(checkedPapersAtom);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [expensionText, setExpensionText] = useState<string | undefined>(
-    undefined
+  const state = useSelector(searchActor, (state) => state);
+  const isLoadingPapers = state.matches({
+    viewing: {
+      fetchingPapers: 'fetching',
+    },
+  });
+  const isLoadingSummary = state.matches({
+    viewing: {
+      fetchingSummary: 'fetching',
+    },
+  });
+  const isLoadingLiteratureReview = state.matches({
+    viewing: {
+      fetchingLiteratureReview: 'fetching',
+    },
+  });
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const paperInfo = useSelector(
+    searchActor,
+    (state) => state.context.paperInfo
   );
-
-  const fetchBulletPointsExpansion = async () => {
-    if (expensionText) {
-      return;
-    }
-    const pattern = /\[(.*?)\]/g;
-    const matches = Array.from(text.matchAll(pattern));
-    let idSet = new Set();
-    for (let match of matches) {
-      idSet.add(match[1]);
-    }
-    const thePapers = [...papers, ...papersZH].filter((item) => {
-      return idSet.has(`${item.id}`);
-    });
-    setIsLoading(true);
-    try {
-      const res = await getBulletPointsExpansion({
-        bltpt: props.text,
-        papers: thePapers,
-      });
-      if (!res.ok) {
-        throw new Error('Failed get response');
-      }
-      const data = await res.json();
-      {
-        const pattern = /(\[.*?\])/g;
-        const bltptExpansion = data.bltptExpansion || '';
-        const matches = bltptExpansion.match(pattern) || [];
-        const splitText = bltptExpansion.split(pattern);
-        const formattedStr = splitText.reduce((arr, element) => {
-          if (matches.includes(element)) {
-            const id = element.replace(/^\[(.+)\]$/, '$1');
-            const paper = [...papers, ...papersZH].find(
-              (item) => item.id === id
-            );
-            const authors = paper?.authors[0] || '';
-            const year = paper?.year || '';
-            return [
-              ...arr,
-              <Popover
-                key={Math.random()}
-                placement="rightTop"
-                trigger="click"
-                overlayStyle={{ padding: 0, maxWidth: 790 }}
-                onOpenChange={(visible) => {
-                  if (visible) {
-                    if (paper.response) {
-                      return;
-                    }
-                    getPopoverResponsePedia(paper);
-                  }
-                }}
-                content={
-                  <ResultPaperItem
-                    data={paper}
-                    checkedPapers={checkedPapers}
-                    setCheckedPapers={setCheckedPapers}
-                  />
-                }
-              >
-                <span className={styles.mark_author_year}>
-                  （{authors}，{year}）
-                </span>
-              </Popover>,
-            ];
-          }
-          return [...arr, element];
-        }, []);
-
-        setExpensionText(formattedStr);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const pattern = /(\[.*?\])/g;
-  const splitText = (text || '').split(pattern);
-
-  if (splitText.length <= 1) {
-    return (
-      <li
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-      >
-        {isOpen ? (
-          <DownOutlined
-            className={styles.down_icon_active}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-              fetchBulletPointsExpansion();
-            }}
-          />
-        ) : (
-          <DownOutlined
-            className={styles.down_icon}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-              fetchBulletPointsExpansion();
-            }}
-          />
-        )}
-        {text}
-        {isOpen && (
-          <div className={styles.expension_text}>
-            <Skeleton
-              active
-              title={false}
-              style={{ width: '80%' }}
-              loading={isLoading}
-            >
-              {expensionText}
-            </Skeleton>
-          </div>
-        )}
-      </li>
-    );
-  }
-  const matches = text.match(pattern);
-
-  const formattedStr = splitText.reduce((arr, element) => {
-    if (matches.includes(element)) {
-      const id = element.replace(/^\[(.+)\]$/, '$1');
-      const paper = [...papers, ...papersZH].find((item) => item.id === id);
-      const authors = paper?.authors[0] || '';
-      const year = paper?.year || '';
-      return [
-        ...arr,
-        <Popover
-          key={Math.random()}
-          placement="rightTop"
-          trigger="click"
-          overlayStyle={{ padding: 0, maxWidth: 790 }}
-          onOpenChange={(visible) => {
-            if (visible) {
-              if (paper.response) {
-                return;
-              }
-              getPopoverResponsePedia(paper);
-            }
-          }}
-          content={
-            <ResultPaperItem
-              data={paper}
-              checkedPapers={checkedPapers}
-              setCheckedPapers={setCheckedPapers}
-            />
-          }
-        >
-          <span className={styles.mark_author_year}>
-            （{authors}，{year}）
-          </span>
-        </Popover>,
-      ];
-    }
-    return [...arr, element];
-  }, []);
-
-  return (
-    <li
-      onClick={(e) => {
-        // @ts-ignore TODO fix typo
-        if (e.target.tagName !== 'LI') {
-          return;
-        }
-        setIsOpen(!isOpen);
-        if (!isOpen) {
-          fetchBulletPointsExpansion();
-        }
-      }}
-    >
-      {isOpen ? (
-        <DownOutlined
-          className={styles.down_icon_active}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
-            fetchBulletPointsExpansion();
-          }}
-        />
-      ) : (
-        <DownOutlined
-          className={styles.down_icon}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
-            fetchBulletPointsExpansion();
-          }}
-        />
-      )}
-      {formattedStr}
-      {isOpen && (
-        <div className={styles.expension_text}>
-          <Skeleton
-            active
-            title={false}
-            style={{ width: '80%' }}
-            loading={isLoading}
-          >
-            {expensionText}
-          </Skeleton>
-        </div>
-      )}
-    </li>
+  const paperZHInfo = useSelector(
+    searchActor,
+    (state) => state.context.paperZHInfo
   );
-}
-
-interface ISummaryProps {
-  getLiteratureReview: (params: any) => void;
-  setIsNoEnoughModalVisible: (visible: boolean) => void;
-  isLoadingSummary: boolean;
-  queryRef: any;
-}
-
-export default function Summary(props: ISummaryProps) {
-  const {
-    getLiteratureReview,
-    queryRef,
-    isLoadingSummary,
-    setIsNoEnoughModalVisible,
-  } = props;
-
-  const mode = useAtomValue(modeAtom); // en | zh-cn | selected
-  const summary = useAtomValue(summaryAtom);
-  const summaryZh = useAtomValue(summaryZHAtom);
-  const [papers, setPapers] = useAtom(papersAtom);
-  const [papersZH, setPapersZH] = useAtom(papersAtomZH);
-  const bulletPoints = useAtomValue(bulletPointsAtom);
-  const bulletPointsPrefix = useAtomValue(bulletPointsPrefixAtom);
-  const bulletPointsZH = useAtomValue(bulletPointsZHAtom);
-  const bulletPointsZHPrefix = useAtomValue(bulletPointsZHPrefixAtom);
-  const selectedSummary = useAtomValue(selectedSummaryAtom);
-  const checkedPapers = useAtomValue(checkedPapersAtom);
+  const summaryInfo = useSelector(
+    searchActor,
+    (state) => state.context.summaryInfo
+  );
+  const summaryZHInfo = useSelector(
+    searchActor,
+    (state) => state.context.summaryZHInfo
+  );
+  const summarySelectedInfo = useSelector(
+    searchActor,
+    (state) => state.context.summarySelectedInfo
+  );
 
   const showSummary = useMemo(() => {
     switch (mode) {
       case 'en':
-        return {
-          summary,
-          bulletPoints,
-          bulletPointsPrefix,
-        };
+        return summaryInfo;
       case 'zh-cn':
-        return {
-          summary: summaryZh,
-          bulletPoints: bulletPointsZH,
-          bulletPointsPrefix: bulletPointsZHPrefix,
-        };
-      case 'selected':
-        return {
-          summary: selectedSummary,
-        };
+        return summaryZHInfo;
     }
-    return {};
-  }, [
-    summary,
-    summaryZh,
-    bulletPoints,
-    bulletPointsZH,
-    selectedSummary,
-    bulletPointsZHPrefix,
-    bulletPointsPrefix,
-    mode,
-  ]);
+    // switch (mode) {
+    //   case 'en':
+    //     return {
+    //       summary,
+    //       bulletPoints,
+    //       bulletPointsPrefix,
+    //     };
+    //   case 'zh-cn':
+    //     return {
+    //       summary: summaryZh,
+    //       bulletPoints: bulletPointsZH,
+    //       bulletPointsPrefix: bulletPointsZHPrefix,
+    //     };
+    //   case 'selected':
+    //     return {
+    //       summary: selectedSummary,
+    //     };
+    // }
+    // return {};
+  }, [mode, summaryInfo, summaryZHInfo]);
 
   const getPopoverResponsePedia = async (paper) => {
     if (!paper) {
@@ -322,38 +91,22 @@ export default function Summary(props: ISummaryProps) {
       throw new Error('Failed get response');
     }
     const { papers: processedPapers } = await res.json();
-    const processedMap = new Map(
-      processedPapers.map((item) => [item.id, item])
-    );
     if (currMode === 'zh-cn') {
-      const newPapers = papersZH.map((item) => {
-        if (processedMap.has(item.id)) {
-          // @ts-ignore
-          return { ...item, response: processedMap.get(item.id).response };
-        }
-        return item;
-      });
-      setPapersZH(newPapers);
+      searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
       return;
     }
 
-    const newPapers = papers.map((item) => {
-      if (processedMap.has(item.id)) {
-        // @ts-ignore
-        return { ...item, response: processedMap.get(item.id).response };
-      }
-      return item;
-    });
-    setPapers(newPapers);
+    searchActor.send({ type: 'SET_RESPONSE_PEDIA', value: processedPapers });
   };
 
   return (
     <div className={styles.search_content_data_summary_content}>
       {
         <div>
+          {state.context.summary}
           <Skeleton
             active
-            loading={isLoadingSummary}
+            loading={isLoadingSummary || isLoadingPapers || isLoadingLiteratureReview}
             style={{ padding: '20px' }}
             paragraph={{ rows: 16 }}
           >
@@ -366,37 +119,37 @@ export default function Summary(props: ISummaryProps) {
                 />
                 总结
               </div>
-              {mode === 'selected' && !showSummary.summary && (
-                <div className={styles.fetch_selected_summary_button_container}>
-                  <button
-                    onClick={() => {
-                      const thePapers = [...papers, ...papersZH].filter(
-                        (item) => checkedPapers.includes(item.id)
-                      );
-                      if (thePapers.length < 10) {
-                        setIsNoEnoughModalVisible(true);
-                        return;
-                      }
-                      getLiteratureReview({
-                        papers: thePapers,
-                        queryEn: queryRef.current.queryEn,
-                        queryZh: queryRef.current.queryZh,
-                      });
-                    }}
+              {mode === 'selected' &&
+                summarySelectedInfo.bulletPoints.length === 0 && (
+                  <div
+                    className={styles.fetch_selected_summary_button_container}
                   >
-                    <Image
-                      alt=""
-                      className={styles.fetch_selected_summary_button_icon}
-                      width={18}
-                      height={18}
-                      src={RefreshIcon.src}
-                    />
-                    用选中的文章生成总结，以获取更优结果
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={() => {
+                        const thePapers = [
+                          ...paperInfo.papers,
+                          ...paperZHInfo.papers,
+                        ].filter((item) => item.selected);
+                        if (thePapers.length < 10) {
+                          props.setIsNoEnoughModalVisible(true);
+                          return;
+                        }
+                        searchActor.send({ type: 'FETCH_LITERATURE_REVIEW' });
+                      }}
+                    >
+                      <Image
+                        alt=""
+                        className={styles.fetch_selected_summary_button_icon}
+                        width={18}
+                        height={18}
+                        src={RefreshIcon.src}
+                      />
+                      用选中的文章生成总结，以获取更优结果
+                    </button>
+                  </div>
+                )}
               <div className={styles.content}>
-                {showSummary.summary && (
+                {mode !== 'selected' && showSummary.summary && (
                   <>
                     <div className={styles.content_summary}>
                       {showSummary.summary}
@@ -409,16 +162,31 @@ export default function Summary(props: ISummaryProps) {
                     {showSummary.bulletPoints && (
                       <ul className={styles.content_bullet_points}>
                         {showSummary.bulletPoints.map((item) => (
-                          <FormattedSummary
-                            key={Math.random()}
-                            text={item}
-                            getPopoverResponsePedia={getPopoverResponsePedia}
-                          />
+                          <li key={item.key}>
+                            <SummaryPopover
+                              data={item}
+                              getPopoverResponsePedia={getPopoverResponsePedia}
+                            />
+                          </li>
                         ))}
                       </ul>
                     )}
                   </>
                 )}
+                {mode === 'selected' &&
+                  summarySelectedInfo.bulletPoints.length > 0 && (
+                    <div className={styles.content_summary}>
+                      {summarySelectedInfo.bulletPoints.map((info) =>
+                        info.popoverList.map((item) => (
+                          <PopoverItem
+                            key={item.key}
+                            item={item}
+                            getPopoverResponsePedia={getPopoverResponsePedia}
+                          />
+                        ))
+                      )}
+                    </div>
+                  )}
               </div>
             </>
           </Skeleton>

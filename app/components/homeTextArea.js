@@ -9,20 +9,30 @@
 'use client';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
+import { useSelector } from '@xstate/react';
+import { searchActor } from '../models/searchMachine';
 import withTheme from '../../theme';
-import { modeAtom, searchValueAtom } from '../models/search';
 import styles from './homeTextArea.module.scss';
+import { useEffect } from 'react';
 
 const { TextArea } = Input;
 
 function HomeTextArea() {
   const router = useRouter();
 
-  const [mode, setMode] = useAtom(modeAtom);
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const searchValue = useSelector(
+    searchActor,
+    (state) => state.context.question
+  );
+
+  useEffect(() => {
+    if (mode === 'selected') {
+      searchActor.send({ type: 'CHANGE_MODE.EN' });
+    }
+  }, [])
 
   return (
     <div className={styles.homeTextArea}>
@@ -39,7 +49,7 @@ function HomeTextArea() {
         }}
         value={searchValue}
         onChange={(e) => {
-          setSearchValue(e.target.value);
+          searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
         }}
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
@@ -50,16 +60,6 @@ function HomeTextArea() {
       />
 
       <div className={styles.searchTextArea_language_select}>
-        <input
-          type="radio"
-          id="en"
-          name="mode"
-          value="en"
-          checked={mode === 'en'}
-          onChange={(e) => {
-            setMode(e.target.value);
-          }}
-        />
         <label
           htmlFor="en"
           className={mode === 'en' ? styles.lang_button_active : ''}
@@ -68,12 +68,12 @@ function HomeTextArea() {
         </label>
         <input
           type="radio"
-          id="zh-cn"
+          id="en"
           name="mode"
-          value="zh-cn"
-          checked={mode === 'zh-cn'}
+          value="en"
+          checked={mode === 'en'}
           onChange={(e) => {
-            setMode(e.target.value);
+            searchActor.send({ type: 'CHANGE_MODE.EN' });
           }}
         />
         <label
@@ -82,6 +82,16 @@ function HomeTextArea() {
         >
           中文文献
         </label>
+        <input
+          type="radio"
+          id="zh-cn"
+          name="mode"
+          value="zh-cn"
+          checked={mode === 'zh-cn'}
+          onChange={(e) => {
+            searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
+          }}
+        />
       </div>
 
       <div className={styles.homeTextArea_btn}>
