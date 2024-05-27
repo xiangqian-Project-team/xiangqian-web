@@ -185,14 +185,13 @@ export default function ModeButtons(props: IModeButtonsProps) {
                 sortMode === 'relevance' ? styles.popup_sort_button_active : ''
               }
               onClick={() => {
-                // setSortMode('relevance');
-                // props.onModeChangeClick();
                 searchActor.send({
                   type: 'CHANGE_SORT_MODE',
                   value: SortMode.RELEVANCE,
                 });
                 setIsSortMenuVisible(false);
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+                searchActor.send({ type: 'FETCH_RESPONSE' });
               }}
             >
               相关程度
@@ -202,14 +201,13 @@ export default function ModeButtons(props: IModeButtonsProps) {
                 sortMode === 'time' ? styles.popup_sort_button_active : ''
               }
               onClick={() => {
-                // setSortMode('time');
                 searchActor.send({
                   type: 'CHANGE_SORT_MODE',
                   value: SortMode.TIME,
                 });
                 setIsSortMenuVisible(false);
-                // props.onModeChangeClick();
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+                searchActor.send({ type: 'FETCH_RESPONSE' });
               }}
             >
               发表时间
@@ -230,14 +228,13 @@ export default function ModeButtons(props: IModeButtonsProps) {
                 sortMode === 'quote' ? styles.popup_sort_button_active : ''
               }
               onClick={() => {
-                // setSortMode('quote');
                 searchActor.send({
                   type: 'CHANGE_SORT_MODE',
                   value: SortMode.QUOTE,
                 });
                 setIsSortMenuVisible(false);
-                // props.onModeChangeClick();
                 searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+                searchActor.send({ type: 'FETCH_RESPONSE' });
               }}
             >
               引用数量
