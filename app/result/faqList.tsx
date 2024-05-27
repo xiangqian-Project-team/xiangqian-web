@@ -5,6 +5,7 @@ import DropdownIcon from '../icons/drop_down_icon.svg';
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
 import { searchActor } from '../models/searchMachine';
+import { useRouter } from 'next/navigation';
 import styles from './faqList.module.scss';
 
 interface IFAQItemProps {
@@ -12,11 +13,10 @@ interface IFAQItemProps {
 }
 
 function FAQItem(props: IFAQItemProps) {
+  const router = useRouter();
+  
   const onQuestionClick = () => {
-    searchActor.send({ type: 'SET_QUESTION', value: props.title });
-    searchActor.send({ type: 'RESET' });
-    searchActor.send({ type: 'INIT_FETCH' });
-    searchActor.send({ type: 'FETCH_PAPERS' });
+    router.push(`./result?q=${props.title}`);
   };
 
   return (
