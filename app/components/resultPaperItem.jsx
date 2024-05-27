@@ -207,7 +207,7 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_authors}>
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
-          {/* {authors[0]}等 */}
+          {authors[0]}等
         </div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_years}>{year || 2000}</div>
