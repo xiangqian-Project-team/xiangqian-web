@@ -630,6 +630,7 @@ const searchMachine = setup({
                         ...draft.showPapers,
                       ].forEach((item) => {
                         if (processedMap.has(item.id)) {
+                          // @ts-ignore
                           item.response = processedMap.get(item.id).response;
                         }
                       });
@@ -823,6 +824,7 @@ const searchMachine = setup({
             ...draft.showPapers,
           ].forEach((item) => {
             if (processedMap.has(item.id)) {
+              // @ts-ignore
               item.response = processedMap.get(item.id).response;
             }
           });
