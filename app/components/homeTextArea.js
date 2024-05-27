@@ -15,6 +15,7 @@ import { useSelector } from '@xstate/react';
 import { searchActor } from '../models/searchMachine';
 import withTheme from '../../theme';
 import styles from './homeTextArea.module.scss';
+import { useEffect } from 'react';
 
 const { TextArea } = Input;
 
@@ -26,6 +27,12 @@ function HomeTextArea() {
     searchActor,
     (state) => state.context.question
   );
+
+  useEffect(() => {
+    if (mode === 'selected') {
+      searchActor.send({ type: 'CHANGE_MODE.EN' });
+    }
+  }, [])
 
   return (
     <div className={styles.homeTextArea}>

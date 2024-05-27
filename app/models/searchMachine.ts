@@ -455,11 +455,6 @@ const searchMachine = setup({
                 onDone: [
                   {
                     target: 'success',
-                    // target: [
-                    //   'idle',
-                    //   '#search.viewing.fetchingSummary.fetching',
-                    //   '#search.viewing.fetchingResponse.fetching',
-                    // ],
                     actions: assign(({ context, event }) => {
                       return produce(context, (draft) => {
                         switch (context.mode) {
@@ -497,6 +492,9 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
+            RESET_FETCH_PAPERS: {
+              target: '.idle',
+            },
             FETCH_PAPERS: {
               target: '.fetching',
               guard: ({ context }) => {
@@ -562,6 +560,9 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
+            RESET_FETCH_SUMMARY: {
+              target: '.idle',
+            },
             FETCH_SUMMARY: {
               target: '.fetching',
             },
@@ -579,8 +580,8 @@ const searchMachine = setup({
                     ...context.paperInfo.papers,
                     ...context.paperZHInfo.papers,
                   ].filter((item) => item.selected),
-                  queryEn: context.paperInfo.queryEn,
-                  queryZh: context.paperInfo.queryZh,
+                  queryEn: context.paperInfo.queryEn || context.paperZHInfo.queryEn,
+                  queryZh: context.paperInfo.queryZh || context.paperZHInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',
@@ -597,6 +598,9 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
+            RESET_FETCH_LITERATURE_REVIEW: {
+              target: '.idle',
+            },
             FETCH_LITERATURE_REVIEW: {
               target: '.fetching',
             },

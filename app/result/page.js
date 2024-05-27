@@ -541,11 +541,25 @@ function Search() {
     return isInitialed && showPapers.length === 0 && !isLoadingList;
   }, [isInitialed, showPapers.length, isLoadingList]);
 
+  // reset all state when quit
+  useEffect(() => {
+    return () => {
+      searchActor.send({ type: 'RESET_FETCH_PAPERS' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+      searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+      searchActor.send({ type: 'RESET_FETCH_RELATED' });
+      searchActor.send({ type: 'RESET' });
+    };
+  }, [])
+
   useEffect(() => {
     searchActor.send({ type: 'SET_QUESTION', value: question });
+    searchActor.send({ type: 'RESET_FETCH_PAPERS' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+    searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+    searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });
-    searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'FETCH_PAPERS' });
   }, [question]);
 
