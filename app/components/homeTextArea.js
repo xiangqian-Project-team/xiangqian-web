@@ -60,6 +60,12 @@ function HomeTextArea() {
       />
 
       <div className={styles.searchTextArea_language_select}>
+        <label
+          htmlFor="en"
+          className={mode === 'en' ? styles.lang_button_active : ''}
+        >
+          英文文献
+        </label>
         <input
           type="radio"
           id="en"
@@ -71,10 +77,10 @@ function HomeTextArea() {
           }}
         />
         <label
-          htmlFor="en"
-          className={mode === 'en' ? styles.lang_button_active : ''}
+          htmlFor="zh-cn"
+          className={mode === 'zh-cn' ? styles.lang_button_active : ''}
         >
-          英文文献
+          中文文献
         </label>
         <input
           type="radio"
@@ -86,12 +92,6 @@ function HomeTextArea() {
             searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
           }}
         />
-        <label
-          htmlFor="zh-cn"
-          className={mode === 'zh-cn' ? styles.lang_button_active : ''}
-        >
-          中文文献
-        </label>
       </div>
 
       <div className={styles.homeTextArea_btn}>
