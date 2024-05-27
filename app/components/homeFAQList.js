@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import DropdownIcon from '../icons/drop_down_icon.svg';
+import FAQ_ICON from '../icons/faq_icon.svg';
 import styles from './homeFAQList.module.scss';
 
 const faqData = [

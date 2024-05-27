@@ -541,12 +541,11 @@ function Search() {
     return isInitialed && showPapers.length === 0 && !isLoadingList;
   }, [isInitialed, showPapers.length, isLoadingList]);
 
-  console.log('question1',question)
   useEffect(() => {
-    console.log('question2',question)
     searchActor.send({ type: 'SET_QUESTION', value: question });
     searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });
+    searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'FETCH_PAPERS' });
   }, [question]);
 

@@ -11,7 +11,6 @@ import Footer from './components/footer';
 import HomeTextArea from './components/homeTextArea';
 import LoginBtn from './components/loginBtn';
 import RecommendBtnListCom from './components/recommendBtnList';
-import FAQ_ICON from './icons/faq_icon.svg';
 import HomeDescIcon_1 from './icons/home_desc_icon_1.svg';
 import HomeDescIcon_2 from './icons/home_desc_icon_2.svg';
 import HomeDescIcon_3 from './icons/home_desc_icon_3.svg';

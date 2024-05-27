@@ -344,6 +344,7 @@ const searchMachine = setup({
         }
       | { type: 'SET_EXPENSION_TEXT'; value: { text: string; key: number } }
       | { type: 'RESET' }
+      | { type: 'RESET_FETCH_RELATED' }
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
@@ -653,7 +654,9 @@ const searchMachine = setup({
               invoke: {
                 src: 'fetchRelatedSearch',
                 input: ({ context }) => ({
-                  summary: context.summaryInfo.summary,
+                  summary:
+                    context.summaryInfo.summary ||
+                    context.summaryZHInfo.summary,
                 }),
                 onDone: {
                   target: 'success',
@@ -670,6 +673,9 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
+            RESET_FETCH_RELATED: {
+              target: '.idle',
+            },
             FETCH_RELATED_SEARCH: {
               target: '.fetching',
             },

@@ -14,7 +14,6 @@ interface IFAQItemProps {
 
 function FAQItem(props: IFAQItemProps) {
   const router = useRouter();
-  
   const onQuestionClick = () => {
     router.push(`./result?q=${props.title}`);
   };

@@ -24,6 +24,11 @@ export default function Summary(props: {
       fetchingSummary: 'fetching',
     },
   });
+  const isLoadingLiteratureReview = state.matches({
+    viewing: {
+      fetchingLiteratureReview: 'fetching',
+    },
+  });
   const mode = useSelector(searchActor, (state) => state.context.mode);
   const paperInfo = useSelector(
     searchActor,
@@ -101,7 +106,7 @@ export default function Summary(props: {
           {state.context.summary}
           <Skeleton
             active
-            loading={isLoadingSummary || isLoadingPapers}
+            loading={isLoadingSummary || isLoadingPapers || isLoadingLiteratureReview}
             style={{ padding: '20px' }}
             paragraph={{ rows: 16 }}
           >

@@ -9,11 +9,11 @@
 'use client';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import { useAtom } from 'jotai';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
+import { useSelector } from '@xstate/react';
+import { searchActor } from '../models/searchMachine';
 import withTheme from '../../theme';
-import { modeAtom, searchValueAtom } from '../models/search';
 import styles from './homeTextArea.module.scss';
 
 const { TextArea } = Input;
@@ -21,8 +21,11 @@ const { TextArea } = Input;
 function HomeTextArea() {
   const router = useRouter();
 
-  const [mode, setMode] = useAtom(modeAtom);
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
+  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const searchValue = useSelector(
+    searchActor,
+    (state) => state.context.question
+  );
 
   return (
     <div className={styles.homeTextArea}>
@@ -39,7 +42,7 @@ function HomeTextArea() {
         }}
         value={searchValue}
         onChange={(e) => {
-          setSearchValue(e.target.value);
+          searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
         }}
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
@@ -57,7 +60,7 @@ function HomeTextArea() {
           value="en"
           checked={mode === 'en'}
           onChange={(e) => {
-            setMode(e.target.value);
+            searchActor.send({ type: 'CHANGE_MODE.EN' });
           }}
         />
         <label
@@ -73,7 +76,7 @@ function HomeTextArea() {
           value="zh-cn"
           checked={mode === 'zh-cn'}
           onChange={(e) => {
-            setMode(e.target.value);
+            searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
           }}
         />
         <label
