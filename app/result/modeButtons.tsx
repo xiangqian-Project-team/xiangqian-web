@@ -1,5 +1,5 @@
 import { useSelector } from '@xstate/react';
-import { Button, ConfigProvider } from 'antd';
+import { Button, ConfigProvider, message } from 'antd';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import LangCNIcon from '../icons/lang_cn.svg';
@@ -89,20 +89,19 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.cn_button}
             disabled={props.disabled}
             onClick={() => {
-              // setMode('zh-cn');
-              // setSortMode('default');
-              // props.onModeChangeClick();
+              // searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
               // searchActor.send({
-              //   type: 'CHANGE_MODE',
-              //   value: SearchMode.ZH_CN,
+              //   type: 'CHANGE_SORT_MODE',
+              //   value: SortMode.DEFAULT,
               // });
-              searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
-              searchActor.send({
-                type: 'CHANGE_SORT_MODE',
-                value: SortMode.DEFAULT,
+              // searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              // searchActor.send({ type: 'FETCH_PAPERS' });
+
+              message.warning({
+                content:
+                  '由于版权原因，中文搜索暂时不可用，有需求请联系微信hello_xiangqian',
+                duration: 10,
               });
-              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
-              searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
             <Image src={LangCNIcon.src} width={18} height={18} alt={''} />
