@@ -182,7 +182,6 @@ function Search() {
                   <h2>
                     由于版权原因，中文搜索暂时不可用，有需求请联系微信hello_xiangqian
                   </h2>
-                  <h3>可能是这个问题太复杂了，换个问题再试试吧</h3>
                 </div>
               </div>
             </div>
