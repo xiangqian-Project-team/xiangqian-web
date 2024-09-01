@@ -25,7 +25,7 @@ import PageManager from './pageManager';
 import Summary from './summary';
 
 import { useSelector } from '@xstate/react';
-import { searchActor } from '../models/searchMachine';
+import { searchActor, SearchMode } from '../models/searchMachine';
 
 function Search() {
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
@@ -82,7 +82,7 @@ function Search() {
       searchActor.send({ type: 'RESET_FETCH_RELATED' });
       searchActor.send({ type: 'RESET' });
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     searchActor.send({ type: 'SET_QUESTION', value: question });
@@ -162,7 +162,7 @@ function Search() {
         </div>
         <div className={styles.search_content}>
           <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-          {isPapersEmptyErrorVisible && (
+          {isPapersEmptyErrorVisible && mode !== SearchMode.ZH_CN && (
             <div className={styles.search_content_empty}>
               <div className={styles.search_content_empty_card}>
                 <div className={styles.text}>
@@ -172,6 +172,18 @@ function Search() {
               </div>
               <div className={styles.search_content_empty_contact}>
                 仍无法解决？请联系「镶嵌」用户服务：hello_xiangqian
+              </div>
+            </div>
+          )}
+          {isPapersEmptyErrorVisible && mode === SearchMode.ZH_CN && (
+            <div className={styles.search_content_empty}>
+              <div className={styles.search_content_empty_card}>
+                <div className={styles.text}>
+                  <h2>
+                    由于版权原因，中文搜索暂时不可用，有需求请联系微信hello_xiangqian
+                  </h2>
+                  <h3>可能是这个问题太复杂了，换个问题再试试吧</h3>
+                </div>
               </div>
             </div>
           )}
