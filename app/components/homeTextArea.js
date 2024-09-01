@@ -8,14 +8,14 @@
  */
 'use client';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 // import { useRouter } from 'next/navigation';
-import { useRouter } from 'next-nprogress-bar';
 import { useSelector } from '@xstate/react';
-import { searchActor } from '../models/searchMachine';
-import withTheme from '../../theme';
-import styles from './homeTextArea.module.scss';
+import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
+import withTheme from '../../theme';
+import { searchActor } from '../models/searchMachine';
+import styles from './homeTextArea.module.scss';
 
 const { TextArea } = Input;
 
@@ -32,7 +32,7 @@ function HomeTextArea() {
     if (mode === 'selected') {
       searchActor.send({ type: 'CHANGE_MODE.EN' });
     }
-  }, [])
+  }, []);
 
   return (
     <div className={styles.homeTextArea}>
@@ -89,7 +89,12 @@ function HomeTextArea() {
           value="zh-cn"
           checked={mode === 'zh-cn'}
           onChange={(e) => {
-            searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
+            // searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
+            message.warning({
+              content:
+                '由于版权原因，中文搜索暂时不可用，有需求请联系微信hello_xiangqian',
+              duration: 10,
+            });
           }}
         />
       </div>
