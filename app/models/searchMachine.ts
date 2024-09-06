@@ -241,11 +241,15 @@ const fetchRelatedSearch = async ({
 }: {
   input: {
     summary: string;
+    queryZh: string;
   };
 }) => {
-  const { summary } = input;
+  const { summary, queryZh } = input;
   try {
-    const listRes = await getRelatedSearch({ answer: summary });
+    const listRes = await getRelatedSearch({
+      answer: summary,
+      queryZh: queryZh,
+    });
     if (!listRes.ok) {
       throw new Error('Failed search');
     }
@@ -668,6 +672,8 @@ const searchMachine = setup({
                   summary:
                     context.summaryInfo.summary ||
                     context.summaryZHInfo.summary,
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',

@@ -47,7 +47,10 @@ const request = async (
   return data;
 };
 
-export const getRelatedSearch = async (params: { answer: string }) => {
+export const getRelatedSearch = async (params: {
+  answer: string;
+  queryZh: string;
+}) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
