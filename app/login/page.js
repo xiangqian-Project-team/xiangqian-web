@@ -6,15 +6,18 @@
  * @FilePath: /xiangqian-web/app/login/page.js
  * @Description:
  */
+'use client';
 import Image from 'next/image';
 import Footer from '../components/footer';
 import LoginCard from '../components/loginCard';
 import LogoIcon from '../img/logo.png';
+import WXScript from './WXScript';
 import styles from './page.module.scss';
 
 export default function Login() {
   return (
     <div className={styles.login}>
+      <WXScript />
       <div className={styles.login_content}>
         <div className={styles.login_content_logo}>
           <Image src={LogoIcon.src} width={86} height={36} alt="logo" />
