@@ -210,9 +210,10 @@ const fetchResponsePedia = async ({
 }: {
   input: {
     showPapers: any[];
+    queryZh: string;
   };
 }) => {
-  const { showPapers } = input;
+  const { showPapers, queryZh } = input;
   const fetchList = [];
   showPapers.forEach((element) => {
     if (element.response) {
@@ -224,6 +225,7 @@ const fetchResponsePedia = async ({
     throw new Error('No need to fetch');
   }
   const res = await getResponsePedia({
+    queryZh,
     papers: fetchList,
   });
   if (!res.ok) {
@@ -580,8 +582,10 @@ const searchMachine = setup({
                     ...context.paperInfo.papers,
                     ...context.paperZHInfo.papers,
                   ].filter((item) => item.selected),
-                  queryEn: context.paperInfo.queryEn || context.paperZHInfo.queryEn,
-                  queryZh: context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                  queryEn:
+                    context.paperInfo.queryEn || context.paperZHInfo.queryEn,
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',
@@ -615,6 +619,8 @@ const searchMachine = setup({
                 src: 'fetchResponsePedia',
                 input: ({ context }) => ({
                   showPapers: context.showPapers,
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',

@@ -143,7 +143,12 @@ export const getAnalysisPedia = async (params: {
   return fetch(`${FUNCTION_BASE_URL}/papers_analysis_v2`, option);
 };
 
-export const getResponsePedia = async (params) => {
+export const getResponsePedia = async (params: {
+  papers: {
+    id: string;
+  }[];
+  queryZh: string;
+}) => {
   const token = getItem('token');
   const option = {
     method: 'POST',
