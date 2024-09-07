@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { searchActor } from '../models/searchMachine';
 import styles from './faqList.module.scss';
 
+declare const umami: any;
+
 interface IFAQItemProps {
   title: string;
 }
