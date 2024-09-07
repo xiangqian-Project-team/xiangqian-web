@@ -47,6 +47,7 @@ export default function PopoverItem(props: {
           if (!visible) {
             return;
           }
+          umami.track('Popover Opened');
           if (paper.response) {
             return;
           }

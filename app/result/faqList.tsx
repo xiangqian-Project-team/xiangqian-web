@@ -15,6 +15,7 @@ interface IFAQItemProps {
 function FAQItem(props: IFAQItemProps) {
   const router = useRouter();
   const onQuestionClick = () => {
+    umami.track('Related Question Clicked');
     router.push(`./result?q=${props.title}`);
   };
 
@@ -62,11 +63,7 @@ export default function FAQList() {
         <div className={styles.faq_list}>
           <Skeleton active title={false} loading={!isFetchRelatedSearchSuccess}>
             {faqList.map((item, index) => (
-              <FAQItem
-                key={index}
-                title={item}
-                data-umami-event="related question item"
-              />
+              <FAQItem key={index} title={item} />
             ))}
           </Skeleton>
         </div>
