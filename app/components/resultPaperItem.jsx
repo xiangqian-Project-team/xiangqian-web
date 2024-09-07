@@ -340,9 +340,7 @@ export default function ResultPaperItem(props) {
               {isEn && <span>摘要原文：{paperAbstract}</span>}
             </>
           ) : (
-            <span>
-              由于版权问题，我们无法提供本文的摘要，请点击「查看原文」前往官网查看。
-            </span>
+            <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>
           )}
         </div>
       )}
