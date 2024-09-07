@@ -260,6 +260,7 @@ export default function ResultPaperItem(props) {
             onClick={() => {
               setIsQuoteVisible(true);
             }}
+            data-umami-event="ref button"
           >
             <div className={styles.content_card_btn_quote}>
               引用
@@ -290,6 +291,7 @@ export default function ResultPaperItem(props) {
             onClick={() => {
               toggleAbstract(id);
             }}
+            data-umami-event="abstract button"
           >
             {contentStatus === 'abstract' ? (
               <>
@@ -326,6 +328,7 @@ export default function ResultPaperItem(props) {
                 alert('由于版权原因，本文暂不支持查看原文');
               }
             }}
+            data-umami-event="pdf button"
           >
             {openAccessPdf ? '查看PDF' : '跳转原文'}
           </Button>

@@ -4,8 +4,8 @@ import DropdownIcon from '../icons/drop_down_icon.svg';
 
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
-import { searchActor } from '../models/searchMachine';
 import { useRouter } from 'next/navigation';
+import { searchActor } from '../models/searchMachine';
 import styles from './faqList.module.scss';
 
 interface IFAQItemProps {
@@ -60,13 +60,13 @@ export default function FAQList() {
           相关研究问题
         </div>
         <div className={styles.faq_list}>
-          <Skeleton
-            active
-            title={false}
-            loading={!isFetchRelatedSearchSuccess}
-          >
+          <Skeleton active title={false} loading={!isFetchRelatedSearchSuccess}>
             {faqList.map((item, index) => (
-              <FAQItem key={index} title={item} />
+              <FAQItem
+                key={index}
+                title={item}
+                data-umami-event="related question item"
+              />
             ))}
           </Skeleton>
         </div>

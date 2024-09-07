@@ -91,6 +91,7 @@ export default function PageManager(props) {
           searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex - 1 });
           searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
+        data-umami-event="prev page button"
       >
         上一页
       </button>
@@ -134,6 +135,7 @@ export default function PageManager(props) {
           searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex + 1 });
           searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
+        data-umami-event="next page button"
       >
         下一页
       </button>
