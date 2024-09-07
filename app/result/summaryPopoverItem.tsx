@@ -12,7 +12,7 @@ export default function PopoverItem(props: {
     key: number;
     isVisible: boolean;
   };
-  getPopoverResponsePedia: (paper: any) => void;
+  getPopoverResponsePedia: (paper: any, queryZh: string) => void;
 }) {
   const { item, getPopoverResponsePedia } = props;
   const papers = useSelector(
@@ -22,6 +22,10 @@ export default function PopoverItem(props: {
   const papersZH = useSelector(
     searchActor,
     (state) => state.context.paperZHInfo.papers
+  );
+  const queryZh = useSelector(
+    searchActor,
+    (state) => state.context.paperInfo.queryZh
   );
 
   if (item.type === 'popover') {
@@ -46,7 +50,7 @@ export default function PopoverItem(props: {
           if (paper.response) {
             return;
           }
-          getPopoverResponsePedia(paper);
+          getPopoverResponsePedia(paper, queryZh);
         }}
         content={<ResultPaperItem data={paper} />}
       >

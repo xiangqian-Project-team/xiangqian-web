@@ -79,12 +79,13 @@ export default function Summary(props: {
     // return {};
   }, [mode, summaryInfo, summaryZHInfo]);
 
-  const getPopoverResponsePedia = async (paper) => {
+  const getPopoverResponsePedia = async (paper: any, queryZh: string) => {
     if (!paper) {
       return;
     }
     const currMode = mode;
     const res = await getResponsePediaAsync({
+      queryZh,
       papers: [paper],
     });
     if (!res.ok) {
@@ -106,7 +107,9 @@ export default function Summary(props: {
           {state.context.summary}
           <Skeleton
             active
-            loading={isLoadingSummary || isLoadingPapers || isLoadingLiteratureReview}
+            loading={
+              isLoadingSummary || isLoadingPapers || isLoadingLiteratureReview
+            }
             style={{ padding: '20px' }}
             paragraph={{ rows: 16 }}
           >
