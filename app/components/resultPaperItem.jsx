@@ -306,7 +306,7 @@ export default function ResultPaperItem(props) {
               </>
             ) : (
               <>
-                查看摘要
+                摘要
                 <DownOutlined
                   style={{
                     color: '#000',
