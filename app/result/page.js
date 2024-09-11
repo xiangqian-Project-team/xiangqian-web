@@ -86,6 +86,7 @@ function Search() {
 
   useEffect(() => {
     searchActor.send({ type: 'SET_QUESTION', value: question });
+    searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
     searchActor.send({ type: 'RESET_FETCH_PAPERS' });
     searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
     searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
