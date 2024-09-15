@@ -239,129 +239,166 @@ export default function ResultPaperItem(props) {
       </Skeleton>
 
       <div className={styles.content_card_btn}>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#000',
-            },
-            components: {
-              Button: {
-                paddingInlineSM: 34,
-                defaultColor: '#000',
-                defaultHoverColor: '#FFF',
-                defaultBg: '#EEEEEE',
-                defaultHoverBg: '#068DA5',
+        <div>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
               },
-            },
-          }}
-        >
-          <Button
-            size="small"
-            onClick={() => {
-              // setIsQuoteVisible(true);
-            }}
-            data-umami-event="ref button"
-          >
-            <div className={styles.content_card_btn_quote}>
-              相似文献
-              <Icon component={QuoteIcon} />
-            </div>
-          </Button>
-        </ConfigProvider>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#000',
-            },
-            components: {
-              Button: {
-                paddingInlineSM: 34,
-                defaultColor: '#000',
-                defaultHoverColor: '#FFF',
-                defaultBg: '#EEEEEE',
-                defaultHoverBg: '#068DA5',
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#000',
+                  defaultHoverColor: '#FFF',
+                  defaultBg: '#EEEEEE',
+                  defaultHoverBg: '#068DA5',
+                },
               },
-            },
-          }}
-        >
-          <Button
-            size="small"
-            onClick={() => {
-              setIsQuoteVisible(true);
             }}
-            data-umami-event="ref button"
           >
-            <div className={styles.content_card_btn_quote}>
-              引用
-              <Icon component={QuoteIcon} />
-            </div>
-          </Button>
-        </ConfigProvider>
+            <Button
+              size="small"
+              onClick={() => {
+                // setIsQuoteVisible(true);
+              }}
+              data-umami-event="ref button"
+            >
+              <div className={styles.content_card_btn_quote}>
+                相似文献
+                <Icon component={QuoteIcon} />
+              </div>
+            </Button>
+          </ConfigProvider>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#000',
+                  defaultHoverColor: '#FFF',
+                  defaultBg: '#EEEEEE',
+                  defaultHoverBg: '#068DA5',
+                },
+              },
+            }}
+          >
+            <Button
+              size="small"
+              onClick={() => {
+                setIsQuoteVisible(true);
+              }}
+              data-umami-event="ref button"
+            >
+              <div className={styles.content_card_btn_quote}>
+                引用
+                <Icon component={QuoteIcon} />
+              </div>
+            </Button>
+          </ConfigProvider>
 
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#000',
-            },
-            components: {
-              Button: {
-                paddingInlineSM: 34,
-                defaultColor: '#000',
-                defaultHoverColor: '#FFF',
-                defaultBg: '#EEEEEE',
-                defaultHoverBg: '#068DA5',
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
               },
-            },
-          }}
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#000',
+                  defaultHoverColor: '#FFF',
+                  defaultBg: '#EEEEEE',
+                  defaultHoverBg: '#068DA5',
+                },
+              },
+            }}
+          >
+            <Button
+              size="small"
+              loading={isAbstractLoading}
+              onClick={() => {
+                toggleAbstract(id);
+              }}
+              data-umami-event="abstract button"
+            >
+              {contentStatus === 'abstract' ? (
+                <>
+                  收起
+                  <UpOutlined
+                    style={{
+                      color: '#00A650',
+                      fontSize: '8px',
+                      marginLeft: '5px',
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  摘要
+                  <DownOutlined
+                    style={{
+                      color: '#000',
+                      fontSize: '8px',
+                      marginLeft: '5px',
+                    }}
+                  />
+                </>
+              )}
+            </Button>
+          </ConfigProvider>
+        </div>
+        <div
+          style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}
         >
-          <Button
-            size="small"
-            loading={isAbstractLoading}
-            onClick={() => {
-              toggleAbstract(id);
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#39424D',
+                  defaultHoverColor: '#39424D',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#D8EDFF',
+                },
+              },
             }}
-            data-umami-event="abstract button"
           >
-            {contentStatus === 'abstract' ? (
-              <>
-                收起
-                <UpOutlined
-                  style={{
-                    color: '#00A650',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
+            {openAccessPdf ? (
+              <Button
+                size="small"
+                onClick={() => {
+                  if (openAccessPdf) {
+                    window.open(openAccessPdf.url, '_blank');
+                  } else {
+                    alert('由于版权原因，本文暂不支持查看原文');
+                  }
+                }}
+                data-umami-event="pdf button"
+              >
+                下载
+              </Button>
             ) : (
-              <>
-                摘要
-                <DownOutlined
-                  style={{
-                    color: '#000',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
+              <Button
+                size="small"
+                onClick={() => {
+                  if (doi) {
+                    window.open(doi, '_blank');
+                  } else {
+                    alert('由于版权原因，本文暂不支持查看原文');
+                  }
+                }}
+                data-umami-event="pdf button"
+              >
+                原文
+              </Button>
             )}
-          </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              if (openAccessPdf) {
-                window.open(openAccessPdf.url, '_blank');
-              } else if (doi) {
-                window.open(doi, '_blank');
-              } else {
-                alert('由于版权原因，本文暂不支持查看原文');
-              }
-            }}
-            data-umami-event="pdf button"
-          >
-            {openAccessPdf ? '查看PDF' : '跳转原文'}
-          </Button>
-        </ConfigProvider>
+          </ConfigProvider>
+        </div>
       </div>
 
       {contentStatus === 'abstract' && (
