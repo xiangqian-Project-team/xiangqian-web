@@ -17,12 +17,12 @@ import styles from './page.module.scss';
 export default function Login() {
   return (
     <div className={styles.login}>
-      <WXScript />
       <div className={styles.login_content}>
         <div className={styles.login_content_logo}>
           <Image src={LogoIcon.src} width={86} height={36} alt="logo" />
         </div>
         <div className={styles.login_content_tips}>登录/注册查看更多功能</div>
+        <WXScript />
         <LoginCard />
       </div>
       <Footer />

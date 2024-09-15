@@ -11,9 +11,9 @@ function WXScript() {
             var obj = new WxLogin({
               self_redirect: true,
               id: 'login_container',
-              appid: '',
-              scope: '',
-              redirect_uri: '',
+              appid: 'wxa9d98075500249e1',
+              scope: 'snsapi_login',
+              redirect_uri: 'http://localhost:3000/',
               state: '',
               style: '',
               href: '',
