@@ -142,7 +142,7 @@ export default function Home() {
         </div>
         <div className={styles.home_desc_title}>为什么更适合社会科学？</div>
         <div className={styles.home_desc_sub_title}>
-          十余名行业顶尖的社会科学专家参与设计，充分考虑社科学术的使用场景
+          多位行业顶尖的社会科学专家参与设计，充分考虑社科学术的使用场景
         </div>
         <div className={styles.home_desc_list}>
           <div className={styles.home_desc_list_item}>
@@ -158,9 +158,9 @@ export default function Home() {
                 上亿篇中英文社会科学文献
               </div>
               <div className={styles.home_desc_list_item_h2}>
-                聚合中英文文献库。已实现中文核心期刊全覆盖，同时提供Elsevier,
+                聚合中英文文献库。已实现中文核心期刊全覆盖，同时支持搜索Elsevier,
                 Springer Nature, Wiley, Taylor & Francis, SAGE, NAS, AAAS, AEA,
-                INFORMS, The BMJ等主流出版商和协会的全部英文文献。
+                INFORMS, The BMJ等主流出版商或协会的全部英文文献。
               </div>
             </div>
           </div>
@@ -232,7 +232,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       <HomeFAQList />
 
       <div className={styles.school_info}>

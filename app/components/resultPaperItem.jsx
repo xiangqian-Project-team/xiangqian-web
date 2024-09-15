@@ -258,6 +258,35 @@ export default function ResultPaperItem(props) {
           <Button
             size="small"
             onClick={() => {
+              // setIsQuoteVisible(true);
+            }}
+            data-umami-event="ref button"
+          >
+            <div className={styles.content_card_btn_quote}>
+              相似文献
+              <Icon component={QuoteIcon} />
+            </div>
+          </Button>
+        </ConfigProvider>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#000',
+            },
+            components: {
+              Button: {
+                paddingInlineSM: 34,
+                defaultColor: '#000',
+                defaultHoverColor: '#FFF',
+                defaultBg: '#EEEEEE',
+                defaultHoverBg: '#068DA5',
+              },
+            },
+          }}
+        >
+          <Button
+            size="small"
+            onClick={() => {
               setIsQuoteVisible(true);
             }}
             data-umami-event="ref button"
