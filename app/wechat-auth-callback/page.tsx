@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { setItem } from '../utils/storage';
 
 const apiURI = 'http://api.xiangqian.tech';
-const hostURI = 'http://127.0.0.1';
+const hostURI = 'http://www.xiangqian.tech';
 
 export default function WechatAuthCallback() {
   const searchParams = useSearchParams();
