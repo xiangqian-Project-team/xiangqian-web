@@ -1,13 +1,13 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { setItem } from '../utils/storage';
 
 const apiURI = 'http://api.xiangqian.tech';
 const hostURI = 'http://www.xiangqian.tech';
 
-export default function WechatAuthCallback() {
+function SearchParamHandler() {
   const searchParams = useSearchParams();
   const route = useRouter();
 
@@ -37,4 +37,12 @@ export default function WechatAuthCallback() {
   }, []);
 
   return null;
+}
+
+export default function WechatAuthCallback() {
+  return (
+    <Suspense>
+      <SearchParamHandler />
+    </Suspense>
+  );
 }
