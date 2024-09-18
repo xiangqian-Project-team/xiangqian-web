@@ -1,7 +1,8 @@
 import Script from 'next/script';
 
 function WXScript() {
-  const uri = encodeURIComponent('http://127.0.0.1/wechat-auth-callback');
+  const hostURI = 'http://www.xiangqian.tech';
+  const uri = encodeURIComponent(`${hostURI}/wechat-auth-callback`);
   return (
     <>
       <Script
