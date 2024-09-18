@@ -9,7 +9,6 @@
 'use client';
 import Image from 'next/image';
 import Footer from '../components/footer';
-import LoginCard from '../components/loginCard';
 import LogoIcon from '../img/logo.png';
 import WXScript from './WXScript';
 import styles from './page.module.scss';
@@ -23,7 +22,6 @@ export default function Login() {
         </div>
         <div className={styles.login_content_tips}>登录/注册查看更多功能</div>
         <WXScript />
-        <LoginCard />
       </div>
       <Footer />
     </div>
