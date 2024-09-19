@@ -16,7 +16,7 @@
   .home_triangle_mask {
     width: 100%;
     height: 43px;
-    margin-top: 40px;
+    margin-top: 130px;
     display: flex;
     &::before,
     &::after {
@@ -71,13 +71,13 @@
     }
 
     .home_search_subheading {
-      margin-top: 30px;
+      margin-top: 15px;
       font-weight: 400;
       font-size: 20px;
       color: #000000;
       line-height: 24px;
       font-family: SimSun;
-      font-weight: 400;
+      font-weight: 600;
     }
 
     .home_search_tips {
