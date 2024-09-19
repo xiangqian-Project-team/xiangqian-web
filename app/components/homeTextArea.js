@@ -7,7 +7,7 @@
  * @Description:
  */
 'use client';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import Icon from '@ant-design/icons';
 import { Button, Input, message } from 'antd';
 // import { useRouter } from 'next/navigation';
 import { useSelector } from '@xstate/react';
@@ -18,6 +18,24 @@ import { searchActor } from '../models/searchMachine';
 import styles from './homeTextArea.module.scss';
 
 const { TextArea } = Input;
+
+const ArrowIcon = () => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g opacity="0.6">
+      <circle cx="16" cy="16" r="16" fill="black" />
+      <path
+        d="M11 16.0084C10.7239 16.0084 10.5 16.2323 10.5 16.5084C10.5 16.7846 10.7239 17.0084 11 17.0084V16.0084ZM21.3536 16.862C21.5488 16.6667 21.5488 16.3501 21.3536 16.1549L18.1716 12.9729C17.9763 12.7776 17.6597 12.7776 17.4645 12.9729C17.2692 13.1682 17.2692 13.4847 17.4645 13.68L20.2929 16.5084L17.4645 19.3368C17.2692 19.5321 17.2692 19.8487 17.4645 20.044C17.6597 20.2392 17.9763 20.2392 18.1716 20.044L21.3536 16.862ZM11 17.0084H21V16.0084H11V17.0084Z"
+        fill="white"
+      />
+    </g>
+  </svg>
+);
 
 function HomeTextArea() {
   const router = useRouter();
@@ -104,15 +122,16 @@ function HomeTextArea() {
           type="primary"
           shape="circle"
           disabled={!searchValue}
-          icon={
-            <ArrowRightOutlined
-              style={{ color: !searchValue ? '#A3B7AF' : '#194731' }}
-            />
-          }
+          style={{
+            background: 'none',
+            border: 'none',
+          }}
           onClick={() => {
             router.push(`./result?q=${searchValue}`);
           }}
-        />
+        >
+          <Icon component={ArrowIcon} />
+        </Button>
       </div>
     </div>
   );
