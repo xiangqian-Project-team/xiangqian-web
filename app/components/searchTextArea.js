@@ -7,10 +7,10 @@
  * @Description:
  */
 'use client';
-import { useSelector } from '@xstate/react';
-import { searchActor } from '../models/searchMachine';
 import { ArrowRightOutlined } from '@ant-design/icons';
+import { useSelector } from '@xstate/react';
 import { Button, Input } from 'antd';
+import { searchActor } from '../models/searchMachine';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
@@ -20,7 +20,10 @@ const { TextArea } = Input;
 function SearchTextArea(props) {
   const router = useRouter();
 
-  const searchValue = useSelector(searchActor, (state) => state.context.question);
+  const searchValue = useSelector(
+    searchActor,
+    (state) => state.context.question
+  );
 
   return (
     <div className={styles.searchContainer}>
@@ -39,6 +42,7 @@ function SearchTextArea(props) {
               if (props.loading) {
                 return;
               }
+              umami.track('search button', { item: searchValue });
               router.push(`./result?q=${searchValue}`);
             }
           }}
@@ -52,6 +56,7 @@ function SearchTextArea(props) {
             icon={<ArrowRightOutlined style={{ color: '#194731' }} />}
             disabled={!searchValue}
             onClick={() => {
+              umami.track('search button', { item: searchValue });
               router.push(`./result?q=${searchValue}`);
             }}
           />

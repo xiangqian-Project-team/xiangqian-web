@@ -17,7 +17,7 @@ interface IFAQItemProps {
 function FAQItem(props: IFAQItemProps) {
   const router = useRouter();
   const onQuestionClick = () => {
-    umami.track('Related Question Clicked');
+    umami.track('Related Question Clicked', { item: props.title });
     router.push(`./result?q=${props.title}`);
   };
 

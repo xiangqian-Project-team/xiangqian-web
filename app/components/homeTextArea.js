@@ -72,6 +72,7 @@ function HomeTextArea() {
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
             e.preventDefault();
+            umami.track('search button', { item: searchValue });
             router.push(`./result?q=${searchValue}`);
           }
         }}
@@ -127,6 +128,7 @@ function HomeTextArea() {
             border: 'none',
           }}
           onClick={() => {
+            umami.track('search button', { item: searchValue });
             router.push(`./result?q=${searchValue}`);
           }}
         >
