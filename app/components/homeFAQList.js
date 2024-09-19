@@ -61,7 +61,7 @@ function FAQItem(props) {
           alt="drop_down"
         />
       </div>
-      <div>
+      <div className={styles.faq_list_item_detail}>
         {props.content.map((item, index) => (
           <p key={index}>{item}</p>
         ))}

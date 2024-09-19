@@ -20,6 +20,7 @@
       margin: 0 5px 0 0;
       align-items: center;
       position: relative;
+      color: rgba(0, 0, 0, 0.5);
       &::after,
       &::before {
         content: ' ';
@@ -43,6 +44,9 @@
         left: 3px;
         transform: scale(0.5);
         transition: transform 0.1s;
+      }
+      &.lang_button_active {
+        color: rgba(0, 0, 0, 1);
       }
       &.lang_button_active::before {
         border-color: #000;
