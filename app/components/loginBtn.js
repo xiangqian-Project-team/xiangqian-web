@@ -12,9 +12,7 @@ import Image from 'next/image';
 import { getItem } from '../utils/storage';
 // import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
-import sideBarCheck from '../icons/side_bar_check.svg';
 import sideBarQuit from '../icons/side_bar_quit_login.svg';
-import sideBarRightArrow from '../icons/side_bar_right_arrow.svg';
 import userIcon from '../icons/userIcon.svg';
 import userLogoutIcon from '../icons/userLogoutIcon.svg';
 import styles from './loginBtn.module.scss';
@@ -135,15 +133,6 @@ function LoginBtn(props) {
       )}
       {getItem('token') && props.isOpen && (
         <>
-          <button className={styles.subscribeButton}>
-            <Image src={sideBarCheck} alt="checkIcon" />
-            <div className={styles.subscribeDesc}>升级月卡</div>
-            <Image
-              className={styles.subscribeRightIcon}
-              src={sideBarRightArrow}
-              alt="rightArrow"
-            />
-          </button>
           <button className={styles.quitButton}>
             <Image src={sideBarQuit} alt="quitIcon" />
             登出
