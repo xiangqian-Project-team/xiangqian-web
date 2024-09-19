@@ -38,14 +38,14 @@ function HomeTextArea() {
     <div className={styles.homeTextArea}>
       <TextArea
         maxLength={150}
-        placeholder="支持中英文搜索......"
+        placeholder="支持中英文输入，一键获取文献和总结..."
         style={{
           height: 138,
           width: 744,
           resize: 'none',
-        }}
-        classNames={{
-          wrapper: styles.homeTextAreaInput,
+          fontFamily: 'Microsoft YaHei',
+          fontWeight: 400,
+          fontSize: 14,
         }}
         value={searchValue}
         onChange={(e) => {
