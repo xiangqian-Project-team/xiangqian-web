@@ -230,8 +230,6 @@ export default function ResultPaperItem(props) {
         )}
       </div>
 
-      <div className={styles.content_card_crossline} />
-
       <Skeleton active loading={!response} paragraph={{ rows: 0 }}>
         <div className={styles.content_card_response}>
           {response || '由于版权问题，暂时无法查看简介'}

@@ -168,6 +168,9 @@
             width: calc(100% - 48px);
             height: 50px;
             color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: SimSun;
             background: linear-gradient(
               62deg,
               #e7dffd 0%,
@@ -202,10 +205,12 @@
           .content {
             padding: 34px 24px;
             width: calc(100% - 48px);
+            font-size: 14px;
+            font-family: Microsoft YaHei;
 
             .content_summary {
               font-weight: 400;
-              font-size: 16px;
+              font-size: 14px;
               color: #000000;
               line-height: 24px;
               text-indent: 40px;
@@ -218,40 +223,46 @@
                 cursor: pointer;
               }
             }
+            .content_bullet_points_prefix_title {
+              font-weight: 600;
+              margin-top: 20px;
+              color: #000000;
+            }
             .content_bullet_points_prefix {
               font-weight: 400;
-              font-size: 16px;
               color: #000000;
               line-height: 24px;
-              margin-top: 15px;
               text-indent: 40px;
-              padding-top: 14px;
-              border-top: 1px solid #000;
+              padding-top: 12px;
             }
 
             .content_bullet_points {
               font-weight: 400;
-              font-size: 16px;
               color: #000000;
               line-height: 24px;
               margin-top: 14px;
               li {
                 margin-bottom: 10px;
-                padding-left: 20px;
                 position: relative;
                 cursor: pointer;
+                .summary_item_container_bg {
+                  padding: 10px 20px 10px 10px;
+                  background-color: #f3f7f9;
+                  border-radius: 6px;
+                }
                 .expension_text {
                   text-indent: 30px;
                   margin: 15px 0;
                   font-size: 14px;
+                  color: #7b7c83;
                 }
                 .down_icon,
                 .down_icon_active {
                   color: #000;
-                  font-size: 8px;
+                  font-size: 14px;
                   position: absolute;
-                  left: 4px;
-                  top: 8px;
+                  right: 10px;
+                  top: 16px;
                   transition: all 0.3s;
                 }
                 .down_icon_active {
@@ -259,7 +270,7 @@
                 }
                 .mark_author_year {
                   text-decoration: none;
-                  color: #03a097;
+                  color: #00a9c9;
                   cursor: pointer;
                 }
               }
