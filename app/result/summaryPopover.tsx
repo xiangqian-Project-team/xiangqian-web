@@ -102,65 +102,67 @@ export default function SummaryPopover(props: {
   // }
 
   return (
-    <div
-      className="summary_item_container"
-      onClick={(e) => {
-        // @ts-ignore TODO fix typo
-        if (e.target.class !== 'summary_item_container') {
-          return;
-        }
-        setIsOpen(!isOpen);
-        if (!isOpen) {
-          fetchBulletPointsExpansion();
-        }
-      }}
-    >
-      {isOpen ? (
-        <DownOutlined
-          className={styles.down_icon_active}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
-          }}
-        />
-      ) : (
-        <DownOutlined
-          className={styles.down_icon}
-          onPointerEnterCapture={undefined}
-          onPointerLeaveCapture={undefined}
-          onClick={() => {
-            setIsOpen(!isOpen);
+    <div className={styles.summary_item_container_bg}>
+      <div
+        className="summary_item_container"
+        onClick={(e) => {
+          // @ts-ignore TODO fix typo
+          if (e.target.class !== 'summary_item_container') {
+            return;
+          }
+          setIsOpen(!isOpen);
+          if (!isOpen) {
             fetchBulletPointsExpansion();
-          }}
-        />
-      )}
-      {list.map((item) => (
-        <PopoverItem
-          key={item.key}
-          item={item}
-          getPopoverResponsePedia={getPopoverResponsePedia}
-        />
-      ))}
+          }
+        }}
+      >
+        {isOpen ? (
+          <DownOutlined
+            className={styles.down_icon_active}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
+          />
+        ) : (
+          <DownOutlined
+            className={styles.down_icon}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              fetchBulletPointsExpansion();
+            }}
+          />
+        )}
+        {list.map((item) => (
+          <PopoverItem
+            key={item.key}
+            item={item}
+            getPopoverResponsePedia={getPopoverResponsePedia}
+          />
+        ))}
 
-      {isOpen && (
-        <div className={styles.expension_text}>
-          <Skeleton
-            active
-            title={false}
-            style={{ width: '80%' }}
-            loading={isLoading}
-          >
-            {expensionPopoverList.map((item) => (
-              <PopoverItem
-                key={item.key}
-                item={item}
-                getPopoverResponsePedia={getPopoverResponsePedia}
-              />
-            ))}
-          </Skeleton>
-        </div>
-      )}
+        {isOpen && (
+          <div className={styles.expension_text}>
+            <Skeleton
+              active
+              title={false}
+              style={{ width: '80%' }}
+              loading={isLoading}
+            >
+              {expensionPopoverList.map((item) => (
+                <PopoverItem
+                  key={item.key}
+                  item={item}
+                  getPopoverResponsePedia={getPopoverResponsePedia}
+                />
+              ))}
+            </Skeleton>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
