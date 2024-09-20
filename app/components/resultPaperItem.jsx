@@ -339,8 +339,14 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_paperAbstract}>
           {paperAbstract != 'No abstract' ? (
             <>
-              <span>摘要：{paperAbstractZh}</span>
-              {isEn && <span>摘要原文：{paperAbstract}</span>}
+              <span>摘要：</span>
+              <span>{paperAbstractZh}</span>
+              {isEn && (
+                <>
+                  <span>摘要原文：</span>
+                  <span>{paperAbstract}</span>
+                </>
+              )}
             </>
           ) : (
             <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>

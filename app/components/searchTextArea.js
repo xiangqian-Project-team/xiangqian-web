@@ -10,10 +10,9 @@
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useSelector } from '@xstate/react';
 import { Button, Input } from 'antd';
-import { searchActor } from '../models/searchMachine';
-// import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
+import { searchActor } from '../models/searchMachine';
 import styles from './searchTextArea.module.scss';
 const { TextArea } = Input;
 
