@@ -14,43 +14,129 @@ import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
+const AbstractIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M4.64789 9H3L5.51091 2H7.49264L10 9H8.35211L6.53019 3.59961H6.47336L4.64789 9ZM4.5449 6.24854H8.43734V7.40381H4.5449V6.24854Z"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="11"
+      y="6"
+      width="4"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="3"
+      y="10"
+      width="12"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="3"
+      y="13"
+      width="12"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+  </svg>
+);
+
+const ArticleIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13 11V14C13 14.5523 12.553 15 12.0007 15C10.3159 15 6.81832 15 3.99894 15C3.44666 15 3 14.5523 3 14V6C3 5.44772 3.44772 5 4 5H7"
+      stroke="black"
+      stroke-width="1.2"
+      stroke-linecap="round"
+    />
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M14.4062 3.14853C14.7169 3.14853 14.9724 3.38463 15.0031 3.68718C15.0052 3.70735 15.0062 3.72782 15.0062 3.74853L15.0062 8.54853C15.0062 8.8799 14.7376 9.14853 14.4062 9.14853C14.0749 9.14853 13.8062 8.8799 13.8062 8.54853V5.19705L7.17602 11.8273C6.94171 12.0616 6.56181 12.0616 6.32749 11.8273C6.09318 11.5929 6.09318 11.213 6.32749 10.9787L12.9577 4.34853H9.60623C9.27485 4.34853 9.00623 4.0799 9.00623 3.74853C9.00623 3.41716 9.27485 3.14853 9.60623 3.14853L14.4062 3.14853Z"
+      fill="black"
+    />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 12V13.5C3 14.0523 3.44684 14.5 3.99913 14.5C7.53093 14.5 12.0331 14.5 14.0024 14.5C14.5546 14.5 15 14.0523 15 13.5V12"
+      stroke="black"
+      stroke-width="1.2"
+      stroke-linecap="round"
+    />
+    <path
+      d="M9.6 4C9.6 3.66863 9.33137 3.4 9 3.4C8.66863 3.4 8.4 3.66863 8.4 4L9.6 4ZM8.57574 12.4243C8.81005 12.6586 9.18995 12.6586 9.42426 12.4243L13.2426 8.60589C13.477 8.37157 13.477 7.99167 13.2426 7.75736C13.0083 7.52304 12.6284 7.52304 12.3941 7.75736L9 11.1515L5.60589 7.75736C5.37157 7.52304 4.99167 7.52304 4.75736 7.75736C4.52304 7.99167 4.52304 8.37157 4.75736 8.60589L8.57574 12.4243ZM8.4 4L8.4 12L9.6 12L9.6 4L8.4 4Z"
+      fill="black"
+    />
+  </svg>
+);
+
 const QuoteIcon = () => (
   <svg
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect
-      x="1"
-      y="3"
-      width="4"
-      height="4"
+      x="2.33334"
+      y="5"
+      width="5.33333"
+      height="5.33333"
       stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M5 7V7C5 8.22573 4.30747 9.34626 3.21115 9.89443L3 10"
+      d="M7.66669 10.3334V10.5279C7.66669 12.043 6.81068 13.428 5.45554 14.1056L5.00002 14.3334"
       stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <rect
-      x="7"
-      y="3"
-      width="4"
-      height="4"
+      x="10.3333"
+      y="5"
+      width="5.33333"
+      height="5.33333"
       stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
-      d="M11 7V7C11 8.22573 10.3075 9.34626 9.21115 9.89443L9 10"
+      d="M15.6667 10.3334V10.5279C15.6667 12.043 14.8107 13.428 13.4555 14.1056L13 14.3334"
       stroke="black"
       stroke-width="1.2"
       stroke-linecap="round"
@@ -237,100 +323,124 @@ export default function ResultPaperItem(props) {
       </Skeleton>
 
       <div className={styles.content_card_btn}>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#000',
-            },
-            components: {
-              Button: {
-                paddingInlineSM: 34,
-                defaultColor: '#000',
-                defaultHoverColor: '#FFF',
-                defaultBg: '#EEEEEE',
-                defaultHoverBg: '#068DA5',
+        <div className={styles.content_card_btn_main}>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
               },
-            },
-          }}
-        >
-          <Button
-            size="small"
-            onClick={() => {
-              setIsQuoteVisible(true);
-            }}
-            data-umami-event="ref button"
-          >
-            <div className={styles.content_card_btn_quote}>
-              引用
-              <Icon component={QuoteIcon} />
-            </div>
-          </Button>
-        </ConfigProvider>
-
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#000',
-            },
-            components: {
-              Button: {
-                paddingInlineSM: 34,
-                defaultColor: '#000',
-                defaultHoverColor: '#FFF',
-                defaultBg: '#EEEEEE',
-                defaultHoverBg: '#068DA5',
+              components: {
+                Button: {
+                  defaultColor: '#000',
+                  defaultHoverColor: '#000',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#D8EDFF',
+                },
               },
-            },
-          }}
-        >
-          <Button
-            size="small"
-            loading={isAbstractLoading}
-            onClick={() => {
-              toggleAbstract(id);
             }}
-            data-umami-event="abstract button"
           >
-            {contentStatus === 'abstract' ? (
-              <>
-                收起
-                <UpOutlined
-                  style={{
-                    color: '#00A650',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
-            ) : (
-              <>
-                摘要
-                <DownOutlined
-                  style={{
-                    color: '#000',
-                    fontSize: '8px',
-                    marginLeft: '5px',
-                  }}
-                />
-              </>
-            )}
-          </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              if (openAccessPdf) {
-                window.open(openAccessPdf.url, '_blank');
-              } else if (doi) {
-                window.open(doi, '_blank');
-              } else {
-                alert('由于版权原因，本文暂不支持查看原文');
-              }
+            <Button
+              size="small"
+              loading={isAbstractLoading}
+              onClick={() => {
+                toggleAbstract(id);
+              }}
+              data-umami-event="abstract button"
+            >
+              <div className={styles.content_card_btn_abstract}>
+                <Icon component={AbstractIcon} />
+                {contentStatus === 'abstract' ? (
+                  <>
+                    收起摘要
+                    <UpOutlined
+                      className={styles.content_card_btn_abstract_drop_icon}
+                    />
+                  </>
+                ) : (
+                  <>
+                    查看摘要
+                    <DownOutlined
+                      className={styles.content_card_btn_abstract_drop_icon}
+                    />
+                  </>
+                )}
+              </div>
+            </Button>
+          </ConfigProvider>
+        </div>
+        <div className={styles.content_card_btn_sub}>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#000',
+                  defaultHoverColor: '#000',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#D8EDFF',
+                },
+              },
             }}
-            data-umami-event="pdf button"
           >
-            {openAccessPdf ? '查看PDF' : '跳转原文'}
-          </Button>
-        </ConfigProvider>
+            <Button
+              size="small"
+              onClick={() => {
+                setIsQuoteVisible(true);
+              }}
+              data-umami-event="ref button"
+            >
+              <div className={styles.content_card_btn_quote}>
+                <Icon component={QuoteIcon} />
+                引用
+              </div>
+            </Button>
+          </ConfigProvider>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#000',
+              },
+              components: {
+                Button: {
+                  paddingInlineSM: 34,
+                  defaultColor: '#000',
+                  defaultHoverColor: '#000',
+                  defaultBg: '#FFF',
+                  defaultHoverBg: '#D8EDFF',
+                },
+              },
+            }}
+          >
+            <Button
+              size="small"
+              onClick={() => {
+                if (openAccessPdf) {
+                  window.open(openAccessPdf.url, '_blank');
+                } else if (doi) {
+                  window.open(doi, '_blank');
+                } else {
+                  alert('由于版权原因，本文暂不支持查看原文');
+                }
+              }}
+              data-umami-event="pdf button"
+            >
+              {openAccessPdf ? (
+                <div className={styles.content_card_btn_download}>
+                  <Icon component={DownloadIcon} />
+                  下载
+                </div>
+              ) : (
+                <div className={styles.content_card_btn_article}>
+                  <Icon component={ArticleIcon} />
+                  跳转原文
+                </div>
+              )}
+            </Button>
+          </ConfigProvider>
+        </div>
       </div>
 
       {contentStatus === 'abstract' && (
