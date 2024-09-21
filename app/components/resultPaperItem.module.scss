@@ -72,6 +72,13 @@
   }
 
   .content_card_btn {
+    display: flex;
+    .content_card_btn_main {
+      width: 100%;
+    }
+    .content_card_btn_sub {
+      display: flex;
+    }
     button {
       margin-right: 8px;
       width: 120px;
@@ -81,14 +88,26 @@
       justify-content: center;
       &:hover {
         svg {
-          color: #ffffff;
+          color: #000;
         }
       }
     }
-    .content_card_btn_quote {
+    .content_card_btn_quote,
+    .content_card_btn_download,
+    .content_card_btn_article,
+    .content_card_btn_abstract {
       svg {
+        position: relative;
+        top: 4px;
         margin-right: 4px;
       }
+    }
+    .content_card_btn_abstract_drop_icon {
+      color: #000;
+      font-size: 8px;
+      margin-left: 5px;
+      position: relative;
+      top: -4px;
     }
 
     font-weight: 400;
@@ -115,6 +134,9 @@
   white-space: pre-wrap;
   display: flex;
   flex-direction: column;
+  border: 1px solid #e0e8ec;
+  padding: 10px;
+  border-radius: 10px;
 
   span:not(:first-child) {
     margin-top: 20px;
