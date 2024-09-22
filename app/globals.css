@@ -124,8 +124,13 @@ table {
 }
 
 body {
-  font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica,
-    Arial, sans-serif;
+  font-family:
+    Microsoft YaHei,
+    PingFang SC,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    sans-serif;
 }
 
 #nprogress .bar {

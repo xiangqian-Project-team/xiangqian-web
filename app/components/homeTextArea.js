@@ -61,7 +61,7 @@ function HomeTextArea() {
           height: 138,
           width: 744,
           resize: 'none',
-          fontFamily: 'Microsoft YaHei',
+          fontFamily: `PingFang SC, Microsoft YaHei`,
           fontWeight: 400,
           fontSize: 14,
         }}
