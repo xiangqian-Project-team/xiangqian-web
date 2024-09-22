@@ -440,6 +440,7 @@ export default function ResultPaperItem(props) {
         width={552}
         wrapClassName={styles.quoteModal}
       >
+        <span style={{ fontWeight: 'bold' }}>{doi}</span>
         <CitationText bibtex={bibtex} template="apa" />
       </Modal>
     </div>

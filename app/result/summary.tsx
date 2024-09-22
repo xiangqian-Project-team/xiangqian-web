@@ -157,9 +157,6 @@ export default function Summary(props: {
                     <div className={styles.content_summary}>
                       {showSummary.summary}
                     </div>
-                    <div className={styles.content_bullet_points_prefix_title}>
-                      要点
-                    </div>
                     {showSummary.bulletPointsPrefix && (
                       <div className={styles.content_bullet_points_prefix}>
                         {showSummary.bulletPointsPrefix}

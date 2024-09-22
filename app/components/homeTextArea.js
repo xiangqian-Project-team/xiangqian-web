@@ -111,7 +111,7 @@ function HomeTextArea() {
             // searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
             message.warning({
               content:
-                '由于版权原因，中文搜索暂时不可用，有需求请联系微信hello_xiangqian',
+                '中文搜索功能预计九月下旬回归！目前由于版权原因，暂时下线，有需求请联系微信hello_xiangqian',
               duration: 10,
             });
           }}

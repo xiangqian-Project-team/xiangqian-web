@@ -9,7 +9,6 @@
 'use client';
 import { Button } from 'antd';
 import { useAtom } from 'jotai';
-// import { useRouter } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
 import { RECOMMEND_LIST } from '../config';
