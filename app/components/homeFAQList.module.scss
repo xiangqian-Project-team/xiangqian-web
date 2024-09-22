@@ -17,7 +17,9 @@
       font-weight: 600;
       padding-bottom: 10px;
       position: relative;
-      font-family: Microsoft YaHei;
+      font-family:
+        Microsoft YaHei,
+        PingFang SC;
       cursor: pointer;
       .faq_list_item_drop_down {
         position: absolute;
@@ -39,7 +41,9 @@
   .faq_list_item_detail {
     font-size: 12px;
     font-weight: 400;
-    font-family: Microsoft YaHei;
+    font-family:
+      Microsoft YaHei,
+      PingFang SC;
   }
   .faq_list {
     margin-top: 30px;
