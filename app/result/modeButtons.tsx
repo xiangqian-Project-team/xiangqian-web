@@ -6,8 +6,6 @@ import LangCNIcon from '../icons/lang_cn.svg';
 import LangCNActiveIcon from '../icons/lang_cn_active.svg';
 import LangENIcon from '../icons/lang_en.svg';
 import LangENActiveIcon from '../icons/lang_en_active.svg';
-import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
-import SelectedButtonIcon from '../icons/selected_button_icon.svg';
 import SortIcon from '../icons/sort_icon.svg';
 import { SortMode, searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
@@ -108,7 +106,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
             中文文献
           </Button>
         )}
-        {mode === 'selected' ? (
+        {/* {mode === 'selected' ? (
           <Button
             className={styles.selected_button_active}
             disabled={props.disabled}
@@ -149,7 +147,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
             />
             我选中的
           </Button>
-        )}
+        )} */}
         <Button
           className={styles.sort_button}
           disabled={props.disabled}
