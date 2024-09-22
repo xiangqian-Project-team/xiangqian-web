@@ -95,8 +95,8 @@
       }
     }
     .content_card_btn_quote,
-    .content_card_btn_download,
-    .content_card_btn_abstract {
+    .content_card_btn_abstract,
+    .content_card_btn_download {
       svg {
         position: relative;
         top: 4px;
@@ -104,6 +104,7 @@
       }
     }
     .content_card_btn_quote,
+    .content_card_btn_abstract,
     .content_card_btn_download {
       background: none;
       cursor: pointer;
