@@ -387,14 +387,15 @@ export default function ResultPaperItem(props) {
             className={styles.content_card_btn_download}
             onClick={() => {
               if (openAccessPdf) {
+                umami.track('source button');
                 window.open(openAccessPdf.url, '_blank');
               } else if (doi) {
+                umami.track('pdf button');
                 window.open(doi, '_blank');
               } else {
                 alert('由于版权原因，本文暂不支持查看原文');
               }
             }}
-            data-umami-event="pdf button"
           >
             {openAccessPdf ? (
               <>
