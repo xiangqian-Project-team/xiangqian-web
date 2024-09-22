@@ -8,12 +8,9 @@ import Icon, {
 import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
-import SelectedActiveButtonIcon from '../icons/selected_active_button_icon.svg';
-import SelectedWhiteButtonIcon from '../icons/selected_white_button_icon.svg';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
-import { searchActor } from '../models/searchMachine';
 import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
@@ -213,7 +210,7 @@ export default function ResultPaperItem(props) {
         <Tooltip title={title}>
           <h4>{title}</h4>
         </Tooltip>
-        {selected ? (
+        {/* {selected ? (
           <ConfigProvider
             theme={{
               token: {
@@ -280,7 +277,7 @@ export default function ResultPaperItem(props) {
               选中本文
             </Button>
           </ConfigProvider>
-        )}
+        )} */}
       </div>
 
       <div className={styles.content_card_footer}>
