@@ -106,8 +106,10 @@
     .content_card_btn_quote,
     .content_card_btn_download {
       background: none;
-      border: none;
       cursor: pointer;
+      &:focus-visible {
+        outline: none;
+      }
     }
     .content_card_btn_abstract_drop_icon {
       color: #000;
