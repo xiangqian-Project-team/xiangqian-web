@@ -83,7 +83,6 @@
     }
     button {
       margin-right: 8px;
-      width: 120px;
       border-radius: 20px;
       border: none;
       text-align: center;
@@ -95,7 +94,12 @@
       }
     }
     .content_card_btn_quote,
+    .content_card_btn_download {
+      width: 94px;
+    }
+    .content_card_btn_quote,
     .content_card_btn_abstract,
+    .content_card_btn_related,
     .content_card_btn_download {
       svg {
         position: relative;
@@ -103,8 +107,15 @@
         margin-right: 4px;
       }
     }
+    .content_card_btn_related,
+    .content_card_btn_abstract {
+      text-align: left;
+      padding: 0;
+      transition: all 0.8s;
+    }
     .content_card_btn_quote,
     .content_card_btn_abstract,
+    .content_card_btn_related,
     .content_card_btn_download {
       background: none;
       cursor: pointer;
@@ -112,6 +123,11 @@
         outline: none;
       }
     }
+    .content_card_btn_related_drop,
+    .content_card_btn_abstract_drop {
+      color: #046ec5;
+    }
+    .content_card_btn_related_drop_icon,
     .content_card_btn_abstract_drop_icon {
       color: #000;
       font-size: 8px;
