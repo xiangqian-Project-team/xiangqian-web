@@ -1,6 +1,10 @@
 'use client';
 
-import Icon, { DownOutlined, UpOutlined } from '@ant-design/icons';
+import Icon, {
+  DownOutlined,
+  LoadingOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -341,7 +345,6 @@ export default function ResultPaperItem(props) {
           >
             <Button
               size="small"
-              loading={isAbstractLoading}
               onClick={() => {
                 toggleAbstract(id);
               }}
@@ -359,9 +362,13 @@ export default function ResultPaperItem(props) {
                 ) : (
                   <>
                     查看摘要
-                    <DownOutlined
-                      className={styles.content_card_btn_abstract_drop_icon}
-                    />
+                    {isAbstractLoading ? (
+                      <LoadingOutlined />
+                    ) : (
+                      <DownOutlined
+                        className={styles.content_card_btn_abstract_drop_icon}
+                      />
+                    )}
                   </>
                 )}
               </div>
@@ -369,77 +376,41 @@ export default function ResultPaperItem(props) {
           </ConfigProvider>
         </div>
         <div className={styles.content_card_btn_sub}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#000',
-              },
-              components: {
-                Button: {
-                  paddingInlineSM: 34,
-                  defaultColor: '#000',
-                  defaultHoverColor: '#000',
-                  defaultBg: '#FFF',
-                  defaultHoverBg: '#D8EDFF',
-                },
-              },
+          <button
+            className={styles.content_card_btn_quote}
+            onClick={() => {
+              setIsQuoteVisible(true);
             }}
+            data-umami-event="ref button"
           >
-            <Button
-              size="small"
-              onClick={() => {
-                setIsQuoteVisible(true);
-              }}
-              data-umami-event="ref button"
-            >
-              <div className={styles.content_card_btn_quote}>
-                <Icon component={QuoteIcon} />
-                引用
-              </div>
-            </Button>
-          </ConfigProvider>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#000',
-              },
-              components: {
-                Button: {
-                  paddingInlineSM: 34,
-                  defaultColor: '#000',
-                  defaultHoverColor: '#000',
-                  defaultBg: '#FFF',
-                  defaultHoverBg: '#D8EDFF',
-                },
-              },
+            <Icon component={QuoteIcon} />
+            引用
+          </button>
+          <button
+            className={styles.content_card_btn_download}
+            onClick={() => {
+              if (openAccessPdf) {
+                window.open(openAccessPdf.url, '_blank');
+              } else if (doi) {
+                window.open(doi, '_blank');
+              } else {
+                alert('由于版权原因，本文暂不支持查看原文');
+              }
             }}
+            data-umami-event="pdf button"
           >
-            <Button
-              size="small"
-              onClick={() => {
-                if (openAccessPdf) {
-                  window.open(openAccessPdf.url, '_blank');
-                } else if (doi) {
-                  window.open(doi, '_blank');
-                } else {
-                  alert('由于版权原因，本文暂不支持查看原文');
-                }
-              }}
-              data-umami-event="pdf button"
-            >
-              {openAccessPdf ? (
-                <div className={styles.content_card_btn_download}>
-                  <Icon component={DownloadIcon} />
-                  下载
-                </div>
-              ) : (
-                <div className={styles.content_card_btn_article}>
-                  <Icon component={ArticleIcon} />
-                  跳转原文
-                </div>
-              )}
-            </Button>
-          </ConfigProvider>
+            {openAccessPdf ? (
+              <>
+                <Icon component={DownloadIcon} />
+                下载
+              </>
+            ) : (
+              <>
+                <Icon component={ArticleIcon} />
+                跳转原文
+              </>
+            )}
+          </button>
         </div>
       </div>
 

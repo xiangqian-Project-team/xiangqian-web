@@ -96,13 +96,17 @@
     }
     .content_card_btn_quote,
     .content_card_btn_download,
-    .content_card_btn_article,
     .content_card_btn_abstract {
       svg {
         position: relative;
         top: 4px;
         margin-right: 4px;
       }
+    }
+    .content_card_btn_quote,
+    .content_card_btn_download {
+      background: none;
+      cursor: pointer;
     }
     .content_card_btn_abstract_drop_icon {
       color: #000;
