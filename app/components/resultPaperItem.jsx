@@ -169,6 +169,7 @@ export default function ResultPaperItem(props) {
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
+  const [isRelatedLoading, setIsRelatedLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
@@ -325,45 +326,50 @@ export default function ResultPaperItem(props) {
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
           <button
-            className={styles.content_card_btn_abstract}
+            className={`${styles.content_card_btn_related} ${contentStatus === 'related' && styles.content_card_btn_related_drop}`}
+            onClick={() => {
+              // toggleRelated(id);
+            }}
+            // TODO umami
+            // data-umami-event="abstract button"
+          >
+            <Icon component={AbstractIcon} />
+            相似文献
+            {isRelatedLoading && <LoadingOutlined />}
+            {!isRelatedLoading && contentStatus === 'related' && (
+              <UpOutlined
+                className={styles.content_card_btn_related_drop_icon}
+              />
+            )}
+            {!isRelatedLoading && contentStatus !== 'related' && (
+              <DownOutlined
+                className={styles.content_card_btn_related_drop_icon}
+              />
+            )}
+          </button>
+          <button
+            className={`${styles.content_card_btn_abstract} ${contentStatus === 'abstract' && styles.content_card_btn_abstract_drop}`}
             onClick={() => {
               toggleAbstract(id);
             }}
             data-umami-event="abstract button"
           >
             <Icon component={AbstractIcon} />
-            {contentStatus === 'abstract' ? (
-              <>
-                收起摘要
-                <UpOutlined
-                  className={styles.content_card_btn_abstract_drop_icon}
-                />
-              </>
-            ) : (
-              <>
-                查看摘要
-                {isAbstractLoading ? (
-                  <LoadingOutlined />
-                ) : (
-                  <DownOutlined
-                    className={styles.content_card_btn_abstract_drop_icon}
-                  />
-                )}
-              </>
+            查看摘要
+            {isAbstractLoading && <LoadingOutlined />}
+            {!isAbstractLoading && contentStatus === 'abstract' && (
+              <UpOutlined
+                className={styles.content_card_btn_abstract_drop_icon}
+              />
+            )}
+            {!isAbstractLoading && contentStatus !== 'abstract' && (
+              <DownOutlined
+                className={styles.content_card_btn_abstract_drop_icon}
+              />
             )}
           </button>
         </div>
         <div className={styles.content_card_btn_sub}>
-          <button
-            className={styles.content_card_btn_quote}
-            onClick={() => {
-              setIsQuoteVisible(true);
-            }}
-            data-umami-event="ref button"
-          >
-            <Icon component={QuoteIcon} />
-            引用
-          </button>
           <button
             className={styles.content_card_btn_download}
             onClick={() => {
@@ -389,6 +395,16 @@ export default function ResultPaperItem(props) {
                 跳转原文
               </>
             )}
+          </button>
+          <button
+            className={styles.content_card_btn_quote}
+            onClick={() => {
+              setIsQuoteVisible(true);
+            }}
+            data-umami-event="ref button"
+          >
+            <Icon component={QuoteIcon} />
+            引用
           </button>
         </div>
       </div>
