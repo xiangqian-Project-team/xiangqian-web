@@ -5,7 +5,7 @@ import Icon, {
   LoadingOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { Button, ConfigProvider, Modal, Skeleton, Tooltip } from 'antd';
+import { Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import BookIcon from '../img/book.png';
@@ -316,61 +316,42 @@ export default function ResultPaperItem(props) {
           </>
         )}
       </div>
-
-      <Skeleton active loading={!response} paragraph={{ rows: 0 }}>
-        <div className={styles.content_card_response}>
+      <div className={styles.content_card_response}>
+        <Skeleton active loading={!response} paragraph={{ rows: 0 }}>
           {response || '由于版权问题，暂时无法查看简介'}
-        </div>
-      </Skeleton>
+        </Skeleton>
+      </div>
 
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#000',
-              },
-              components: {
-                Button: {
-                  defaultColor: '#000',
-                  defaultHoverColor: '#000',
-                  defaultBg: '#FFF',
-                  defaultHoverBg: '#D8EDFF',
-                },
-              },
+          <button
+            className={styles.content_card_btn_abstract}
+            onClick={() => {
+              toggleAbstract(id);
             }}
+            data-umami-event="abstract button"
           >
-            <Button
-              size="small"
-              onClick={() => {
-                toggleAbstract(id);
-              }}
-              data-umami-event="abstract button"
-            >
-              <div className={styles.content_card_btn_abstract}>
-                <Icon component={AbstractIcon} />
-                {contentStatus === 'abstract' ? (
-                  <>
-                    收起摘要
-                    <UpOutlined
-                      className={styles.content_card_btn_abstract_drop_icon}
-                    />
-                  </>
+            <Icon component={AbstractIcon} />
+            {contentStatus === 'abstract' ? (
+              <>
+                收起摘要
+                <UpOutlined
+                  className={styles.content_card_btn_abstract_drop_icon}
+                />
+              </>
+            ) : (
+              <>
+                查看摘要
+                {isAbstractLoading ? (
+                  <LoadingOutlined />
                 ) : (
-                  <>
-                    查看摘要
-                    {isAbstractLoading ? (
-                      <LoadingOutlined />
-                    ) : (
-                      <DownOutlined
-                        className={styles.content_card_btn_abstract_drop_icon}
-                      />
-                    )}
-                  </>
+                  <DownOutlined
+                    className={styles.content_card_btn_abstract_drop_icon}
+                  />
                 )}
-              </div>
-            </Button>
-          </ConfigProvider>
+              </>
+            )}
+          </button>
         </div>
         <div className={styles.content_card_btn_sub}>
           <button
