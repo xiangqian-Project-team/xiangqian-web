@@ -325,7 +325,7 @@ export default function ResultPaperItem(props) {
 
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
-          <button
+          {/* <button
             className={`${styles.content_card_btn_related} ${contentStatus === 'related' && styles.content_card_btn_related_drop}`}
             onClick={() => {
               // toggleRelated(id);
@@ -346,7 +346,7 @@ export default function ResultPaperItem(props) {
                 className={styles.content_card_btn_related_drop_icon}
               />
             )}
-          </button>
+          </button> */}
           <button
             className={`${styles.content_card_btn_abstract} ${contentStatus === 'abstract' && styles.content_card_btn_abstract_drop}`}
             onClick={() => {
