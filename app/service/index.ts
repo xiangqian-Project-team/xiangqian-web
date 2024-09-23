@@ -181,6 +181,21 @@ export const fetchAbstract = async (paperId) => {
   return fetch(apiUrl, options);
 };
 
+export const fetchRelated = async (paperId: string, dict: string) => {
+  // Assuming the token is stored and should be included in the request if available
+  const token = getItem('token');
+  const apiUrl = `${FUNCTION_BASE_URL}/abstract?paper_id=${encodeURIComponent(paperId)}`;
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+
+  return fetch(apiUrl, options);
+};
+
 export const fetchResponses = async (params) => {
   const token = getItem('token');
   const apiUrl = `${FUNCTION_BASE_URL}/paper_response`;

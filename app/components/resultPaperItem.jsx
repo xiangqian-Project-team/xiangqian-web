@@ -15,6 +15,47 @@ import { fetchAbstract as fetchAbstractAsync } from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
+const RelatedIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="5" cy="6" r="2.5" stroke="#FFCF6D" />
+    <circle cx="9" cy="13" r="1.5" stroke="#FFCF6D" />
+    <circle cx="13.5" cy="6.5" r="2" stroke="#FFCF6D" />
+    <rect
+      opacity="0.6"
+      x="7.06995"
+      y="6"
+      width="4.37062"
+      height="1"
+      transform="rotate(4.01078 7.06995 6)"
+      fill="#FFCF6D"
+    />
+    <rect
+      opacity="0.6"
+      x="6.90393"
+      y="8"
+      width="4.37062"
+      height="1"
+      transform="rotate(64.6814 6.90393 8)"
+      fill="#FFCF6D"
+    />
+    <rect
+      opacity="0.6"
+      x="12.3826"
+      y="8.58899"
+      width="4.37062"
+      height="1"
+      transform="rotate(126.088 12.3826 8.58899)"
+      fill="#FFCF6D"
+    />
+  </svg>
+);
+
 const AbstractIcon = () => (
   <svg
     width="18"
@@ -161,26 +202,53 @@ export default function ResultPaperItem(props) {
     bibtex,
     doi,
     isEn,
-    selected,
+    // selected,
   } = props.data;
 
   const { isBorderVisible } = props;
 
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
+  const [relatedContent, setRelatedContent] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isRelatedLoading, setIsRelatedLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
-  const toggleAbstract = async (id) => {
+  const toggleRelatedContent = async (id) => {
     try {
-      if (contentStatus === 'abstract') {
-        setContentStatus('closed');
+      setContentStatus('related');
+      if (isRelatedLoading) {
+        return;
+      }
+      if (relatedContent) {
+        return;
+      }
+
+      setIsRelatedLoading(true);
+
+      const res = await fetchAbstractAsync(id);
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
+      // const { abstract, abstractZh } =
+      await res.json();
+      // setRelatedContent(abstractZh);
+      return;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsRelatedLoading(false);
+    }
+  };
+
+  const toggleAbstractContent = async (id) => {
+    try {
+      setContentStatus('abstract');
+      if (isAbstractLoading) {
         return;
       }
       if (paperAbstract) {
-        setContentStatus('abstract');
         return;
       }
 
@@ -193,7 +261,7 @@ export default function ResultPaperItem(props) {
       const { abstract, abstractZh } = await res.json();
       setPaperAbstract(abstract || 'No abstract');
       setPaperAbstractZh(abstractZh);
-      setContentStatus('abstract');
+      return;
     } catch (error) {
       console.error(error);
     } finally {
@@ -325,15 +393,15 @@ export default function ResultPaperItem(props) {
 
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
-          {/* <button
+          <button
             className={`${styles.content_card_btn_related} ${contentStatus === 'related' && styles.content_card_btn_related_drop}`}
             onClick={() => {
-              // toggleRelated(id);
+              toggleRelatedContent(id);
             }}
             // TODO umami
             // data-umami-event="abstract button"
           >
-            <Icon component={AbstractIcon} />
+            <Icon component={RelatedIcon} />
             相似文献
             {isRelatedLoading && <LoadingOutlined />}
             {!isRelatedLoading && contentStatus === 'related' && (
@@ -346,11 +414,11 @@ export default function ResultPaperItem(props) {
                 className={styles.content_card_btn_related_drop_icon}
               />
             )}
-          </button> */}
+          </button>
           <button
             className={`${styles.content_card_btn_abstract} ${contentStatus === 'abstract' && styles.content_card_btn_abstract_drop}`}
             onClick={() => {
-              toggleAbstract(id);
+              toggleAbstractContent(id);
             }}
             data-umami-event="abstract button"
           >
@@ -409,7 +477,15 @@ export default function ResultPaperItem(props) {
         </div>
       </div>
 
-      {contentStatus === 'abstract' && (
+      {contentStatus === 'related' && (
+        <div className={styles.content_card_paperAbstract}>
+          <>
+            <span>{paperAbstractZh}</span>
+          </>
+        </div>
+      )}
+
+      {contentStatus === 'abstract' && !isAbstractLoading && (
         <div className={styles.content_card_paperAbstract}>
           {paperAbstract != 'No abstract' ? (
             <>
