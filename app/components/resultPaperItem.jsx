@@ -409,8 +409,6 @@ export default function ResultPaperItem(props) {
               umami.track('similar button');
               toggleSimiliarContent(props.data);
             }}
-            // TODO umami
-            // data-umami-event="abstract button"
           >
             <Icon component={SimiliarIcon} />
             相似文献
