@@ -17,7 +17,9 @@ export const setItem = (key, value) => {
 /** 获取数据 */
 export const getItem = (key) => {
   if (typeof window !== 'undefined') {
-    return JSON.parse(localStorage.getItem(key));
+    try {
+      return JSON.parse(localStorage.getItem(key));
+    } catch (error) {}
   }
 };
 

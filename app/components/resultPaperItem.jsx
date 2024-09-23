@@ -11,11 +11,14 @@ import { useState } from 'react';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
-import { fetchAbstract as fetchAbstractAsync } from '../service';
+import {
+  fetchAbstract as fetchAbstractAsync,
+  fetchSimiliar as fetchSimiliarAsync,
+} from '../service';
 import CitationText from './citationText.js';
 import styles from './resultPaperItem.module.scss';
 
-const RelatedIcon = () => (
+const SimiliarIcon = () => (
   <svg
     width="18"
     height="18"
@@ -209,41 +212,48 @@ export default function ResultPaperItem(props) {
 
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
-  const [relatedContent, setRelatedContent] = useState('');
+  const [similiarContent, setSimiliarContent] = useState('');
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
-  const [isRelatedLoading, setIsRelatedLoading] = useState(false);
+  const [isSimiliarLoading, setIsSimiliarLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
 
-  const toggleRelatedContent = async (id) => {
+  const toggleSimiliarContent = async (paper) => {
     try {
-      setContentStatus('related');
-      if (isRelatedLoading) {
+      if (contentStatus === 'similiar') {
+        setContentStatus('closed');
         return;
       }
-      if (relatedContent) {
+      setContentStatus('similiar');
+      if (isSimiliarLoading) {
+        return;
+      }
+      if (similiarContent) {
         return;
       }
 
-      setIsRelatedLoading(true);
+      setIsSimiliarLoading(true);
 
-      const res = await fetchAbstractAsync(id);
+      const res = await fetchSimiliarAsync(paper);
       if (!res.ok) {
         throw new Error('Failed search');
       }
-      // const { abstract, abstractZh } =
-      await res.json();
-      // setRelatedContent(abstractZh);
+      const content = await res.json();
+      setSimiliarContent(content);
       return;
     } catch (error) {
       console.error(error);
     } finally {
-      setIsRelatedLoading(false);
+      setIsSimiliarLoading(false);
     }
   };
 
   const toggleAbstractContent = async (id) => {
     try {
+      if (contentStatus === 'abstract') {
+        setContentStatus('closed');
+        return;
+      }
       setContentStatus('abstract');
       if (isAbstractLoading) {
         return;
@@ -394,22 +404,22 @@ export default function ResultPaperItem(props) {
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
           <button
-            className={`${styles.content_card_btn_related} ${contentStatus === 'related' && styles.content_card_btn_related_drop}`}
+            className={`${styles.content_card_btn_related} ${contentStatus === 'similiar' && styles.content_card_btn_related_drop}`}
             onClick={() => {
-              toggleRelatedContent(id);
+              toggleSimiliarContent(props.data);
             }}
             // TODO umami
             // data-umami-event="abstract button"
           >
-            <Icon component={RelatedIcon} />
+            <Icon component={SimiliarIcon} />
             相似文献
-            {isRelatedLoading && <LoadingOutlined />}
-            {!isRelatedLoading && contentStatus === 'related' && (
+            {isSimiliarLoading && <LoadingOutlined />}
+            {!isSimiliarLoading && contentStatus === 'similiar' && (
               <UpOutlined
                 className={styles.content_card_btn_related_drop_icon}
               />
             )}
-            {!isRelatedLoading && contentStatus !== 'related' && (
+            {!isSimiliarLoading && contentStatus !== 'similiar' && (
               <DownOutlined
                 className={styles.content_card_btn_related_drop_icon}
               />
@@ -477,10 +487,10 @@ export default function ResultPaperItem(props) {
         </div>
       </div>
 
-      {contentStatus === 'related' && (
+      {contentStatus === 'similiar' && (
         <div className={styles.content_card_paperAbstract}>
           <>
-            <span>{paperAbstractZh}</span>
+            <span>{similiarContent}</span>
           </>
         </div>
       )}
