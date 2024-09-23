@@ -406,6 +406,7 @@ export default function ResultPaperItem(props) {
           <button
             className={`${styles.content_card_btn_related} ${contentStatus === 'similiar' && styles.content_card_btn_related_drop}`}
             onClick={() => {
+              umami.track('similar button');
               toggleSimiliarContent(props.data);
             }}
             // TODO umami
