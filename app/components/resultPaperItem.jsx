@@ -487,7 +487,7 @@ export default function ResultPaperItem(props) {
         </div>
       </div>
 
-      {contentStatus === 'similiar' && (
+      {contentStatus === 'similiar' && !isSimiliarLoading && (
         <div className={styles.content_card_paperAbstract}>
           <>
             <span>{similiarContent}</span>
