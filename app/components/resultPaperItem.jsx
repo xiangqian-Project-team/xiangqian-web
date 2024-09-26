@@ -212,7 +212,7 @@ export default function ResultPaperItem(props) {
 
   const [paperAbstract, setPaperAbstract] = useState('');
   const [paperAbstractZh, setPaperAbstractZh] = useState('');
-  const [similiarContent, setSimiliarContent] = useState('');
+  const [similiarContent, setSimiliarContent] = useState([]);
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isSimiliarLoading, setIsSimiliarLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
@@ -228,7 +228,7 @@ export default function ResultPaperItem(props) {
       if (isSimiliarLoading) {
         return;
       }
-      if (similiarContent) {
+      if (similiarContent.length) {
         return;
       }
 
@@ -487,11 +487,18 @@ export default function ResultPaperItem(props) {
       </div>
 
       {contentStatus === 'similiar' && !isSimiliarLoading && (
-        <div className={styles.content_card_paperAbstract}>
-          <>
-            <span>{similiarContent}</span>
-          </>
-        </div>
+        <ul className={styles.content_card_paper_similiar}>
+          {similiarContent.map((item, index) => (
+            <li key={item.id}>
+              <b>{index + 1}</b>
+              <span>
+                {item.authors[0]}
+                {item.authors.length > 1 && '等'}，{item.year}.
+              </span>{' '}
+              {item.response}
+            </li>
+          ))}
+        </ul>
       )}
 
       {contentStatus === 'abstract' && !isAbstractLoading && (

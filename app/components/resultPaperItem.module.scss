@@ -150,6 +150,7 @@
   }
 }
 
+.content_card_paper_similiar,
 .content_card_paperAbstract {
   margin-top: 16px;
   height: auto;
@@ -169,7 +170,36 @@
   font-family:
     Microsoft YaHei,
     PingFang SC;
+}
 
+.content_card_paper_similiar {
+  li:not(:first-child) {
+    margin-top: 8px;
+  }
+  li {
+    position: relative;
+    padding-left: 30px;
+  }
+  b {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    line-height: 18px;
+    display: inline-block;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0px;
+  }
+  span {
+    color: #046ec5;
+    text-decoration: underline;
+  }
+}
+
+.content_card_paperAbstract {
   span:not(:first-child) {
     margin-top: 20px;
   }
