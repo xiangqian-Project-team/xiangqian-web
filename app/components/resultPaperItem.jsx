@@ -491,7 +491,11 @@ export default function ResultPaperItem(props) {
           {similiarContent.map((item, index) => (
             <li key={item.id}>
               <b>{index + 1}</b>
-              <span>
+              <span
+                onClick={() => {
+                  window.open(item.doi, '_blank');
+                }}
+              >
                 {item.authors[0]}
                 {item.authors.length > 1 && '等'}，{item.year}.
               </span>{' '}
