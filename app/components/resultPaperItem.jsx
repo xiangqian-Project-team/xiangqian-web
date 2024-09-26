@@ -496,6 +496,9 @@ export default function ResultPaperItem(props) {
                 {item.authors.length > 1 && '等'}，{item.year}.
               </span>{' '}
               {item.response}
+              <i>
+                被引{item.citationCount}次 | {item.journalRank}
+              </i>
             </li>
           ))}
         </ul>
