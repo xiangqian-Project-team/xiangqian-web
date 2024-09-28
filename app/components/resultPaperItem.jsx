@@ -520,23 +520,29 @@ export default function ResultPaperItem(props) {
 
       {contentStatus === 'similiar' && !isSimiliarLoading && (
         <ul className={styles.content_card_paper_similiar}>
-          {similiarContent.map((item, index) => (
-            <li key={item.id}>
-              <b>{index + 1}</b>
-              <span
-                onClick={() => {
-                  window.open(item.doi, '_blank');
-                }}
-              >
-                {item.authors[0]}
-                {item.authors.length > 1 && '等'}，{item.year}.
-              </span>{' '}
-              {item.response}
-              <i>
-                被引{item.citationCount}次 | {item.journalRank}
-              </i>
+          {similiarContent.length > 0 ? (
+            similiarContent.map((item, index) => (
+              <li key={item.id}>
+                <b>{index + 1}</b>
+                <span
+                  onClick={() => {
+                    window.open(item.doi, '_blank');
+                  }}
+                >
+                  {item.authors[0]}
+                  {item.authors.length > 1 && '等'}，{item.year}.
+                </span>{' '}
+                {item.response}
+                <i>
+                  被引{item.citationCount}次 | {item.journalRank}
+                </i>
+              </li>
+            ))
+          ) : (
+            <li>
+              抱歉，未找到相似文献，我们正在努力完善中，可以试试其他文献～
             </li>
-          ))}
+          )}
         </ul>
       )}
 
