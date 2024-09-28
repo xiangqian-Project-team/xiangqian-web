@@ -210,6 +210,50 @@
   span:not(:first-child) {
     margin-top: 20px;
   }
+  .content_card_abstract_en {
+    margin-top: 15px;
+  }
+  .content_card_abstract_switch {
+    margin-bottom: 8px;
+    label {
+      cursor: pointer;
+      font-size: 12px;
+      position: relative;
+      .content_card_abstract_switch_icon {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+      }
+      &::after {
+        content: '';
+        display: block;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #1d192b;
+        border-radius: 2px;
+        transition: all 0.3s;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+      }
+    }
+    input {
+      opacity: 0;
+    }
+  }
+  .content_card_abstract_more_btn {
+    color: #046ec5;
+    text-decoration: underline;
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    &:focus-visible {
+      outline: none;
+    }
+  }
 }
 
 .content_card_paperAbstract::-webkit-scrollbar {

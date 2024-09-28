@@ -7,7 +7,7 @@ import Icon, {
 } from '@ant-design/icons';
 import { Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
@@ -190,6 +190,23 @@ const QuoteIcon = () => (
   </svg>
 );
 
+const CheckIcon = () => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M1.33333 0.000244141H10.6667C11.4 0.000244141 12 0.600244 12 1.33358V10.6669C12 11.4002 11.4 12.0002 10.6667 12.0002H1.33333C0.6 12.0002 0 11.4002 0 10.6669V1.33358C0 0.600244 0.6 0.000244141 1.33333 0.000244141ZM9.06667 3.06691L10 4.00024L4.66667 9.33358L2 6.66691L2.93333 5.73358L4.66667 7.46691L9.06667 3.06691Z"
+      fill="#1D192B"
+    />
+  </svg>
+);
+
 export default function ResultPaperItem(props) {
   const {
     authors,
@@ -217,6 +234,21 @@ export default function ResultPaperItem(props) {
   const [isSimiliarLoading, setIsSimiliarLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
+  const [isAbstractFullVisible, setIsAbstractFullVisible] = useState(false);
+  const [isEnAbstractVisible, setIsEnAbstractVisible] = useState(false);
+
+  const abstractZh = useMemo(() => {
+    if (isAbstractFullVisible) {
+      return paperAbstractZh;
+    }
+    if (!paperAbstractZh) {
+      return;
+    }
+    if (paperAbstractZh.length > 145) {
+      return `${paperAbstractZh.slice(0, 200)}...`;
+    }
+    return paperAbstractZh;
+  }, [paperAbstractZh, isAbstractFullVisible]);
 
   const toggleSimiliarContent = async (paper) => {
     try {
@@ -512,14 +544,44 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_paperAbstract}>
           {paperAbstract != 'No abstract' ? (
             <>
-              <span>摘要：</span>
-              <span>{paperAbstractZh}</span>
-              {isEn && (
-                <>
-                  <span>摘要原文：</span>
-                  <span>{paperAbstract}</span>
-                </>
-              )}
+              <div className={styles.content_card_abstract_switch}>
+                <label>
+                  {isEnAbstractVisible && (
+                    <Icon
+                      className={styles.content_card_abstract_switch_icon}
+                      component={CheckIcon}
+                    />
+                  )}
+                  <input
+                    type="checkbox"
+                    value={isEnAbstractVisible}
+                    onChange={(v) => {
+                      setIsEnAbstractVisible(v.target.checked);
+                    }}
+                  />
+                  显示英文原文
+                </label>
+              </div>
+              <div>
+                <div>
+                  <span>{abstractZh}</span>
+                  {!isAbstractFullVisible && (
+                    <button
+                      className={styles.content_card_abstract_more_btn}
+                      onClick={() => {
+                        setIsAbstractFullVisible(true);
+                      }}
+                    >
+                      查看更多
+                    </button>
+                  )}
+                </div>
+                {isEn && isEnAbstractVisible && (
+                  <div className={styles.content_card_abstract_en}>
+                    {paperAbstract}
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>
