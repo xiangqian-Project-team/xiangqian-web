@@ -244,8 +244,8 @@ export default function ResultPaperItem(props) {
     if (!paperAbstractZh) {
       return;
     }
-    if (paperAbstractZh.length > 145) {
-      return `${paperAbstractZh.slice(0, 200)}...`;
+    if (paperAbstractZh.replace(/\r?\n$/, '').length > 145) {
+      return `${paperAbstractZh.slice(0, 145)}...`;
     }
     return paperAbstractZh;
   }, [paperAbstractZh, isAbstractFullVisible]);
