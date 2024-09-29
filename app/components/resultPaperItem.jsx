@@ -12,7 +12,7 @@ import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
 import {
-  fetchAbstract as fetchAbstractAsync,
+  fetchAbstractAndTranslation as fetchAbstractAndTranslationAsync,
   fetchSimiliar as fetchSimiliarAsync,
 } from '../service';
 import CitationText from './citationText.js';
@@ -280,7 +280,7 @@ export default function ResultPaperItem(props) {
     }
   };
 
-  const toggleAbstractContent = async (id) => {
+  const toggleAbstractContent = async (paper) => {
     try {
       if (contentStatus === 'abstract') {
         setContentStatus('closed');
@@ -295,8 +295,9 @@ export default function ResultPaperItem(props) {
       }
 
       setIsAbstractLoading(true);
+      console.log(paper);
 
-      const res = await fetchAbstractAsync(id);
+      const res = await fetchAbstractAndTranslationAsync(paper);
       if (!res.ok) {
         throw new Error('Failed search');
       }
@@ -459,7 +460,7 @@ export default function ResultPaperItem(props) {
           <button
             className={`${styles.content_card_btn_abstract} ${contentStatus === 'abstract' && styles.content_card_btn_abstract_drop}`}
             onClick={() => {
-              toggleAbstractContent(id);
+              toggleAbstractContent(props.data);
             }}
             data-umami-event="abstract button"
           >

@@ -15,7 +15,7 @@ const FUNCTION_BASE_URL =
   'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
 
 // const FUNCTION_BASE_URL =
-// 'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
+//   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
 const request = async (
   url: string,
@@ -176,6 +176,22 @@ export const fetchAbstract = async (paperId) => {
       'Content-Type': 'application/json',
       Authorization: token ? `Bearer ${token}` : undefined,
     },
+  };
+
+  return fetch(apiUrl, options);
+};
+
+export const fetchAbstractAndTranslation = async (paper: any) => {
+  // Assuming the token is stored and should be included in the request if available
+  const token = getItem('token');
+  const apiUrl = `${FUNCTION_BASE_URL}/abstract_and_translation`;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+    body: JSON.stringify({ paper }),
   };
 
   return fetch(apiUrl, options);
