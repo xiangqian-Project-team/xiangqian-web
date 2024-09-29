@@ -578,7 +578,7 @@ export default function ResultPaperItem(props) {
                         setIsAbstractFullVisible(true);
                       }}
                     >
-                      查看更多
+                      展开
                     </button>
                   )}
                 </div>
