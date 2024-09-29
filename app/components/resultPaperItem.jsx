@@ -295,7 +295,6 @@ export default function ResultPaperItem(props) {
       }
 
       setIsAbstractLoading(true);
-      console.log(paper);
 
       const res = await fetchAbstractAndTranslationAsync(paper);
       if (!res.ok) {
