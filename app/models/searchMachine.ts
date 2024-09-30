@@ -51,7 +51,7 @@ function handlePopoverContent(content: string, papers: any[]) {
       return [
         ...arr,
         {
-          text: `（${authors}，${year}）`,
+          text: `(${authors}, ${year}) `,
           id,
           key: Math.random(),
           type: 'popover',
