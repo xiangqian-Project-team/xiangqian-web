@@ -710,6 +710,21 @@ const searchMachine = setup({
         question: ({ event }) => event.value,
       }),
     },
+    UPDATE_RESPONSE: {
+      actions: assign({
+        showPapers: ({ event, context }) => {
+          return produce(context.showPapers, (draft: any[]) => {
+            const id = event.value.id;
+            const paper = event.value;
+            draft.forEach((item) => {
+              if (item.id === id) {
+                item = paper;
+              }
+            });
+          });
+        },
+      }),
+    },
     CHANGE_SORT_MODE: {
       actions: assign({
         sortMode: ({ event }) => event.value,
