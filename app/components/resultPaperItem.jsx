@@ -241,14 +241,6 @@ export default function ResultPaperItem(props) {
   const [isAbstractFullVisible, setIsAbstractFullVisible] = useState(false);
   const [isEnAbstractVisible, setIsEnAbstractVisible] = useState(false);
 
-  // console.log(fetchedAbstract);
-  // useEffect(() => {
-  //   if (fetchedAbstract) {
-  //     setCurrPaperAbstract(fetchedAbstract.abstract || 'No abstract');
-  //     setCurrPaperAbstractZh(fetchedAbstract.abstractZh);
-  //   }
-  // }, [fetchedAbstract]);
-
   const abstractZh = useMemo(() => {
     if (isAbstractFullVisible) {
       return paperAbstractZh;
@@ -583,7 +575,7 @@ export default function ResultPaperItem(props) {
               </div>
               <div>
                 <div>
-                  <span>{paperAbstractZh}</span>
+                  <span>{abstractZh}</span>
                   {!isAbstractFullVisible && (
                     <button
                       className={styles.content_card_abstract_more_btn}
