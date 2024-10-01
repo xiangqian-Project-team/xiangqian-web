@@ -7,7 +7,7 @@ import Icon, {
 } from '@ant-design/icons';
 import { Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
@@ -231,8 +231,8 @@ export default function ResultPaperItem(props) {
 
   const { isBorderVisible } = props;
 
-  const [currPaperAbstract, setCurrPaperAbstract] = useState('');
-  const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
+  // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
+  // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
   const [similiarContent, setSimiliarContent] = useState([]);
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isSimiliarLoading, setIsSimiliarLoading] = useState(false);
@@ -241,25 +241,26 @@ export default function ResultPaperItem(props) {
   const [isAbstractFullVisible, setIsAbstractFullVisible] = useState(false);
   const [isEnAbstractVisible, setIsEnAbstractVisible] = useState(false);
 
-  useEffect(() => {
-    if (fetchedAbstract) {
-      setCurrPaperAbstract(fetchedAbstract.abstract || 'No abstract');
-      setCurrPaperAbstractZh(fetchedAbstract.abstractZh);
-    }
-  }, [fetchedAbstract]);
+  // console.log(fetchedAbstract);
+  // useEffect(() => {
+  //   if (fetchedAbstract) {
+  //     setCurrPaperAbstract(fetchedAbstract.abstract || 'No abstract');
+  //     setCurrPaperAbstractZh(fetchedAbstract.abstractZh);
+  //   }
+  // }, [fetchedAbstract]);
 
   const abstractZh = useMemo(() => {
     if (isAbstractFullVisible) {
-      return currPaperAbstractZh;
+      return paperAbstractZh;
     }
-    if (!currPaperAbstractZh) {
+    if (!paperAbstractZh) {
       return;
     }
-    if (currPaperAbstractZh.replace(/\r?\n$/, '').length > 145) {
-      return `${currPaperAbstractZh.slice(0, 145)}...`;
+    if (paperAbstractZh.replace(/\r?\n$/, '').length > 145) {
+      return `${paperAbstractZh.slice(0, 145)}...`;
     }
-    return currPaperAbstractZh;
-  }, [currPaperAbstractZh, paperAbstractZh, isAbstractFullVisible]);
+    return paperAbstractZh;
+  }, [paperAbstractZh, isAbstractFullVisible]);
 
   const toggleSimiliarContent = async (paper) => {
     try {
@@ -313,8 +314,8 @@ export default function ResultPaperItem(props) {
         type: 'UPDATE_RESPONSE',
         value: { ...data, fetchedAbstract: true },
       });
-      setCurrPaperAbstract(data.paperAbstract);
-      setCurrPaperAbstractZh(data.paperAbstractZh);
+      // setCurrPaperAbstract(data.paperAbstract);
+      // setCurrPaperAbstractZh(data.paperAbstractZh);
       return;
     } catch (error) {
       console.error(error);
@@ -582,7 +583,7 @@ export default function ResultPaperItem(props) {
               </div>
               <div>
                 <div>
-                  <span>{abstractZh}</span>
+                  <span>{paperAbstractZh}</span>
                   {!isAbstractFullVisible && (
                     <button
                       className={styles.content_card_abstract_more_btn}
@@ -596,7 +597,7 @@ export default function ResultPaperItem(props) {
                 </div>
                 {isEn && isEnAbstractVisible && (
                   <div className={styles.content_card_abstract_en}>
-                    {currPaperAbstract}
+                    {paperAbstract}
                   </div>
                 )}
               </div>

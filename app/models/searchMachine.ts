@@ -360,7 +360,8 @@ const searchMachine = setup({
       | { type: 'CHANGE_MODE.SELECTED' }
       | { type: 'CHANGE_MODE.ZH_CN' }
       | { type: 'FETCH_RESPONSE' }
-      | { type: 'FETCH_LITERATURE_REVIEW' };
+      | { type: 'FETCH_LITERATURE_REVIEW' }
+      | { type: 'UPDATE_RESPONSE'; value: any };
   },
   actors: {
     fetchLiteratureReview: fromPromise(fetchLiteratureReview),
@@ -712,15 +713,50 @@ const searchMachine = setup({
     },
     UPDATE_RESPONSE: {
       actions: assign({
-        showPapers: ({ event, context }) => {
-          return produce(context.showPapers, (draft: any[]) => {
-            const id = event.value.id;
-            const paper = event.value;
-            draft.forEach((item) => {
-              if (item.id === id) {
-                item = paper;
+        paperInfo: ({ event, context }) => {
+          return {
+            ...context.paperInfo,
+            papers: context.paperInfo.papers.map((item) => {
+              if (item.id === event.value.id) {
+                return event.value;
               }
-            });
+              return item;
+            }),
+          };
+        },
+        paperZHInfo: ({ event, context }) => {
+          return {
+            ...context.paperZHInfo,
+            papers: context.paperZHInfo.papers.map((item) => {
+              if (item.id === event.value.id) {
+                return event.value;
+              }
+              return item;
+            }),
+          };
+        },
+        showPapers: ({ event, context }) => {
+          const id = event.value.id;
+          const newPaper = event.value;
+          const papers = context.paperInfo.papers.map((item) => {
+            if (id === item.id) {
+              item = newPaper;
+            }
+            return item;
+          });
+          const papersZH = context.paperZHInfo.papers.map((item) => {
+            if (id === item.id) {
+              item = newPaper;
+            }
+            return item;
+          });
+          return calcShowPapers({
+            mode: context.mode,
+            sortMode: context.sortMode,
+            papers: papers,
+            papersZH: papersZH,
+            pageIndex: context.pageIndex,
+            pageSize: context.pageSize,
           });
         },
       }),
