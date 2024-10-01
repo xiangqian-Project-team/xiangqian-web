@@ -7,7 +7,7 @@ import Icon, {
 } from '@ant-design/icons';
 import { Modal, Skeleton, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BookIcon from '../img/book.png';
 import LockIcon from '../img/lock.png';
 import UserIcon from '../img/user.png';
@@ -222,6 +222,7 @@ export default function ResultPaperItem(props) {
     bibtex,
     doi,
     isEn,
+    fetchedAbstract,
     // selected,
   } = props.data;
 
@@ -236,6 +237,13 @@ export default function ResultPaperItem(props) {
   const [contentStatus, setContentStatus] = useState('closed');
   const [isAbstractFullVisible, setIsAbstractFullVisible] = useState(false);
   const [isEnAbstractVisible, setIsEnAbstractVisible] = useState(false);
+
+  useEffect(() => {
+    if (fetchedAbstract) {
+      setPaperAbstract(fetchedAbstract.abstract || 'No abstract');
+      setPaperAbstractZh(fetchedAbstract.abstractZh);
+    }
+  }, [fetchedAbstract]);
 
   const abstractZh = useMemo(() => {
     if (isAbstractFullVisible) {
@@ -290,7 +298,7 @@ export default function ResultPaperItem(props) {
       if (isAbstractLoading) {
         return;
       }
-      if (paperAbstract) {
+      if (paperAbstract && isAbstractEmpty) {
         return;
       }
 
