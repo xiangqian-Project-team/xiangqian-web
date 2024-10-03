@@ -40,13 +40,13 @@ function Search() {
     viewing: { fetchingPapers: 'fetching' },
   });
   const isLoadingSummary = state.matches({
-    viewing: { fetchingSummary: 'fetching' },
+    viewing: { fetchingSummaryAnswer: 'fetching' },
   });
   const isFetchPapersSuccess = state.matches({
     viewing: { fetchingPapers: 'success' },
   });
   const isFetchSummarySuccess = state.matches({
-    viewing: { fetchingSummary: 'success' },
+    viewing: { fetchingSummaryAnswer: 'success' },
   });
   const isFetchRelatedSearchSuccess = state.matches({
     viewing: { fetchingRelatedSearch: 'success' },
@@ -77,7 +77,7 @@ function Search() {
   useEffect(() => {
     return () => {
       searchActor.send({ type: 'RESET_FETCH_PAPERS' });
-      searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY_ANSWER' });
       searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
       searchActor.send({ type: 'RESET_FETCH_RELATED' });
       searchActor.send({ type: 'RESET' });
@@ -88,7 +88,7 @@ function Search() {
     searchActor.send({ type: 'SET_QUESTION', value: question });
     searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
     searchActor.send({ type: 'RESET_FETCH_PAPERS' });
-    searchActor.send({ type: 'RESET_FETCH_SUMMARY' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY_ANSWER' });
     searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
     searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'RESET' });
@@ -98,7 +98,9 @@ function Search() {
 
   useEffect(() => {
     if (isFetchPapersSuccess) {
-      searchActor.send({ type: 'FETCH_SUMMARY' });
+      searchActor.send({ type: 'FETCH_SUMMARY_ANSWER' });
+      searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
+      searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
       searchActor.send({ type: 'FETCH_RESPONSE' });
     }
   }, [isFetchPapersSuccess]);

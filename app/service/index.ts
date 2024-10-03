@@ -11,11 +11,11 @@ import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://121.43.97.68:8091';
 
-const FUNCTION_BASE_URL =
-  'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
-
 // const FUNCTION_BASE_URL =
-//   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
+//   'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
+
+const FUNCTION_BASE_URL =
+  'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
 const request = async (
   url: string,
@@ -146,6 +146,57 @@ export const getAnalysisPedia = async (params: {
     },
   };
   return fetch(`${FUNCTION_BASE_URL}/papers_analysis_v2`, option);
+};
+
+export const getSummaryAnswer = async (params: {
+  papers: any[];
+  queryEn: string;
+  queryZh: string;
+}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/answer`, option);
+};
+
+export const getSummaryBulletPoints = async (params: {
+  papers: any[];
+  queryEn: string;
+  queryZh: string;
+}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/bltpts`, option);
+};
+
+export const getSummaryAnalysis = async (params: {
+  papers: any[];
+  queryEn: string;
+  queryZh: string;
+}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/bltpts_analysis`, option);
 };
 
 export const getResponsePedia = async (params: {

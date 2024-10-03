@@ -1,11 +1,13 @@
 import { produce } from 'immer';
 import { assign, createActor, fromPromise, setup } from 'xstate';
 import {
-  getAnalysisPedia,
   getLiteratureReview,
   getPartPedia,
   getRelatedSearch,
   getResponsePedia,
+  getSummaryAnalysis,
+  getSummaryAnswer,
+  getSummaryBulletPoints,
 } from '../service';
 
 interface IPopoverItem {
@@ -137,7 +139,7 @@ const fetchPartPedia = async ({
   // };
 };
 
-const fetchAnalysisPedia = async ({
+const fetchSummaryAnswer = async ({
   input,
 }: {
   input: {
@@ -160,30 +162,142 @@ const fetchAnalysisPedia = async ({
     queryZh = input.paperZHInfo.queryZh;
     papers = input.paperZHInfo.papers;
   }
-  const res = await getAnalysisPedia({
+  const res = await getSummaryAnswer({
     papers,
     queryEn,
     queryZh,
   });
   if (!res.ok) {
-    throw new Error('Failed get summary');
+    throw new Error('Failed get summary answer');
   }
   const data = await res.json();
-
-  const formattedBulletPoints = initPopoverContent(data.bltpts, [...papers]);
-
   return {
-    summary: data.answer as string,
-    bulletPoints: formattedBulletPoints,
-    bulletPointsPrefix: data.bltptsPrefix,
+    summary: data as string,
   };
-
-  // return {
-  //   summary: 'data.answer',
-  //   bulletPoints: ['data.bltpts'],
-  //   bulletPointsPrefix: 'data.bltptsPrefix',
-  // };
 };
+
+const fetchSummaryAnalysis = async ({
+  input,
+}: {
+  input: {
+    mode: string;
+    paperInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
+    paperZHInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
+  };
+}) => {
+  let { queryEn, queryZh, papers } = input.paperInfo;
+  if (input.mode === 'zh-cn') {
+    queryEn = input.paperZHInfo.queryEn;
+    queryZh = input.paperZHInfo.queryZh;
+    papers = input.paperZHInfo.papers;
+  }
+  const res = await getSummaryAnalysis({
+    papers,
+    queryEn,
+    queryZh,
+  });
+  if (!res.ok) {
+    throw new Error('Failed get summary analysis');
+  }
+  const data = await res.json();
+  return {
+    bulletPointsPrefix: data,
+  };
+};
+
+const fetchSummaryBulletPoints = async ({
+  input,
+}: {
+  input: {
+    mode: string;
+    paperInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
+    paperZHInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
+  };
+}) => {
+  let { queryEn, queryZh, papers } = input.paperInfo;
+  if (input.mode === 'zh-cn') {
+    queryEn = input.paperZHInfo.queryEn;
+    queryZh = input.paperZHInfo.queryZh;
+    papers = input.paperZHInfo.papers;
+  }
+  const res = await getSummaryBulletPoints({
+    papers,
+    queryEn,
+    queryZh,
+  });
+  if (!res.ok) {
+    throw new Error('Failed get summary bullet points');
+  }
+  const data = await res.json();
+  const formattedBulletPoints = initPopoverContent(data, [...papers]);
+  return {
+    bulletPoints: formattedBulletPoints,
+  };
+};
+
+// const fetchAnalysisPedia = async ({
+//   input,
+// }: {
+//   input: {
+//     mode: string;
+//     paperInfo: {
+//       papers: any[];
+//       queryEn: string;
+//       queryZh: string;
+//     };
+//     paperZHInfo: {
+//       papers: any[];
+//       queryEn: string;
+//       queryZh: string;
+//     };
+//   };
+// }) => {
+//   let { queryEn, queryZh, papers } = input.paperInfo;
+//   if (input.mode === 'zh-cn') {
+//     queryEn = input.paperZHInfo.queryEn;
+//     queryZh = input.paperZHInfo.queryZh;
+//     papers = input.paperZHInfo.papers;
+//   }
+//   const res = await getAnalysisPedia({
+//     papers,
+//     queryEn,
+//     queryZh,
+//   });
+//   if (!res.ok) {
+//     throw new Error('Failed get summary');
+//   }
+//   const data = await res.json();
+
+//   const formattedBulletPoints = initPopoverContent(data.bltpts, [...papers]);
+
+//   return {
+//     summary: data.answer as string,
+//     bulletPoints: formattedBulletPoints,
+//     bulletPointsPrefix: data.bltptsPrefix,
+//   };
+
+//   // return {
+//   //   summary: 'data.answer',
+//   //   bulletPoints: ['data.bltpts'],
+//   //   bulletPointsPrefix: 'data.bltptsPrefix',
+//   // };
+// };
 
 const fetchLiteratureReview = async ({
   input,
@@ -354,8 +468,14 @@ const searchMachine = setup({
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
-      | { type: 'FETCH_SUMMARY_ZH' }
-      | { type: 'FETCH_SUMMARY' }
+      | { type: 'FETCH_SUMMARY_ANSWER' }
+      | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
+      | { type: 'FETCH_SUMMARY_ANALYSIS' }
+      | { type: 'RESET_FETCH_SUMMARY_ANALYSIS' }
+      | { type: 'FETCH_SUMMARY_BULLET_POINTS' }
+      | { type: 'RESET_FETCH_SUMMARY_BULLET_POINTS' }
+      // | { type: 'FETCH_SUMMARY_ZH' }
+      // | { type: 'FETCH_SUMMARY' }
       | { type: 'CHANGE_MODE.EN' }
       | { type: 'CHANGE_MODE.SELECTED' }
       | { type: 'CHANGE_MODE.ZH_CN' }
@@ -365,7 +485,10 @@ const searchMachine = setup({
   },
   actors: {
     fetchLiteratureReview: fromPromise(fetchLiteratureReview),
-    fetchSummary: fromPromise(fetchAnalysisPedia),
+    // fetchSummary: fromPromise(fetchAnalysisPedia),
+    fetchSummaryAnswer: fromPromise(fetchSummaryAnswer),
+    fetchSummaryAnalysis: fromPromise(fetchSummaryAnalysis),
+    fetchSummaryBulletPoints: fromPromise(fetchSummaryBulletPoints),
     fetchPapers: fromPromise(fetchPartPedia),
     fetchResponsePedia: fromPromise(fetchResponsePedia),
     fetchRelatedSearch: fromPromise(fetchRelatedSearch),
@@ -525,13 +648,13 @@ const searchMachine = setup({
             },
           },
         },
-        fetchingSummary: {
+        fetchingSummaryAnswer: {
           initial: 'idle',
           states: {
             idle: {},
             fetching: {
               invoke: {
-                src: 'fetchSummary',
+                src: 'fetchSummaryAnswer',
                 input: ({ context }) => ({
                   mode: context.mode,
                   paperInfo: context.paperInfo,
@@ -544,15 +667,51 @@ const searchMachine = setup({
                       switch (context.mode) {
                         case 'zh-cn':
                           draft.summaryZHInfo.summary = event.output.summary;
-                          draft.summaryZHInfo.bulletPoints =
-                            event.output.bulletPoints;
+                          break;
+                        case 'en':
+                          draft.summaryInfo.summary = event.output.summary;
+                          break;
+                      }
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            RESET_FETCH_SUMMARY_ANSWER: {
+              target: '.idle',
+            },
+            FETCH_SUMMARY_ANSWER: {
+              target: '.fetching',
+            },
+          },
+        },
+        fetchingSummaryAnalysis: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchSummaryAnalysis',
+                input: ({ context }) => ({
+                  mode: context.mode,
+                  paperInfo: context.paperInfo,
+                  paperZHInfo: context.paperZHInfo,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      switch (context.mode) {
+                        case 'zh-cn':
                           draft.summaryZHInfo.bulletPointsPrefix =
                             event.output.bulletPointsPrefix;
                           break;
                         case 'en':
-                          draft.summaryInfo.summary = event.output.summary;
-                          draft.summaryInfo.bulletPoints =
-                            event.output.bulletPoints;
                           draft.summaryInfo.bulletPointsPrefix =
                             event.output.bulletPointsPrefix;
                           break;
@@ -567,14 +726,108 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
-            RESET_FETCH_SUMMARY: {
+            RESET_FETCH_SUMMARY_ANALYSIS: {
               target: '.idle',
             },
-            FETCH_SUMMARY: {
+            FETCH_SUMMARY_ANALYSIS: {
               target: '.fetching',
             },
           },
         },
+        fetchingSummaryBulletPoints: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchSummaryBulletPoints',
+                input: ({ context }) => ({
+                  mode: context.mode,
+                  paperInfo: context.paperInfo,
+                  paperZHInfo: context.paperZHInfo,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      switch (context.mode) {
+                        case 'zh-cn':
+                          draft.summaryZHInfo.bulletPoints =
+                            event.output.bulletPoints;
+                          break;
+                        case 'en':
+                          draft.summaryInfo.bulletPoints =
+                            event.output.bulletPoints;
+                          break;
+                      }
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            RESET_FETCH_SUMMARY_BULLET_POINTS: {
+              target: '.idle',
+            },
+            FETCH_SUMMARY_BULLET_POINTS: {
+              target: '.fetching',
+            },
+          },
+        },
+        // fetchingSummary: {
+        //   initial: 'idle',
+        //   states: {
+        //     idle: {},
+        //     fetching: {
+        //       invoke: {
+        //         src: 'fetchSummary',
+        //         input: ({ context }) => ({
+        //           mode: context.mode,
+        //           paperInfo: context.paperInfo,
+        //           paperZHInfo: context.paperZHInfo,
+        //         }),
+        //         onDone: {
+        //           target: 'success',
+        //           actions: assign(({ context, event }) => {
+        //             return produce(context, (draft) => {
+        //               switch (context.mode) {
+        //                 case 'zh-cn':
+        //                   draft.summaryZHInfo.summary = event.output.summary;
+        //                   draft.summaryZHInfo.bulletPoints =
+        //                     event.output.bulletPoints;
+        //                   draft.summaryZHInfo.bulletPointsPrefix =
+        //                     event.output.bulletPointsPrefix;
+        //                   break;
+        //                 case 'en':
+        //                   draft.summaryInfo.summary = event.output.summary;
+        //                   draft.summaryInfo.bulletPoints =
+        //                     event.output.bulletPoints;
+        //                   draft.summaryInfo.bulletPointsPrefix =
+        //                     event.output.bulletPointsPrefix;
+        //                   break;
+        //               }
+        //             });
+        //           }),
+        //         },
+        //         onError: 'fail',
+        //       },
+        //     },
+        //     success: {},
+        //     fail: {},
+        //   },
+        //   on: {
+        //     RESET_FETCH_SUMMARY: {
+        //       target: '.idle',
+        //     },
+        //     FETCH_SUMMARY: {
+        //       target: '.fetching',
+        //     },
+        //   },
+        // },
         fetchingLiteratureReview: {
           initial: 'idle',
           states: {

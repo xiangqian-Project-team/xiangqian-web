@@ -19,9 +19,19 @@ export default function Summary(props: {
       fetchingPapers: 'fetching',
     },
   });
-  const isLoadingSummary = state.matches({
+  const isLoadingSummaryAnswer = state.matches({
     viewing: {
-      fetchingSummary: 'fetching',
+      fetchingSummaryAnswer: 'fetching',
+    },
+  });
+  const isLoadingSummaryAnalysis = state.matches({
+    viewing: {
+      fetchingSummaryAnalysis: 'fetching',
+    },
+  });
+  const isLoadingSummaryBulletPoints = state.matches({
+    viewing: {
+      fetchingSummaryBulletPoints: 'fetching',
     },
   });
   const isLoadingLiteratureReview = state.matches({
@@ -108,7 +118,11 @@ export default function Summary(props: {
           <Skeleton
             active
             loading={
-              isLoadingSummary || isLoadingPapers || isLoadingLiteratureReview
+              isLoadingSummaryBulletPoints ||
+              isLoadingSummaryAnalysis ||
+              isLoadingSummaryAnswer ||
+              isLoadingPapers ||
+              isLoadingLiteratureReview
             }
             style={{ padding: '20px' }}
             paragraph={{ rows: 16 }}
