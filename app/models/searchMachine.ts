@@ -24,9 +24,12 @@ export interface IPopoverInfo {
   popoverList: IPopoverItem[];
 }
 
-const initPopoverContent = (contentList: string[], papers: any[]) => {
+const initPopoverContent = (
+  contentList: { bltpt: string; refs: string }[],
+  papers: any[]
+) => {
   const formattedContentList: IPopoverInfo[] = [];
-  contentList.forEach((content: string) => {
+  contentList.forEach((content) => {
     const info = {
       key: Math.random(),
       popoverList: [],
@@ -38,7 +41,53 @@ const initPopoverContent = (contentList: string[], papers: any[]) => {
   return formattedContentList;
 };
 
-function handlePopoverContent(content: string, papers: any[]) {
+function handlePopoverContent(
+  content: { bltpt: string; refs: string },
+  papers: any[]
+) {
+  const pattern = /(\[.*?\])/g;
+  const matches = content.refs.match(pattern) || [];
+  const splitText = content.refs.split(pattern);
+  const list = splitText.reduce<IPopoverItem[]>((arr, element) => {
+    // @ts-ignore
+    if (matches.includes(element)) {
+      const id = element.replace(/^\[(.+)\]$/, '$1');
+      const paper = papers.find((item) => item.id === id);
+      const authors = paper?.authors[0] || '';
+      const year = paper?.year || '';
+
+      return [
+        ...arr,
+        {
+          text: `(${authors}, ${year}) `,
+          id,
+          key: Math.random(),
+          type: 'popover',
+          isVisible: false,
+        },
+      ];
+    }
+    return [
+      ...arr,
+      {
+        text: element,
+        key: Math.random(),
+        type: 'text',
+        isVisible: false,
+      },
+    ];
+  }, []);
+  list.push({
+    text: content.bltpt,
+    key: Math.random(),
+    type: 'text',
+    isVisible: false,
+  });
+
+  return list;
+}
+
+function handlePopoverContentExtension(content: string, papers: any[]) {
   const pattern = /(\[.*?\])/g;
   const matches = content.match(pattern) || [];
   const splitText = content.split(pattern);
@@ -245,6 +294,7 @@ const fetchSummaryBulletPoints = async ({
     throw new Error('Failed get summary bullet points');
   }
   const data = await res.json();
+  console.log(data);
   const formattedBulletPoints = initPopoverContent(data, [...papers]);
   return {
     bulletPoints: formattedBulletPoints,
@@ -1157,7 +1207,7 @@ const searchMachine = setup({
             ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
             if (item.key === key) {
-              item.expensionPopoverList = handlePopoverContent(text, [
+              item.expensionPopoverList = handlePopoverContentExtension(text, [
                 ...draft.paperInfo.papers,
                 ...draft.paperZHInfo.papers,
                 ...draft.showPapers,

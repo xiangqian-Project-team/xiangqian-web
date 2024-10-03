@@ -179,7 +179,7 @@ export const getSummaryBulletPoints = async (params: {
       Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
-  return fetch(`${FUNCTION_BASE_URL}/bltpts`, option);
+  return fetch(`${FUNCTION_BASE_URL}/bltpts_struct`, option);
 };
 
 export const getSummaryAnalysis = async (params: {
