@@ -136,14 +136,18 @@ export default function SummaryPopover(props: {
             }}
           />
         )}
-        {list.map((item) => (
-          <PopoverItem
-            key={item.key}
-            item={item}
-            getPopoverResponsePedia={getPopoverResponsePedia}
-          />
-        ))}
-
+        <div>{data.desc.text}</div>
+        {isOpen && (
+          <div className={styles.summary_item_authors}>
+            {list.map((item) => (
+              <PopoverItem
+                key={item.key}
+                item={item}
+                getPopoverResponsePedia={getPopoverResponsePedia}
+              />
+            ))}
+          </div>
+        )}
         {isOpen && (
           <div className={styles.expension_text}>
             <Skeleton

@@ -22,6 +22,7 @@ export interface IPopoverInfo {
   expensionPopoverList: IPopoverItem[];
   key: number;
   popoverList: IPopoverItem[];
+  desc?: IPopoverItem;
 }
 
 const initPopoverContent = (
@@ -34,8 +35,11 @@ const initPopoverContent = (
       key: Math.random(),
       popoverList: [],
       expensionPopoverList: [],
+      desc: undefined,
     };
-    info.popoverList = handlePopoverContent(content, papers);
+    const popoverContent = handlePopoverContent(content, papers);
+    info.popoverList = popoverContent.contentList;
+    info.desc = popoverContent.desc;
     formattedContentList.push(info);
   });
   return formattedContentList;
@@ -83,14 +87,16 @@ function handlePopoverContent(
       },
     ];
   }, []);
-  list.push({
-    text: content.bltpt,
-    key: Math.random(),
-    type: 'text',
-    isVisible: false,
-  });
 
-  return list;
+  return {
+    contentList: list,
+    desc: {
+      text: content.bltpt,
+      key: Math.random(),
+      type: 'text',
+      isVisible: false,
+    },
+  };
 }
 
 const initPopoverLiteratureReview = (contentList: string[], papers: any[]) => {

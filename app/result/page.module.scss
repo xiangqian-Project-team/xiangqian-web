@@ -317,10 +317,13 @@
                   padding: 10px 25px 10px 10px;
                   background-color: #f3f7f9;
                   border-radius: 6px;
+                  .summary_item_authors {
+                    font-size: 12px;
+                  }
                 }
                 .expension_text {
                   text-indent: 30px;
-                  margin: 15px 0;
+                  margin: 10px 0;
                   font-size: 14px;
                   color: #7b7c83;
                 }
