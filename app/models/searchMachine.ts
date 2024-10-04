@@ -45,10 +45,12 @@ function handlePopoverContent(
   content: { bltpt: string; refs: string },
   papers: any[]
 ) {
-  const pattern = /(\[.*?\])/g;
-  const matches = content.refs.match(pattern) || [];
-  const splitText = content.refs.split(pattern);
-  const list = splitText.reduce<IPopoverItem[]>((arr, element) => {
+  const matches = content.refs
+    .match(/\[(.*?)\]/g)
+    .map((match) => match.slice(1, -1));
+  const limit = 3;
+  const limitMatches = matches.slice(0, limit);
+  const list = limitMatches.reduce<IPopoverItem[]>((arr, element, index) => {
     // @ts-ignore
     if (matches.includes(element)) {
       const id = element.replace(/^\[(.+)\]$/, '$1');
@@ -56,10 +58,14 @@ function handlePopoverContent(
       const authors = paper?.authors[0] || '';
       const year = paper?.year || '';
 
+      let template = `(${authors}, ${year}) `;
+      if (index === limitMatches.length - 1 && matches.length > 4) {
+        template = `(${authors}, ${year}) ...等${matches.length}篇 `;
+      }
       return [
         ...arr,
         {
-          text: `(${authors}, ${year}) `,
+          text: template,
           id,
           key: Math.random(),
           type: 'popover',
@@ -86,6 +92,20 @@ function handlePopoverContent(
 
   return list;
 }
+
+const initPopoverLiteratureReview = (contentList: string[], papers: any[]) => {
+  const formattedContentList: IPopoverInfo[] = [];
+  contentList.forEach((content) => {
+    const info = {
+      key: Math.random(),
+      popoverList: [],
+      expensionPopoverList: [],
+    };
+    info.popoverList = handlePopoverContentExtension(content, papers);
+    formattedContentList.push(info);
+  });
+  return formattedContentList;
+};
 
 function handlePopoverContentExtension(content: string, papers: any[]) {
   const pattern = /(\[.*?\])/g;
@@ -294,7 +314,6 @@ const fetchSummaryBulletPoints = async ({
     throw new Error('Failed get summary bullet points');
   }
   const data = await res.json();
-  console.log(data);
   const formattedBulletPoints = initPopoverContent(data, [...papers]);
   return {
     bulletPoints: formattedBulletPoints,
@@ -365,7 +384,10 @@ const fetchLiteratureReview = async ({
   }
 
   const data = (await res.json()) as { review: string };
-  const formattedBulletPoints = initPopoverContent([data.review], [...papers]);
+  const formattedBulletPoints = initPopoverLiteratureReview(
+    [data.review],
+    [...papers]
+  );
   return formattedBulletPoints;
 };
 

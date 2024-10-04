@@ -3,7 +3,6 @@ import { Skeleton } from 'antd';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import RefreshIcon from '../icons/refresh_icon.svg';
-import RoundedArrow from '../icons/rounded_arrow.svg';
 import { searchActor } from '../models/searchMachine';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
@@ -17,11 +16,6 @@ export default function Summary(props: {
   const isLoadingPapers = state.matches({
     viewing: {
       fetchingPapers: 'fetching',
-    },
-  });
-  const isLoadingSummaryAnswer = state.matches({
-    viewing: {
-      fetchingSummaryAnswer: 'fetching',
     },
   });
   const isLoadingSummaryAnalysis = state.matches({
@@ -115,27 +109,7 @@ export default function Summary(props: {
       {
         <div>
           {state.context.summary}
-          {/* <Skeleton
-            active
-            loading={
-              isLoadingSummaryBulletPoints ||
-              isLoadingSummaryAnalysis ||
-              isLoadingSummaryAnswer ||
-              isLoadingPapers ||
-              isLoadingLiteratureReview
-            }
-            style={{ padding: '20px' }}
-            paragraph={{ rows: 16 }}
-          > */}
-          <>
-            <div className={styles.header}>
-              <Image
-                alt=""
-                className={styles.header_triangle}
-                src={RoundedArrow}
-              />
-              总结
-            </div>
+          <div>
             {mode === 'selected' &&
               summarySelectedInfo.bulletPoints.length === 0 && (
                 <div className={styles.fetch_selected_summary_button_container}>
@@ -164,22 +138,7 @@ export default function Summary(props: {
                 </div>
               )}
             <div className={styles.content}>
-              {/* {showSummary.summary && ( */}
-              <>
-                <Skeleton
-                  active
-                  loading={
-                    isLoadingSummaryAnswer ||
-                    isLoadingPapers ||
-                    isLoadingLiteratureReview
-                  }
-                  style={{ padding: '20px' }}
-                  paragraph={{ rows: 3 }}
-                >
-                  <div className={styles.content_summary}>
-                    {showSummary.summary}
-                  </div>
-                </Skeleton>
+              <div>
                 <Skeleton
                   active
                   loading={
@@ -190,6 +149,7 @@ export default function Summary(props: {
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
+                  <div className={styles.header}>文献总结</div>
                   <div className={styles.content_bullet_points_prefix}>
                     {showSummary.bulletPointsPrefix}
                   </div>
@@ -216,8 +176,7 @@ export default function Summary(props: {
                     ))}
                   </ul>
                 </Skeleton>
-              </>
-              {/* )} */}
+              </div>
               {mode === 'selected' &&
                 summarySelectedInfo.bulletPoints.length > 0 && (
                   <div className={styles.content_summary}>
@@ -233,8 +192,7 @@ export default function Summary(props: {
                   </div>
                 )}
             </div>
-          </>
-          {/* </Skeleton> */}
+          </div>
         </div>
       }
     </div>

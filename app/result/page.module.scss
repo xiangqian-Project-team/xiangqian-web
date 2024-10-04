@@ -157,36 +157,6 @@
             box-shadow: 0px 0px 20px 0px rgba(219, 215, 238, 0.4);
             border-radius: 12px;
           }
-
-          .header {
-            position: relative;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            width: calc(100% - 48px);
-            height: 50px;
-            color: #000;
-            font-size: 16px;
-            font-weight: 700;
-            font-family:
-              SimSun,
-              PingFang SC;
-            background: linear-gradient(
-              62deg,
-              #e7dffd 0%,
-              #d3f7fc 50%,
-              #98dfec 100%
-            );
-
-            .header_triangle {
-              position: absolute;
-              right: 24px;
-              bottom: 0px;
-              color: white;
-            }
-          }
           .fetch_selected_summary_button_container {
             display: flex;
             justify-content: center;
@@ -212,12 +182,17 @@
               Microsoft YaHei,
               PingFang SC;
 
+            .header {
+              font-size: 14px;
+              font-weight: 600;
+            }
             .content_summary {
               font-weight: 400;
               font-size: 14px;
               color: #000000;
               line-height: 24px;
               text-indent: 28px;
+              margin-top: 10px;
               pre {
                 white-space: pre-wrap;
               }

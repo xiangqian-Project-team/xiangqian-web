@@ -19,6 +19,7 @@ import ErrorIcon from '../icons/error_icon.svg';
 import LogoIcon2 from '../icons/main_logo.svg';
 import userExpendIcon from '../icons/user_expend_icon.svg';
 import FAQList from './faqList';
+import MainSummary from './mainSummary';
 import ModeButtons from './modeButtons';
 import styles from './page.module.scss';
 import PageManager from './pageManager';
@@ -190,67 +191,70 @@ function Search() {
             </div>
           )}
           {!isPapersEmptyErrorVisible && (
-            <div className={styles.search_content_data}>
-              <div className={styles.search_content_data_summary}>
-                <Summary
-                  setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
-                />
-                <FAQList />
-              </div>
-              <div className={styles.search_content_data_papers}>
-                <div className={styles.content_button}>
-                  <ModeButtons disabled={isLoadingList || isLoadingSummary} />
+            <>
+              <MainSummary />
+              <div className={styles.search_content_data}>
+                <div className={styles.search_content_data_summary}>
+                  <Summary
+                    setIsNoEnoughModalVisible={setIsNoEnoughModalVisible}
+                  />
+                  <FAQList />
                 </div>
-                {isLoadingList &&
-                  paperSkeletons.map((item) => (
-                    <div
-                      style={{
-                        background: 'white',
-                        margin: '0 0 10px',
-                        padding: '20px',
-                        borderRadius: '12px',
-                      }}
-                      key={item.id}
-                    >
-                      <Skeleton active />
-                    </div>
-                  ))}
-                <div>
-                  <div>
-                    {isSearchPapersVisible && mode !== 'selected' && (
-                      <div className={styles.no_papers_tip}>
-                        <Image
-                          className={styles.no_papers_tip_icon}
-                          src={ErrorIcon}
-                          alt=""
-                        />
-                        <div className={styles.no_papers_tip_desc}>
-                          该主题没有检测到{mode === 'en' ? '英文' : '中文'}
-                          文献，尝试更换输入后再试试吧
-                        </div>
+                <div className={styles.search_content_data_papers}>
+                  <div className={styles.content_button}>
+                    <ModeButtons disabled={isLoadingList || isLoadingSummary} />
+                  </div>
+                  {isLoadingList &&
+                    paperSkeletons.map((item) => (
+                      <div
+                        style={{
+                          background: 'white',
+                          margin: '0 0 10px',
+                          padding: '20px',
+                          borderRadius: '12px',
+                        }}
+                        key={item.id}
+                      >
+                        <Skeleton active />
                       </div>
-                    )}
-                    {showPapers.map((item) => {
-                      return (
-                        <ResultPaperItem
-                          key={item.id}
-                          data={item}
-                          isBorderVisible={true}
-                        />
-                      );
-                    })}
-                    {isInitialed &&
-                      !isLoadingList &&
-                      !isPapersEmptyErrorVisible &&
-                      showPapers.length > 0 && (
-                        <div>
-                          <PageManager />
+                    ))}
+                  <div>
+                    <div>
+                      {isSearchPapersVisible && mode !== 'selected' && (
+                        <div className={styles.no_papers_tip}>
+                          <Image
+                            className={styles.no_papers_tip_icon}
+                            src={ErrorIcon}
+                            alt=""
+                          />
+                          <div className={styles.no_papers_tip_desc}>
+                            该主题没有检测到{mode === 'en' ? '英文' : '中文'}
+                            文献，尝试更换输入后再试试吧
+                          </div>
                         </div>
                       )}
+                      {showPapers.map((item) => {
+                        return (
+                          <ResultPaperItem
+                            key={item.id}
+                            data={item}
+                            isBorderVisible={true}
+                          />
+                        );
+                      })}
+                      {isInitialed &&
+                        !isLoadingList &&
+                        !isPapersEmptyErrorVisible &&
+                        showPapers.length > 0 && (
+                          <div>
+                            <PageManager />
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
