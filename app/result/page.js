@@ -193,6 +193,9 @@ function Search() {
           {!isPapersEmptyErrorVisible && (
             <>
               <MainSummary />
+              <div className={styles.content_button}>
+                <ModeButtons disabled={isLoadingList || isLoadingSummary} />
+              </div>
               <div className={styles.search_content_data}>
                 <div className={styles.search_content_data_summary}>
                   <Summary
@@ -201,9 +204,6 @@ function Search() {
                   <FAQList />
                 </div>
                 <div className={styles.search_content_data_papers}>
-                  <div className={styles.content_button}>
-                    <ModeButtons disabled={isLoadingList || isLoadingSummary} />
-                  </div>
                   {isLoadingList &&
                     paperSkeletons.map((item) => (
                       <div

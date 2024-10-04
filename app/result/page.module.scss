@@ -71,6 +71,92 @@
       align-items: center;
       position: relative;
 
+      .content_button {
+        width: 90%;
+        max-width: 1440px;
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        min-height: 36px;
+        position: relative;
+        .cn_button,
+        .en_button,
+        .cn_button_active,
+        .en_button_active {
+          width: 139px;
+          height: 36px;
+          border: none;
+          border-radius: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          img {
+            margin-right: 4px;
+          }
+        }
+        .en_button,
+        .en_button_active {
+          border-radius: 30px 0 0 30px;
+        }
+        .cn_button,
+        .cn_button_active {
+          margin: 0 2px;
+          border-radius: 0 30px 30px 0;
+        }
+        .cn_button_active,
+        .en_button_active {
+          background-color: #99e0ed;
+        }
+        .sort_button {
+          height: 36px;
+          position: absolute;
+          right: 0;
+          border-radius: 30px;
+          display: flex;
+          align-items: center;
+          .sort_button_icon {
+            margin-left: 5px;
+          }
+        }
+        .popup_sort_buttons {
+          position: absolute;
+          top: 40px;
+          right: 20px;
+          width: 112px;
+          z-index: 400;
+          background-color: #ffffff;
+          border-radius: 20px;
+          padding: 10px;
+          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
+          animation: show-sort-menus 0.3s;
+          @keyframes show-sort-menus {
+            0% {
+              opacity: 0.2;
+              transform: scale(0.9) translateY(-15px);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+          button {
+            width: 100%;
+            height: 40px;
+            border-radius: 16px;
+            border: none;
+            margin: 2px 0;
+            cursor: pointer;
+            background-color: #ffffff;
+            &:hover {
+              background-color: #eee;
+            }
+            &.popup_sort_button_active {
+              background-color: #99e0ed;
+            }
+          }
+        }
+      }
+
       .search_content_loading {
         padding-top: 24px;
         height: calc(100vh - 132px - 242px);
@@ -272,90 +358,6 @@
             .no_papers_tip_desc {
               text-align: center;
               color: #0fbce2;
-            }
-          }
-
-          .content_button {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            min-height: 36px;
-            position: relative;
-            .cn_button,
-            .en_button,
-            .cn_button_active,
-            .en_button_active {
-              width: 139px;
-              height: 36px;
-              border: none;
-              border-radius: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              img {
-                margin-right: 4px;
-              }
-            }
-            .en_button,
-            .en_button_active {
-              border-radius: 30px 0 0 30px;
-            }
-            .cn_button,
-            .cn_button_active {
-              margin: 0 2px;
-              border-radius: 0 30px 30px 0;
-            }
-            .cn_button_active,
-            .en_button_active {
-              background-color: #99e0ed;
-            }
-            .sort_button {
-              height: 36px;
-              position: absolute;
-              right: 0;
-              border-radius: 30px;
-              display: flex;
-              align-items: center;
-              .sort_button_icon {
-                margin-left: 5px;
-              }
-            }
-            .popup_sort_buttons {
-              position: absolute;
-              top: 40px;
-              right: 20px;
-              width: 112px;
-              z-index: 400;
-              background-color: #ffffff;
-              border-radius: 20px;
-              padding: 10px;
-              box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
-              animation: show-sort-menus 0.3s;
-              @keyframes show-sort-menus {
-                0% {
-                  opacity: 0.2;
-                  transform: scale(0.9) translateY(-15px);
-                }
-                100% {
-                  opacity: 1;
-                  transform: scale(1) translateY(0);
-                }
-              }
-              button {
-                width: 100%;
-                height: 40px;
-                border-radius: 16px;
-                border: none;
-                margin: 2px 0;
-                cursor: pointer;
-                background-color: #ffffff;
-                &:hover {
-                  background-color: #eee;
-                }
-                &.popup_sort_button_active {
-                  background-color: #99e0ed;
-                }
-              }
             }
           }
         }
