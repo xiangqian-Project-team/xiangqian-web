@@ -7,7 +7,7 @@ import { searchActor } from '../models/searchMachine';
 import styles from './mainSummary.module.scss';
 
 const MainSummary = (props: {}) => {
-  const [isContentOpen, setIsContentOpen] = useState(false);
+  const [isContentOpen, setIsContentOpen] = useState(true);
   const state = useSelector(searchActor, (state) => state);
   const mode = useSelector(searchActor, (state) => state.context.mode);
   const isLoadingPapers = state.matches({
@@ -92,7 +92,6 @@ const MainSummary = (props: {}) => {
             style={{ padding: '10px' }}
             paragraph={{ rows: 3 }}
           >
-            <div className={styles.main_summary_content_title}>总结</div>
             <div className={styles.main_summary_content_text}>
               {showSummary.summary}
             </div>

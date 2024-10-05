@@ -149,7 +149,7 @@ export default function Summary(props: {
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
-                  <div className={styles.header}>文献总结</div>
+                  <div className={styles.header}>总结</div>
                   <div className={styles.content_bullet_points_prefix}>
                     {showSummary.bulletPointsPrefix}
                   </div>
@@ -164,7 +164,6 @@ export default function Summary(props: {
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
-                  <div className={styles.content_bullet_points_title}>要点</div>
                   <ul className={styles.content_bullet_points}>
                     {showSummary.bulletPoints.map((item) => (
                       <li key={item.key}>
