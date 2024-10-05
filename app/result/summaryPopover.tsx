@@ -28,11 +28,10 @@ export default function SummaryPopover(props: {
     const thePapers = allPapers.filter((item) => {
       return idSet.has(`${item.id}`);
     });
-    const bltpt = list.map((item) => item.text).join('');
     setIsLoading(true);
     try {
       const res = await getBulletPointsExpansion({
-        bltpt,
+        bltpt: `${data.title.text}:${data.desc.text}`,
         papers: thePapers,
       });
       if (!res.ok) {
@@ -136,7 +135,7 @@ export default function SummaryPopover(props: {
             }}
           />
         )}
-        <div>{data.desc.text}</div>
+        <div>**{data.title.text}**</div>
         <div className={styles.summary_item_authors}>
           {list.map((item) => (
             <PopoverItem
@@ -146,6 +145,7 @@ export default function SummaryPopover(props: {
             />
           ))}
         </div>
+        <div>{data.desc.text}</div>
         {isOpen && (
           <div className={styles.expension_text}>
             <Skeleton

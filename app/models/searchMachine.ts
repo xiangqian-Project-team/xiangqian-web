@@ -23,10 +23,15 @@ export interface IPopoverInfo {
   key: number;
   popoverList: IPopoverItem[];
   desc?: IPopoverItem;
+  title?: IPopoverItem;
 }
 
 const initPopoverContent = (
-  contentList: { bltpt: string; refs: string }[],
+  contentList: {
+    refs: string;
+    summary: string;
+    title: string;
+  }[],
   papers: any[]
 ) => {
   const formattedContentList: IPopoverInfo[] = [];
@@ -36,17 +41,23 @@ const initPopoverContent = (
       popoverList: [],
       expensionPopoverList: [],
       desc: undefined,
+      title: undefined,
     };
     const popoverContent = handlePopoverContent(content, papers);
     info.popoverList = popoverContent.contentList;
     info.desc = popoverContent.desc;
+    info.title = popoverContent.title;
     formattedContentList.push(info);
   });
   return formattedContentList;
 };
 
 function handlePopoverContent(
-  content: { bltpt: string; refs: string },
+  content: {
+    refs: string;
+    summary: string;
+    title: string;
+  },
   papers: any[]
 ) {
   const matches = content.refs
@@ -90,8 +101,14 @@ function handlePopoverContent(
 
   return {
     contentList: list,
+    title: {
+      text: content.title,
+      key: Math.random(),
+      type: 'text',
+      isVisible: false,
+    },
     desc: {
-      text: content.bltpt,
+      text: content.summary,
       key: Math.random(),
       type: 'text',
       isVisible: false,
@@ -319,7 +336,11 @@ const fetchSummaryBulletPoints = async ({
   if (!res.ok) {
     throw new Error('Failed get summary bullet points');
   }
-  const data = await res.json();
+  const data = (await res.json()) as {
+    refs: string;
+    summary: string;
+    title: string;
+  }[];
   const formattedBulletPoints = initPopoverContent(data, [...papers]);
   return {
     bulletPoints: formattedBulletPoints,
