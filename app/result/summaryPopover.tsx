@@ -135,7 +135,7 @@ export default function SummaryPopover(props: {
             }}
           />
         )}
-        <div>**{data.title.text}**</div>
+        <div className={styles.summary_item_title}>**{data.title.text}**</div>
         <div className={styles.summary_item_authors}>
           {list.map((item) => (
             <PopoverItem
