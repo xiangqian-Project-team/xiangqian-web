@@ -43,11 +43,11 @@
     }
     .main_summary_content_left {
       width: 50%;
-      padding-right: 10px;
+      padding-right: 16px;
     }
     .main_summary_content_right {
       width: 50%;
-      padding-left: 10px;
+      padding-left: 16px;
     }
     .main_summary_content_sub {
       margin-top: 10px;
@@ -66,6 +66,8 @@
     }
     .main_summary_content_text {
       line-height: 24px;
+      text-indent: 2em;
+      padding-top: 12px;
     }
   }
 }

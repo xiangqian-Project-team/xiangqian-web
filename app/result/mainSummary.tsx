@@ -105,7 +105,7 @@ const MainSummary = (props: {}) => {
               style={{ padding: '10px' }}
               paragraph={{ rows: 3 }}
             >
-              <div className={styles.main_summary_content_title}>总结</div>
+              <div className={styles.main_summary_content_title}>概念</div>
               <div className={styles.main_summary_content_text}>
                 {showSummary.summary}
               </div>
@@ -122,7 +122,7 @@ const MainSummary = (props: {}) => {
               style={{ padding: '10px' }}
               paragraph={{ rows: 3 }}
             >
-              <div className={styles.main_summary_content_title}>定义</div>
+              <div className={styles.main_summary_content_title}>背景</div>
               <div className={styles.main_summary_content_text}>
                 {showSummary.background}
               </div>
