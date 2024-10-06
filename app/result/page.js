@@ -108,6 +108,7 @@ function Search() {
       searchActor.send({ type: 'FETCH_SUMMARY_BACKGROUND' });
       searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
       searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
+      searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
       searchActor.send({ type: 'FETCH_RESPONSE' });
     }
   }, [isFetchPapersSuccess]);
