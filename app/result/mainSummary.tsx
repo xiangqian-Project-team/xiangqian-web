@@ -29,9 +29,21 @@ const MainSummary = (props: {}) => {
     (state) => state.context.summaryZHInfo
   );
 
-  const isLoadingSummaryAnswer = state.matches({
+  const isLoadingSummaryConcept = state.matches({
     viewing: {
-      fetchingSummaryAnswer: 'fetching',
+      fetchingSummaryConcept: 'fetching',
+    },
+  });
+
+  const isLoadingSummaryQueryTerms = state.matches({
+    viewing: {
+      fetchingSummaryQueryTerms: 'fetching',
+    },
+  });
+
+  const isLoadingSummaryBackground = state.matches({
+    viewing: {
+      fetchingSummaryBackground: 'fetching',
     },
   });
 
@@ -52,7 +64,7 @@ const MainSummary = (props: {}) => {
         paddingBottom: `${isContentOpen ? '15px' : '0px'}`,
       }}
     >
-      {!isLoadingSummaryAnswer &&
+      {!isLoadingSummaryConcept &&
         !isLoadingPapers &&
         !isLoadingLiteratureReview && (
           <div
@@ -81,20 +93,55 @@ const MainSummary = (props: {}) => {
           </div>
         )}
       <div className={styles.main_summary_content}>
-        <div>
+        <div className={styles.main_summary_content_container}>
+          <div className={styles.main_summary_content_left}>
+            <Skeleton
+              active
+              loading={
+                isLoadingSummaryConcept ||
+                isLoadingPapers ||
+                isLoadingLiteratureReview
+              }
+              style={{ padding: '10px' }}
+              paragraph={{ rows: 3 }}
+            >
+              <div className={styles.main_summary_content_title}>总结</div>
+              <div className={styles.main_summary_content_text}>
+                {showSummary.summary}
+              </div>
+            </Skeleton>
+          </div>
+          <div className={styles.main_summary_content_right}>
+            <Skeleton
+              active
+              loading={
+                isLoadingSummaryBackground ||
+                isLoadingPapers ||
+                isLoadingLiteratureReview
+              }
+              style={{ padding: '10px' }}
+              paragraph={{ rows: 3 }}
+            >
+              <div className={styles.main_summary_content_title}>定义</div>
+              <div className={styles.main_summary_content_text}>
+                {showSummary.background}
+              </div>
+            </Skeleton>
+          </div>
+        </div>
+        <div className={styles.main_summary_content_sub}>
           <Skeleton
             active
             loading={
-              isLoadingSummaryAnswer ||
+              isLoadingSummaryQueryTerms ||
               isLoadingPapers ||
               isLoadingLiteratureReview
             }
             style={{ padding: '10px' }}
             paragraph={{ rows: 3 }}
           >
-            <div className={styles.main_summary_content_text}>
-              {showSummary.summary}
-            </div>
+            <b>相关术语</b>
+            {showSummary.queryTerms}
           </Skeleton>
         </div>
       </div>

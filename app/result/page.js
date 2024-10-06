@@ -78,7 +78,9 @@ function Search() {
   useEffect(() => {
     return () => {
       searchActor.send({ type: 'RESET_FETCH_PAPERS' });
-      searchActor.send({ type: 'RESET_FETCH_SUMMARY_ANSWER' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
+      searchActor.send({ type: 'RESET_FETCH_SUMMARY_BACKGROUND' });
       searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
       searchActor.send({ type: 'RESET_FETCH_RELATED' });
       searchActor.send({ type: 'RESET' });
@@ -89,7 +91,9 @@ function Search() {
     searchActor.send({ type: 'SET_QUESTION', value: question });
     searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
     searchActor.send({ type: 'RESET_FETCH_PAPERS' });
-    searchActor.send({ type: 'RESET_FETCH_SUMMARY_ANSWER' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
+    searchActor.send({ type: 'RESET_FETCH_SUMMARY_BACKGROUND' });
     searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
     searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'RESET' });
@@ -99,7 +103,9 @@ function Search() {
 
   useEffect(() => {
     if (isFetchPapersSuccess) {
-      searchActor.send({ type: 'FETCH_SUMMARY_ANSWER' });
+      searchActor.send({ type: 'FETCH_SUMMARY_CONCEPT' });
+      searchActor.send({ type: 'FETCH_SUMMARY_QUERY_TERMS' });
+      searchActor.send({ type: 'FETCH_SUMMARY_BACKGROUND' });
       searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
       searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
       searchActor.send({ type: 'FETCH_RESPONSE' });

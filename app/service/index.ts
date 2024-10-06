@@ -49,6 +49,45 @@ const request = async (
   return data;
 };
 
+export const getSummaryQueryTerms = async (params: { query: string }) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/query_terms`, option);
+};
+
+export const getSummaryConcept = async (params: { query: string }) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/concept`, option);
+};
+
+export const getSummaryBackground = async (params: { query: string }) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/background`, option);
+};
+
 export const getRelatedSearch = async (params: {
   answer: string;
   queryZh: string;

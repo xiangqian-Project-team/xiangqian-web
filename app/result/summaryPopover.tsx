@@ -115,25 +115,29 @@ export default function SummaryPopover(props: {
           }
         }}
       >
-        {isOpen ? (
-          <DownOutlined
-            className={styles.down_icon_active}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-            }}
-          />
-        ) : (
-          <DownOutlined
-            className={styles.down_icon}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
-            onClick={() => {
-              setIsOpen(!isOpen);
-              fetchBulletPointsExpansion();
-            }}
-          />
+        {data.title.text !== '其他' && (
+          <>
+            {isOpen ? (
+              <DownOutlined
+                className={styles.down_icon_active}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
+              />
+            ) : (
+              <DownOutlined
+                className={styles.down_icon}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                  fetchBulletPointsExpansion();
+                }}
+              />
+            )}
+          </>
         )}
         <div className={styles.summary_item_title}>{data.title.text}</div>
         <div className={styles.summary_item_authors}>

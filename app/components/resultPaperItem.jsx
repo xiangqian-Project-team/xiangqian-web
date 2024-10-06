@@ -553,7 +553,9 @@ export default function ResultPaperItem(props) {
 
       {contentStatus === 'abstract' && !isAbstractLoading && (
         <div className={styles.content_card_paperAbstract}>
-          {paperAbstract != 'No abstract' ? (
+          {!paperAbstract ? (
+            <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>
+          ) : (
             <>
               <div className={styles.content_card_abstract_switch}>
                 <label>
@@ -594,8 +596,6 @@ export default function ResultPaperItem(props) {
                 )}
               </div>
             </>
-          ) : (
-            <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>
           )}
         </div>
       )}

@@ -38,13 +38,34 @@
   .main_summary_content {
     padding: 18px;
     font-size: 14px;
+    .main_summary_content_container {
+      display: flex;
+    }
+    .main_summary_content_left {
+      width: 50%;
+      padding-right: 10px;
+    }
+    .main_summary_content_right {
+      width: 50%;
+      padding-left: 10px;
+    }
+    .main_summary_content_sub {
+      margin-top: 10px;
+      line-height: 24px;
+      background: #f3f7f9;
+      padding: 10px;
+      border-radius: 8px;
+      b {
+        font-weight: 600;
+        margin-right: 10px;
+      }
+    }
     .main_summary_content_title {
       font-weight: 600;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .main_summary_content_text {
       line-height: 24px;
-      text-indent: 28px;
     }
   }
 }

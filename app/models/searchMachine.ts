@@ -6,8 +6,10 @@ import {
   getRelatedSearch,
   getResponsePedia,
   getSummaryAnalysis,
-  getSummaryAnswer,
+  getSummaryBackground,
   getSummaryBulletPoints,
+  getSummaryConcept,
+  getSummaryQueryTerms,
 } from '../service';
 
 interface IPopoverItem {
@@ -231,40 +233,97 @@ const fetchPartPedia = async ({
   // };
 };
 
-const fetchSummaryAnswer = async ({
+// const fetchSummaryAnswer = async ({
+//   input,
+// }: {
+//   input: {
+//     mode: string;
+//     paperInfo: {
+//       papers: any[];
+//       queryEn: string;
+//       queryZh: string;
+//     };
+//     paperZHInfo: {
+//       papers: any[];
+//       queryEn: string;
+//       queryZh: string;
+//     };
+//   };
+// }) => {
+//   let { queryEn, queryZh, papers } = input.paperInfo;
+//   if (input.mode === 'zh-cn') {
+//     queryEn = input.paperZHInfo.queryEn;
+//     queryZh = input.paperZHInfo.queryZh;
+//     papers = input.paperZHInfo.papers;
+//   }
+//   const res = await getSummaryAnswer({
+//     papers,
+//     queryEn,
+//     queryZh,
+//   });
+//   if (!res.ok) {
+//     throw new Error('Failed get summary answer');
+//   }
+//   const data = await res.json();
+//   return {
+//     summary: data as string,
+//   };
+// };
+
+const fetchSummaryConcept = async ({
   input,
 }: {
   input: {
-    mode: string;
-    paperInfo: {
-      papers: any[];
-      queryEn: string;
-      queryZh: string;
-    };
-    paperZHInfo: {
-      papers: any[];
-      queryEn: string;
-      queryZh: string;
-    };
+    queryZh: string;
   };
 }) => {
-  let { queryEn, queryZh, papers } = input.paperInfo;
-  if (input.mode === 'zh-cn') {
-    queryEn = input.paperZHInfo.queryEn;
-    queryZh = input.paperZHInfo.queryZh;
-    papers = input.paperZHInfo.papers;
-  }
-  const res = await getSummaryAnswer({
-    papers,
-    queryEn,
-    queryZh,
+  const res = await getSummaryConcept({
+    query: input.queryZh,
   });
   if (!res.ok) {
-    throw new Error('Failed get summary answer');
+    throw new Error('Failed get summary concept');
   }
   const data = await res.json();
   return {
     summary: data as string,
+  };
+};
+
+const fetchSummaryQueryTerms = async ({
+  input,
+}: {
+  input: {
+    queryZh: string;
+  };
+}) => {
+  const res = await getSummaryQueryTerms({
+    query: input.queryZh,
+  });
+  if (!res.ok) {
+    throw new Error('Failed get summary query terms');
+  }
+  const data = await res.json();
+  return {
+    queryTerms: data as string,
+  };
+};
+
+const fetchSummaryBackground = async ({
+  input,
+}: {
+  input: {
+    queryZh: string;
+  };
+}) => {
+  const res = await getSummaryBackground({
+    query: input.queryZh,
+  });
+  if (!res.ok) {
+    throw new Error('Failed get summary query terms');
+  }
+  const data = await res.json();
+  return {
+    background: data as string,
   };
 };
 
@@ -509,11 +568,15 @@ interface SearchContext {
   };
   summaryInfo: {
     summary: string;
+    queryTerms: string;
+    background: string;
     bulletPoints: IPopoverInfo[];
     bulletPointsPrefix: string;
   };
   summaryZHInfo: {
     summary: string;
+    queryTerms: string;
+    background: string;
     bulletPoints: IPopoverInfo[];
     bulletPointsPrefix: string;
   };
@@ -567,8 +630,14 @@ const searchMachine = setup({
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
-      | { type: 'FETCH_SUMMARY_ANSWER' }
-      | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
+      // | { type: 'FETCH_SUMMARY_ANSWER' }
+      // | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
+      | { type: 'FETCH_SUMMARY_CONCEPT' }
+      | { type: 'RESET_FETCH_SUMMARY_CONCEPT' }
+      | { type: 'FETCH_SUMMARY_QUERY_TERMS' }
+      | { type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' }
+      | { type: 'FETCH_SUMMARY_BACKGROUND' }
+      | { type: 'RESET_FETCH_SUMMARY_BACKGROUND' }
       | { type: 'FETCH_SUMMARY_ANALYSIS' }
       | { type: 'RESET_FETCH_SUMMARY_ANALYSIS' }
       | { type: 'FETCH_SUMMARY_BULLET_POINTS' }
@@ -585,7 +654,10 @@ const searchMachine = setup({
   actors: {
     fetchLiteratureReview: fromPromise(fetchLiteratureReview),
     // fetchSummary: fromPromise(fetchAnalysisPedia),
-    fetchSummaryAnswer: fromPromise(fetchSummaryAnswer),
+    // fetchSummaryAnswer: fromPromise(fetchSummaryAnswer),
+    fetchSummaryConcept: fromPromise(fetchSummaryConcept),
+    fetchSummaryQueryTerms: fromPromise(fetchSummaryQueryTerms),
+    fetchSummaryBackground: fromPromise(fetchSummaryBackground),
     fetchSummaryAnalysis: fromPromise(fetchSummaryAnalysis),
     fetchSummaryBulletPoints: fromPromise(fetchSummaryBulletPoints),
     fetchPapers: fromPromise(fetchPartPedia),
@@ -616,11 +688,15 @@ const searchMachine = setup({
     },
     summaryInfo: {
       summary: '',
+      queryTerms: '',
+      background: '',
       bulletPoints: [],
       bulletPointsPrefix: '',
     },
     summaryZHInfo: {
       summary: '',
+      queryTerms: '',
+      background: '',
       bulletPoints: [],
       bulletPointsPrefix: '',
     },
@@ -747,17 +823,16 @@ const searchMachine = setup({
             },
           },
         },
-        fetchingSummaryAnswer: {
+        fetchingSummaryConcept: {
           initial: 'idle',
           states: {
             idle: {},
             fetching: {
               invoke: {
-                src: 'fetchSummaryAnswer',
+                src: 'fetchSummaryConcept',
                 input: ({ context }) => ({
-                  mode: context.mode,
-                  paperInfo: context.paperInfo,
-                  paperZHInfo: context.paperZHInfo,
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',
@@ -781,10 +856,96 @@ const searchMachine = setup({
             fail: {},
           },
           on: {
-            RESET_FETCH_SUMMARY_ANSWER: {
+            RESET_FETCH_SUMMARY_CONCEPT: {
               target: '.idle',
             },
-            FETCH_SUMMARY_ANSWER: {
+            FETCH_SUMMARY_CONCEPT: {
+              target: '.fetching',
+            },
+          },
+        },
+        fetchingSummaryQueryTerms: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchSummaryQueryTerms',
+                input: ({ context }) => ({
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      switch (context.mode) {
+                        case 'zh-cn':
+                          draft.summaryZHInfo.queryTerms =
+                            event.output.queryTerms;
+                          break;
+                        case 'en':
+                          draft.summaryInfo.queryTerms =
+                            event.output.queryTerms;
+                          break;
+                      }
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            RESET_FETCH_SUMMARY_QUERY_TERMS: {
+              target: '.idle',
+            },
+            FETCH_SUMMARY_QUERY_TERMS: {
+              target: '.fetching',
+            },
+          },
+        },
+        fetchingSummaryBackground: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchSummaryBackground',
+                input: ({ context }) => ({
+                  queryZh:
+                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                }),
+                onDone: {
+                  target: 'success',
+                  actions: assign(({ context, event }) => {
+                    return produce(context, (draft) => {
+                      switch (context.mode) {
+                        case 'zh-cn':
+                          draft.summaryZHInfo.background =
+                            event.output.background;
+                          break;
+                        case 'en':
+                          draft.summaryInfo.background =
+                            event.output.background;
+                          break;
+                      }
+                    });
+                  }),
+                },
+                onError: 'fail',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            RESET_FETCH_SUMMARY_BACKGROUND: {
+              target: '.idle',
+            },
+            FETCH_SUMMARY_BACKGROUND: {
               target: '.fetching',
             },
           },
