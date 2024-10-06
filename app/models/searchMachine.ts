@@ -728,11 +728,15 @@ const searchMachine = setup({
                 }),
                 summaryInfo: () => ({
                   summary: '',
+                  queryTerms: '',
+                  background: '',
                   bulletPoints: [],
                   bulletPointsPrefix: '',
                 }),
                 summaryZHInfo: () => ({
                   summary: '',
+                  queryTerms: '',
+                  background: '',
                   bulletPoints: [],
                   bulletPointsPrefix: '',
                 }),
