@@ -15,11 +15,6 @@ const MainSummary = (props: {}) => {
       fetchingPapers: 'fetching',
     },
   });
-  const isLoadingLiteratureReview = state.matches({
-    viewing: {
-      fetchingLiteratureReview: 'fetching',
-    },
-  });
   const summaryInfo = useSelector(
     searchActor,
     (state) => state.context.summaryInfo
@@ -64,46 +59,40 @@ const MainSummary = (props: {}) => {
         paddingBottom: `${isContentOpen ? '15px' : '0px'}`,
       }}
     >
-      {!isLoadingSummaryConcept &&
-        !isLoadingPapers &&
-        !isLoadingLiteratureReview && (
-          <div
-            className={styles.main_summary_content_mask}
-            onClick={() => {
-              setIsContentOpen(!isContentOpen);
-            }}
-          >
-            {isContentOpen ? (
-              <Image
-                alt=""
-                className={styles.main_summary_content_switch_close}
-                width={20}
-                height={20}
-                src={ArrowIcon.src}
-              />
-            ) : (
-              <Image
-                alt=""
-                className={styles.main_summary_content_switch_open}
-                width={20}
-                height={20}
-                src={ArrowIcon.src}
-              />
-            )}
-          </div>
-        )}
+      {!isLoadingSummaryConcept && !isLoadingPapers && (
+        <div
+          className={styles.main_summary_content_mask}
+          onClick={() => {
+            setIsContentOpen(!isContentOpen);
+          }}
+        >
+          {isContentOpen ? (
+            <Image
+              alt=""
+              className={styles.main_summary_content_switch_close}
+              width={20}
+              height={20}
+              src={ArrowIcon.src}
+            />
+          ) : (
+            <Image
+              alt=""
+              className={styles.main_summary_content_switch_open}
+              width={20}
+              height={20}
+              src={ArrowIcon.src}
+            />
+          )}
+        </div>
+      )}
       <div className={styles.main_summary_content}>
         <div className={styles.main_summary_content_container}>
           <div className={styles.main_summary_content_left}>
             <Skeleton
               active
-              loading={
-                isLoadingSummaryConcept ||
-                isLoadingPapers ||
-                isLoadingLiteratureReview
-              }
+              loading={isLoadingSummaryConcept || isLoadingPapers}
               style={{ padding: '10px' }}
-              paragraph={{ rows: 3 }}
+              paragraph={{ rows: 2 }}
             >
               <div className={styles.main_summary_content_title}>概念</div>
               <div className={styles.main_summary_content_text}>
@@ -114,13 +103,9 @@ const MainSummary = (props: {}) => {
           <div className={styles.main_summary_content_right}>
             <Skeleton
               active
-              loading={
-                isLoadingSummaryBackground ||
-                isLoadingPapers ||
-                isLoadingLiteratureReview
-              }
+              loading={isLoadingSummaryBackground || isLoadingPapers}
               style={{ padding: '10px' }}
-              paragraph={{ rows: 3 }}
+              paragraph={{ rows: 2 }}
             >
               <div className={styles.main_summary_content_title}>背景</div>
               <div className={styles.main_summary_content_text}>
@@ -132,13 +117,9 @@ const MainSummary = (props: {}) => {
         <div className={styles.main_summary_content_sub}>
           <Skeleton
             active
-            loading={
-              isLoadingSummaryQueryTerms ||
-              isLoadingPapers ||
-              isLoadingLiteratureReview
-            }
+            loading={isLoadingSummaryQueryTerms || isLoadingPapers}
             style={{ padding: '10px' }}
-            paragraph={{ rows: 3 }}
+            paragraph={{ rows: 2 }}
           >
             <b>相关术语</b>
             {showSummary.queryTerms}
