@@ -108,7 +108,6 @@ export default function Summary(props: {
     <div className={styles.search_content_data_summary_content}>
       {
         <div>
-          {state.context.summary}
           <div>
             {mode === 'selected' &&
               summarySelectedInfo.bulletPoints.length === 0 && (
