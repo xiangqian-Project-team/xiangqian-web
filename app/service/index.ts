@@ -287,6 +287,19 @@ export const fetchAbstractAndTranslation = async (paper: any) => {
   return fetch(apiUrl, options);
 };
 
+export const fetchReadingGuide = async (paper: any) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify({ paper }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/paper/reading_guide`, option);
+};
+
 export const fetchSimiliar = async (paper: any) => {
   // Assuming the token is stored and should be included in the request if available
   const token = getItem('token');

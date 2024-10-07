@@ -14,6 +14,7 @@ import UserIcon from '../img/user.png';
 import { searchActor } from '../models/searchMachine';
 import {
   fetchAbstractAndTranslation as fetchAbstractAndTranslationAsync,
+  fetchReadingGuide as fetchReadingGuideAsync,
   fetchSimiliar as fetchSimiliarAsync,
 } from '../service';
 import CitationText from './citationText.js';
@@ -98,6 +99,31 @@ const AbstractIcon = () => (
       height="2"
       rx="1"
       fill="#00A7EA"
+    />
+  </svg>
+);
+
+const GuideIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6.5 5L8.00189 8.33123L11 10L8.00189 11.6688L6.5 15L4.99811 11.6688L2 10L4.99811 8.33123L6.5 5Z"
+      fill="#64DBBD"
+    />
+    <path
+      opacity="0.6"
+      d="M11 2L12.0013 4.33186L14 5.5L12.0013 6.66814L11 9L9.99874 6.66814L8 5.5L9.99874 4.33186L11 2Z"
+      fill="#64DBBD"
+    />
+    <path
+      opacity="0.6"
+      d="M13 9L14.0013 11.3319L16 12.5L14.0013 13.6681L13 16L11.9987 13.6681L10 12.5L11.9987 11.3319L13 9Z"
+      fill="#64DBBD"
     />
   </svg>
 );
@@ -233,10 +259,12 @@ export default function ResultPaperItem(props) {
 
   // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
   // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
+  const [guideContent, setGuideContent] = useState('');
   const [similiarContent, setSimiliarContent] = useState([]);
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
   const [isSimiliarLoading, setIsSimiliarLoading] = useState(false);
   const [isAbstractLoading, setIsAbstractLoading] = useState(false);
+  const [isGuideLoading, setIsGuideLoading] = useState(false);
   const [contentStatus, setContentStatus] = useState('closed');
   const [isAbstractFullVisible, setIsAbstractFullVisible] = useState(false);
   const [isEnAbstractVisible, setIsEnAbstractVisible] = useState(false);
@@ -313,6 +341,32 @@ export default function ResultPaperItem(props) {
       console.error(error);
     } finally {
       setIsAbstractLoading(false);
+    }
+  };
+
+  const toggleGuideContent = async (paper) => {
+    try {
+      if (contentStatus === 'guide') {
+        setContentStatus('closed');
+        return;
+      }
+      setContentStatus('guide');
+      if (guideContent || isGuideLoading) {
+        return;
+      }
+
+      setIsGuideLoading(true);
+      const res = await fetchReadingGuideAsync(paper);
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
+      const data = await res.json();
+      setGuideContent(data);
+      return;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsGuideLoading(false);
     }
   };
 
@@ -482,6 +536,26 @@ export default function ResultPaperItem(props) {
               />
             )}
           </button>
+          <button
+            className={`${styles.content_card_btn_abstract} ${contentStatus === 'guide' && styles.content_card_btn_abstract_drop}`}
+            onClick={() => {
+              toggleGuideContent(props.data);
+            }}
+          >
+            <Icon component={GuideIcon} />
+            查看高亮
+            {isGuideLoading && <LoadingOutlined />}
+            {!isGuideLoading && contentStatus === 'guide' && (
+              <UpOutlined
+                className={styles.content_card_btn_abstract_drop_icon}
+              />
+            )}
+            {!isGuideLoading && contentStatus !== 'guide' && (
+              <DownOutlined
+                className={styles.content_card_btn_abstract_drop_icon}
+              />
+            )}
+          </button>
         </div>
         <div className={styles.content_card_btn_sub}>
           <button
@@ -598,6 +672,10 @@ export default function ResultPaperItem(props) {
             </>
           )}
         </div>
+      )}
+
+      {contentStatus === 'guide' && !isGuideLoading && (
+        <div className={styles.content_card_paperAbstract}>{guideContent}</div>
       )}
 
       <Modal
