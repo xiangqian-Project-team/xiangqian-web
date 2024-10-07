@@ -319,7 +319,13 @@ export default function ResultPaperItem(props) {
         return;
       }
       setContentStatus('abstract');
-      if (fetchedAbstract || isAbstractLoading) {
+      if (paper.paperAbstractZh) {
+        return;
+      }
+      if (fetchedAbstract && !paper.paperAbstract) {
+        return;
+      }
+      if (isAbstractLoading) {
         return;
       }
 
