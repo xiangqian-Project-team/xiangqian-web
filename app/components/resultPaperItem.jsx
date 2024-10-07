@@ -549,7 +549,7 @@ export default function ResultPaperItem(props) {
             }}
           >
             <Icon component={GuideIcon} />
-            查看高亮
+            查看导读
             {isGuideLoading && <LoadingOutlined />}
             {!isGuideLoading && contentStatus === 'guide' && (
               <UpOutlined
