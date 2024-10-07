@@ -1,7 +1,7 @@
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import ArrowIcon from '../icons/right_arrow_icon.svg';
 import { searchActor } from '../models/searchMachine';
 import styles from './mainSummary.module.scss';
@@ -9,20 +9,23 @@ import styles from './mainSummary.module.scss';
 const MainSummary = (props: {}) => {
   const [isContentOpen, setIsContentOpen] = useState(true);
   const state = useSelector(searchActor, (state) => state);
-  const mode = useSelector(searchActor, (state) => state.context.mode);
+  const summaryConcept = useSelector(
+    searchActor,
+    (state) => state.context.summaryConcept
+  );
+  const summaryQueryTerms = useSelector(
+    searchActor,
+    (state) => state.context.summaryQueryTerms
+  );
+  const summaryBackground = useSelector(
+    searchActor,
+    (state) => state.context.summaryBackground
+  );
   const isLoadingPapers = state.matches({
     viewing: {
       fetchingPapers: 'fetching',
     },
   });
-  const summaryInfo = useSelector(
-    searchActor,
-    (state) => state.context.summaryInfo
-  );
-  const summaryZHInfo = useSelector(
-    searchActor,
-    (state) => state.context.summaryZHInfo
-  );
 
   const isLoadingSummaryConcept = state.matches({
     viewing: {
@@ -41,15 +44,6 @@ const MainSummary = (props: {}) => {
       fetchingSummaryBackground: 'fetching',
     },
   });
-
-  const showSummary = useMemo(() => {
-    switch (mode) {
-      case 'en':
-        return summaryInfo;
-      case 'zh-cn':
-        return summaryZHInfo;
-    }
-  }, [mode, summaryInfo, summaryZHInfo]);
 
   return (
     <div
@@ -90,26 +84,26 @@ const MainSummary = (props: {}) => {
           <div className={styles.main_summary_content_left}>
             <Skeleton
               active
-              loading={isLoadingSummaryConcept || isLoadingPapers}
+              loading={isLoadingSummaryConcept}
               style={{ padding: '10px' }}
               paragraph={{ rows: 2 }}
             >
               <div className={styles.main_summary_content_title}>概念</div>
               <div className={styles.main_summary_content_text}>
-                {showSummary.summary}
+                {summaryConcept}
               </div>
             </Skeleton>
           </div>
           <div className={styles.main_summary_content_right}>
             <Skeleton
               active
-              loading={isLoadingSummaryBackground || isLoadingPapers}
+              loading={isLoadingSummaryBackground}
               style={{ padding: '10px' }}
               paragraph={{ rows: 2 }}
             >
               <div className={styles.main_summary_content_title}>背景</div>
               <div className={styles.main_summary_content_text}>
-                {showSummary.background}
+                {summaryBackground}
               </div>
             </Skeleton>
           </div>
@@ -117,12 +111,12 @@ const MainSummary = (props: {}) => {
         <div className={styles.main_summary_content_sub}>
           <Skeleton
             active
-            loading={isLoadingSummaryQueryTerms || isLoadingPapers}
+            loading={isLoadingSummaryQueryTerms}
             style={{ padding: '10px' }}
             paragraph={{ rows: 2 }}
           >
             <b>相关术语</b>
-            {showSummary.queryTerms}
+            {summaryQueryTerms}
           </Skeleton>
         </div>
       </div>

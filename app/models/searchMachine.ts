@@ -274,18 +274,18 @@ const fetchSummaryConcept = async ({
   input,
 }: {
   input: {
-    queryZh: string;
+    question: string;
   };
 }) => {
   const res = await getSummaryConcept({
-    query: input.queryZh,
+    query: input.question,
   });
   if (!res.ok) {
     throw new Error('Failed get summary concept');
   }
   const data = await res.json();
   return {
-    summary: data as string,
+    summaryConcept: data as string,
   };
 };
 
@@ -293,11 +293,11 @@ const fetchSummaryQueryTerms = async ({
   input,
 }: {
   input: {
-    queryZh: string;
+    question: string;
   };
 }) => {
   const res = await getSummaryQueryTerms({
-    query: input.queryZh,
+    query: input.question,
   });
   if (!res.ok) {
     throw new Error('Failed get summary query terms');
@@ -312,11 +312,11 @@ const fetchSummaryBackground = async ({
   input,
 }: {
   input: {
-    queryZh: string;
+    question: string;
   };
 }) => {
   const res = await getSummaryBackground({
-    query: input.queryZh,
+    query: input.question,
   });
   if (!res.ok) {
     throw new Error('Failed get summary query terms');
@@ -554,8 +554,9 @@ interface SearchContext {
   readonly pageSize: number;
   isLoadingSummary: boolean;
   isInitialed: boolean;
-  summary: string;
-  summaryZH: string;
+  summaryConcept: string;
+  summaryQueryTerms: string;
+  summaryBackground: string;
   paperInfo: {
     papers: any[];
     queryEn: string;
@@ -630,6 +631,7 @@ const searchMachine = setup({
       | { type: 'FETCH_RELATED_SEARCH' }
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
+      | { type: 'RESET_FETCH_PAPERS' }
       // | { type: 'FETCH_SUMMARY_ANSWER' }
       // | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
       | { type: 'FETCH_SUMMARY_CONCEPT' }
@@ -674,8 +676,9 @@ const searchMachine = setup({
     pageSize: 10,
     isLoadingSummary: false,
     isInitialed: false,
-    summary: '',
-    summaryZH: '',
+    summaryConcept: '',
+    summaryQueryTerms: '',
+    summaryBackground: '',
     paperInfo: {
       papers: [],
       queryEn: '',
@@ -835,21 +838,13 @@ const searchMachine = setup({
               invoke: {
                 src: 'fetchSummaryConcept',
                 input: ({ context }) => ({
-                  queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                  question: context.question,
                 }),
                 onDone: {
                   target: 'success',
                   actions: assign(({ context, event }) => {
                     return produce(context, (draft) => {
-                      switch (context.mode) {
-                        case 'zh-cn':
-                          draft.summaryZHInfo.summary = event.output.summary;
-                          break;
-                        case 'en':
-                          draft.summaryInfo.summary = event.output.summary;
-                          break;
-                      }
+                      draft.summaryConcept = event.output.summaryConcept;
                     });
                   }),
                 },
@@ -876,23 +871,13 @@ const searchMachine = setup({
               invoke: {
                 src: 'fetchSummaryQueryTerms',
                 input: ({ context }) => ({
-                  queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                  question: context.question,
                 }),
                 onDone: {
                   target: 'success',
                   actions: assign(({ context, event }) => {
                     return produce(context, (draft) => {
-                      switch (context.mode) {
-                        case 'zh-cn':
-                          draft.summaryZHInfo.queryTerms =
-                            event.output.queryTerms;
-                          break;
-                        case 'en':
-                          draft.summaryInfo.queryTerms =
-                            event.output.queryTerms;
-                          break;
-                      }
+                      draft.summaryQueryTerms = event.output.queryTerms;
                     });
                   }),
                 },
@@ -919,23 +904,13 @@ const searchMachine = setup({
               invoke: {
                 src: 'fetchSummaryBackground',
                 input: ({ context }) => ({
-                  queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                  question: context.question,
                 }),
                 onDone: {
                   target: 'success',
                   actions: assign(({ context, event }) => {
                     return produce(context, (draft) => {
-                      switch (context.mode) {
-                        case 'zh-cn':
-                          draft.summaryZHInfo.background =
-                            event.output.background;
-                          break;
-                        case 'en':
-                          draft.summaryInfo.background =
-                            event.output.background;
-                          break;
-                      }
+                      draft.summaryBackground = event.output.background;
                     });
                   }),
                 },

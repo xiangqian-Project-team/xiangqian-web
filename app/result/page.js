@@ -99,13 +99,13 @@ function Search() {
     searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });
     searchActor.send({ type: 'FETCH_PAPERS' });
+    searchActor.send({ type: 'FETCH_SUMMARY_CONCEPT' });
+    searchActor.send({ type: 'FETCH_SUMMARY_QUERY_TERMS' });
+    searchActor.send({ type: 'FETCH_SUMMARY_BACKGROUND' });
   }, [question]);
 
   useEffect(() => {
     if (isFetchPapersSuccess) {
-      searchActor.send({ type: 'FETCH_SUMMARY_CONCEPT' });
-      searchActor.send({ type: 'FETCH_SUMMARY_QUERY_TERMS' });
-      searchActor.send({ type: 'FETCH_SUMMARY_BACKGROUND' });
       searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
       searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
       searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
