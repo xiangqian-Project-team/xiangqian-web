@@ -81,6 +81,7 @@
         position: relative;
         .cn_button,
         .en_button,
+        .right_button,
         .cn_button_active,
         .en_button_active {
           width: 139px;
@@ -101,11 +102,13 @@
         .cn_button,
         .cn_button_active {
           margin: 0 2px;
-          border-radius: 0 30px 30px 0;
         }
         .cn_button_active,
         .en_button_active {
           background-color: #99e0ed;
+        }
+        .right_button {
+          border-radius: 0 30px 30px 0;
         }
         .sort_button {
           height: 36px;

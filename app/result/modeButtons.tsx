@@ -106,6 +106,14 @@ export default function ModeButtons(props: IModeButtonsProps) {
             中文文献
           </Button>
         )}
+        <Button
+          className={styles.right_button}
+          onClick={() => {
+            message.info({ content: '即将上线', duration: 5 });
+          }}
+        >
+          基金课题
+        </Button>
         {/* {mode === 'selected' ? (
           <Button
             className={styles.selected_button_active}
