@@ -108,6 +108,7 @@ export default function ModeButtons(props: IModeButtonsProps) {
         )}
         <Button
           className={styles.right_button}
+          disabled={props.disabled}
           onClick={() => {
             message.info({ content: '即将上线', duration: 5 });
           }}
