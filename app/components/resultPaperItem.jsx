@@ -547,6 +547,7 @@ export default function ResultPaperItem(props) {
             onClick={() => {
               toggleGuideContent(props.data);
             }}
+            data-umami-event="guide button"
           >
             <Icon component={GuideIcon} />
             查看导读
