@@ -37,11 +37,11 @@ export default function SummaryPopover(props: {
       if (!res.ok) {
         throw new Error('Failed get response');
       }
-      const resData = (await res.json()) as { bltptExpansion: string };
+      const resData: string = await res.json();
       searchActor.send({
         type: 'SET_EXPENSION_TEXT',
         value: {
-          text: resData.bltptExpansion,
+          text: resData,
           key: data.key,
         },
       });

@@ -500,7 +500,7 @@ export default function ResultPaperItem(props) {
         </Tooltip>
 
         <Modal
-          title={title}
+          title={journal}
           open={isJournalInfoModalVisible}
           footer={null}
           wrapClassName={styles.quoteModal}
