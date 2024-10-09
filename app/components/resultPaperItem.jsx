@@ -14,6 +14,7 @@ import UserIcon from '../img/user.png';
 import { searchActor } from '../models/searchMachine';
 import {
   fetchAbstractAndTranslation as fetchAbstractAndTranslationAsync,
+  fetchJournalInfo as fetchJournalInfoAsync,
   fetchReadingGuide as fetchReadingGuideAsync,
   fetchSimiliar as fetchSimiliarAsync,
 } from '../service';
@@ -259,7 +260,10 @@ export default function ResultPaperItem(props) {
 
   // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
   // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
-  const [isGuideModalVisible, setIsGuideModalVisible] = useState(false);
+  const [isJournalInfoModalVisible, setIsJournalInfoModalVisible] =
+    useState(false);
+  const [isJournalInfoLoading, setIsJournalInfoLoading] = useState(false);
+  const [journalInfo, setJournalInfo] = useState('');
   const [guideContent, setGuideContent] = useState('');
   const [similiarContent, setSimiliarContent] = useState([]);
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
@@ -380,6 +384,22 @@ export default function ResultPaperItem(props) {
     }
   };
 
+  const fetchJournalInfo = async (paper) => {
+    try {
+      setIsJournalInfoLoading(true);
+      const res = await fetchJournalInfoAsync(paper);
+      if (!res.ok) {
+        throw new Error('Failed search');
+      }
+      const data = await res.json();
+      setJournalInfo(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsJournalInfoLoading(false);
+    }
+  };
+
   return (
     <div
       className={
@@ -470,9 +490,9 @@ export default function ResultPaperItem(props) {
             className={styles.content_card_footer_journal_text}
             onClick={() => {
               if (!isGuideLoading) {
-                fetchGuideContent(props.data);
+                fetchJournalInfo(props.data);
               }
-              setIsGuideModalVisible(true);
+              setIsJournalInfoModalVisible(true);
             }}
           >
             {journal}
@@ -481,11 +501,11 @@ export default function ResultPaperItem(props) {
 
         <Modal
           title={title}
-          open={isGuideModalVisible}
+          open={isJournalInfoModalVisible}
           footer={null}
           wrapClassName={styles.quoteModal}
           onCancel={() => {
-            setIsGuideModalVisible(false);
+            setIsJournalInfoModalVisible(false);
           }}
         >
           <Skeleton
