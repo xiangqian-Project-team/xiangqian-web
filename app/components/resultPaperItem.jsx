@@ -259,6 +259,7 @@ export default function ResultPaperItem(props) {
 
   // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
   // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
+  const [isGuideModalVisible, setIsGuideModalVisible] = useState(false);
   const [guideContent, setGuideContent] = useState('');
   const [similiarContent, setSimiliarContent] = useState([]);
   const [isQuoteVisible, setIsQuoteVisible] = useState(false);
@@ -351,16 +352,20 @@ export default function ResultPaperItem(props) {
   };
 
   const toggleGuideContent = async (paper) => {
-    try {
-      if (contentStatus === 'guide') {
-        setContentStatus('closed');
-        return;
-      }
-      setContentStatus('guide');
-      if (guideContent || isGuideLoading) {
-        return;
-      }
+    if (contentStatus === 'guide') {
+      setContentStatus('closed');
+      return;
+    }
+    setContentStatus('guide');
+    if (guideContent || isGuideLoading) {
+      return;
+    }
 
+    fetchGuideContent(paper);
+  };
+
+  const fetchGuideContent = async (paper) => {
+    try {
       setIsGuideLoading(true);
       const res = await fetchReadingGuideAsync(paper);
       if (!res.ok) {
@@ -368,7 +373,6 @@ export default function ResultPaperItem(props) {
       }
       const data = await res.json();
       setGuideContent(data);
-      return;
     } catch (error) {
       console.error(error);
     } finally {
@@ -462,10 +466,37 @@ export default function ResultPaperItem(props) {
         </div>
 
         <Tooltip title={journal}>
-          <div className={styles.content_card_footer_journal_text}>
+          <div
+            className={styles.content_card_footer_journal_text}
+            onClick={() => {
+              if (!isGuideLoading) {
+                fetchGuideContent(props.data);
+              }
+              setIsGuideModalVisible(true);
+            }}
+          >
             {journal}
           </div>
         </Tooltip>
+
+        <Modal
+          title={title}
+          open={isGuideModalVisible}
+          footer={null}
+          wrapClassName={styles.quoteModal}
+          onCancel={() => {
+            setIsGuideModalVisible(false);
+          }}
+        >
+          <Skeleton
+            active
+            loading={isGuideLoading}
+            style={{ padding: '20px' }}
+            paragraph={{ rows: 3 }}
+          >
+            <div>{guideContent}</div>
+          </Skeleton>
+        </Modal>
 
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_authors}>

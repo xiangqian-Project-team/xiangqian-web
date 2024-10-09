@@ -282,6 +282,11 @@
     margin-right: 4px !important;
   }
 
+  .content_card_guide_popover_title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
   .content_card_footer_journal {
     height: 16px;
     display: flex;
@@ -289,6 +294,7 @@
   }
 
   .content_card_footer_journal_text {
+    cursor: pointer;
     overflow: hidden; //超出的文本隐藏
     text-overflow: ellipsis; //溢出用省略号显示
     white-space: nowrap; //溢出不换行
