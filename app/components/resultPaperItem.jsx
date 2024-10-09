@@ -510,11 +510,11 @@ export default function ResultPaperItem(props) {
         >
           <Skeleton
             active
-            loading={isGuideLoading}
+            loading={isJournalInfoLoading}
             style={{ padding: '20px' }}
             paragraph={{ rows: 3 }}
           >
-            <div>{guideContent}</div>
+            <div>{journalInfo}</div>
           </Skeleton>
         </Modal>
 
