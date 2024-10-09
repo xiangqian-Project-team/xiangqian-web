@@ -24,6 +24,7 @@ export interface IPopoverInfo {
   expensionPopoverList: IPopoverItem[];
   key: number;
   popoverList: IPopoverItem[];
+  paperList?: any[];
   desc?: IPopoverItem;
   title?: IPopoverItem;
 }
@@ -41,18 +42,44 @@ const initPopoverContent = (
     const info = {
       key: Math.random(),
       popoverList: [],
+      paperList: [],
       expensionPopoverList: [],
       desc: undefined,
       title: undefined,
     };
     const popoverContent = handlePopoverContent(content, papers);
     info.popoverList = popoverContent.contentList;
+    info.paperList = handlePaperList(content, papers);
     info.desc = popoverContent.desc;
     info.title = popoverContent.title;
     formattedContentList.push(info);
   });
   return formattedContentList;
 };
+
+function handlePaperList(
+  content: {
+    refs: string;
+    summary: string;
+    title: string;
+  },
+  papers: any[]
+) {
+  const matches = content.refs
+    .match(/\[(.*?)\]/g)
+    .map((match) => match.slice(1, -1));
+  const list = matches.reduce<IPopoverItem[]>((arr, element, index) => {
+    // @ts-ignore
+    if (matches.includes(element)) {
+      const id = element.replace(/^\[(.+)\]$/, '$1');
+      const paper = papers.find((item) => item.id === id);
+
+      return [...arr, paper];
+    }
+  }, []);
+
+  return list;
+}
 
 function handlePopoverContent(
   content: {

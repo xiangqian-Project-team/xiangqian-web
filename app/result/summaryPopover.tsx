@@ -24,7 +24,7 @@ export default function SummaryPopover(props: {
     if (expensionPopoverList.length) {
       return;
     }
-    const idSet = new Set(list.map((item) => item.id));
+    const idSet = new Set((data.paperList || []).map((item) => item.id));
     const thePapers = allPapers.filter((item) => {
       return idSet.has(`${item.id}`);
     });
@@ -37,11 +37,11 @@ export default function SummaryPopover(props: {
       if (!res.ok) {
         throw new Error('Failed get response');
       }
-      const resData: string = await res.json();
+      const resData = (await res.json()) as { bltptExpansion: string };
       searchActor.send({
         type: 'SET_EXPENSION_TEXT',
         value: {
-          text: resData,
+          text: resData.bltptExpansion,
           key: data.key,
         },
       });
