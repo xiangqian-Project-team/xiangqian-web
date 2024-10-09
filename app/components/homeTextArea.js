@@ -8,9 +8,8 @@
  */
 'use client';
 import Icon from '@ant-design/icons';
-import { Button, Input, message } from 'antd';
-// import { useRouter } from 'next/navigation';
 import { useSelector } from '@xstate/react';
+import { Button, Input, message } from 'antd';
 import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
 import withTheme from '../../theme';
@@ -128,7 +127,7 @@ function HomeTextArea() {
             border: 'none',
           }}
           onClick={() => {
-            umami.track('search button', { item: searchValue });
+            umami.track('recommended search button', { item: searchValue });
             router.push(`./result?q=${searchValue}`);
           }}
         >
