@@ -87,19 +87,13 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.cn_button}
             disabled={props.disabled}
             onClick={() => {
-              // searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
-              // searchActor.send({
-              //   type: 'CHANGE_SORT_MODE',
-              //   value: SortMode.DEFAULT,
-              // });
-              // searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
-              // searchActor.send({ type: 'FETCH_PAPERS' });
-
-              message.warning({
-                content:
-                  '中文搜索功能预计十月中旬回归！目前由于版权原因，暂时下线，有需求请联系微信hello_xiangqian',
-                duration: 10,
+              searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
+              searchActor.send({
+                type: 'CHANGE_SORT_MODE',
+                value: SortMode.DEFAULT,
               });
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
             <Image src={LangCNIcon.src} width={18} height={18} alt={''} />

@@ -15,7 +15,7 @@ const FUNCTION_BASE_URL =
   'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
 
 // const FUNCTION_BASE_URL =
-// 'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
+//   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
 const request = async (
   url: string,
@@ -139,7 +139,7 @@ export const getPedia = async (params) => {
 export const getPartPedia = async (params, lang) => {
   let path = '/search_papers';
   if (lang === 'zh-cn') {
-    path = '/search_papers_zh';
+    path = '/zh/search_papers';
   }
   const token = getItem('token');
   const option = {

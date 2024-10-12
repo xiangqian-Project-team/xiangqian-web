@@ -9,7 +9,7 @@
 'use client';
 import Icon from '@ant-design/icons';
 import { useSelector } from '@xstate/react';
-import { Button, Input, message } from 'antd';
+import { Button, Input } from 'antd';
 import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
 import withTheme from '../../theme';
@@ -107,12 +107,7 @@ function HomeTextArea() {
           value="zh-cn"
           checked={mode === 'zh-cn'}
           onChange={(e) => {
-            // searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
-            message.warning({
-              content:
-                '中文搜索功能预计十月中旬回归！目前由于版权原因，暂时下线，有需求请联系微信hello_xiangqian',
-              duration: 10,
-            });
+            searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
           }}
         />
       </div>
