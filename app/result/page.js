@@ -186,17 +186,6 @@ function Search() {
               </div>
             </div>
           )}
-          {isPapersEmptyErrorVisible && mode === SearchMode.ZH_CN && (
-            <div className={styles.search_content_empty}>
-              <div className={styles.search_content_empty_card}>
-                <div className={styles.text}>
-                  <h2>
-                    中文搜索功能预计十月中旬回归！目前由于版权原因，暂时下线，有需求请联系微信hello_xiangqian
-                  </h2>
-                </div>
-              </div>
-            </div>
-          )}
           {!isPapersEmptyErrorVisible && (
             <>
               <MainSummary />
