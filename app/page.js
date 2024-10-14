@@ -195,10 +195,9 @@ export default function Home() {
               <div className={styles.home_desc_list_item_h2}>
                 英文期刊提供SCI、SSCI等检索和分区，中文期刊提供南大/北大核心等期刊索引标识。
                 让权威期刊更醒目，帮你快速定位高水平文献。
-                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文CSSCI权威期刊参照中国社科院AMI评价、基金委重点期刊信息标注。
               </div>
               <div className={styles.home_desc_list_item_h3}>
-                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文顶级/权威期刊综合参照中国社科院AMI评价、基金委重点期刊等正式来源标注。
+                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文CSSCI权威期刊参照中国社科院AMI评价、基金委重点期刊信息标注。
               </div>
             </div>
           </div>
