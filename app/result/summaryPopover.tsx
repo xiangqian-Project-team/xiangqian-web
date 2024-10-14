@@ -7,6 +7,8 @@ import { getBulletPointsExpansion } from '../service';
 import styles from './page.module.scss';
 import PopoverItem from './summaryPopoverItem';
 
+declare const umami: any;
+
 export default function SummaryPopover(props: {
   data: IPopoverInfo;
   getPopoverResponsePedia: any;
@@ -30,6 +32,7 @@ export default function SummaryPopover(props: {
     });
     setIsLoading(true);
     try {
+      umami.track('Bullet Point Expanded');
       const res = await getBulletPointsExpansion({
         bltpt: `${data.title.text}:${data.desc.text}`,
         papers: thePapers,

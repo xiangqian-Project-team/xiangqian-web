@@ -619,11 +619,19 @@ export default function ResultPaperItem(props) {
           <button
             className={styles.content_card_btn_download}
             onClick={() => {
+              if (!isEn) {
+                umami.track('zh source button');
+                window.open(
+                  `https://s.wanfangdata.com.cn/periodical?q=%E9%A2%98%E5%90%8D%3A${title}`,
+                  '_blank'
+                );
+                return;
+              }
               if (openAccessPdf) {
-                umami.track('source button');
+                umami.track('pdf button');
                 window.open(openAccessPdf.url, '_blank');
               } else if (doi) {
-                umami.track('pdf button');
+                umami.track('source button');
                 window.open(doi, '_blank');
               } else {
                 alert('由于版权原因，本文暂不支持查看原文');
