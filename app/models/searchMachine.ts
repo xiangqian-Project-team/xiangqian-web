@@ -65,9 +65,9 @@ function handlePaperList(
   },
   papers: any[]
 ) {
-  const matches = content.refs
-    .match(/\[(.*?)\]/g)
-    .map((match) => match.slice(1, -1));
+  const matches = (content.refs.match(/\[(.*?)\]/g) || []).map((match) =>
+    match.slice(1, -1)
+  );
   const list = matches.reduce<IPopoverItem[]>((arr, element, index) => {
     // @ts-ignore
     if (matches.includes(element)) {
@@ -89,9 +89,9 @@ function handlePopoverContent(
   },
   papers: any[]
 ) {
-  const matches = content.refs
-    .match(/\[(.*?)\]/g)
-    .map((match) => match.slice(1, -1));
+  const matches = (content.refs.match(/\[(.*?)\]/g) || []).map((match) =>
+    match.slice(1, -1)
+  );
   const limit = 3;
   const limitMatches = matches.slice(0, limit);
   const list = limitMatches.reduce<IPopoverItem[]>((arr, element, index) => {
