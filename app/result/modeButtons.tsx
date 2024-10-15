@@ -1,5 +1,5 @@
 import { useSelector } from '@xstate/react';
-import { Button, ConfigProvider, message } from 'antd';
+import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import LangCNIcon from '../icons/lang_cn.svg';
@@ -100,15 +100,30 @@ export default function ModeButtons(props: IModeButtonsProps) {
             中文文献
           </Button>
         )}
-        <Button
-          className={styles.right_button}
-          disabled={props.disabled}
-          onClick={() => {
-            message.info({ content: '即将上线', duration: 5 });
-          }}
-        >
-          基金课题
-        </Button>
+        {mode === 'fund' ? (
+          <Button
+            className={styles.right_button_active}
+            disabled={props.disabled}
+          >
+            基金课题
+          </Button>
+        ) : (
+          <Button
+            className={styles.right_button}
+            disabled={props.disabled}
+            onClick={() => {
+              searchActor.send({ type: 'CHANGE_MODE.FUND' });
+              searchActor.send({
+                type: 'CHANGE_SORT_MODE',
+                value: SortMode.DEFAULT,
+              });
+              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+              searchActor.send({ type: 'FETCH_FUND' });
+            }}
+          >
+            基金课题
+          </Button>
+        )}
         {/* {mode === 'selected' ? (
           <Button
             className={styles.selected_button_active}

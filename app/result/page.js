@@ -26,7 +26,7 @@ import PageManager from './pageManager';
 import Summary from './summary';
 
 import { useSelector } from '@xstate/react';
-import { searchActor, SearchMode } from '../models/searchMachine';
+import { searchActor } from '../models/searchMachine';
 
 function Search() {
   const [isNoEnoughModalVisible, setIsNoEnoughModalVisible] = useState(false);
@@ -37,14 +37,20 @@ function Search() {
     searchActor,
     (state) => state.context.showPapers
   );
-  const isLoadingList = state.matches({
+  const isLoadingPapers = state.matches({
     viewing: { fetchingPapers: 'fetching' },
+  });
+  const isLoadingFundPapers = state.matches({
+    viewing: { fetchingFund: 'fetching' },
   });
   const isLoadingSummary = state.matches({
     viewing: { fetchingSummaryAnswer: 'fetching' },
   });
   const isFetchPapersSuccess = state.matches({
     viewing: { fetchingPapers: 'success' },
+  });
+  const isFetchFundPapersSuccess = state.matches({
+    viewing: { fetchingFund: 'success' },
   });
   const isFetchSummarySuccess = state.matches({
     viewing: { fetchingSummaryAnswer: 'success' },
@@ -58,9 +64,9 @@ function Search() {
     return (
       isInitialed &&
       !isLoadingSummary &&
-      !isLoadingList &&
-      !showPapers.length &&
-      mode !== 'selected'
+      !isLoadingPapers &&
+      !isLoadingFundPapers &&
+      !showPapers.length
     );
   });
   const searchParams = useSearchParams();
@@ -71,8 +77,13 @@ function Search() {
     []
   );
   const isSearchPapersVisible = useMemo(() => {
-    return isInitialed && showPapers.length === 0 && !isLoadingList;
-  }, [isInitialed, showPapers.length, isLoadingList]);
+    return (
+      isInitialed &&
+      showPapers.length === 0 &&
+      !isLoadingPapers &&
+      !isLoadingFundPapers
+    );
+  }, [isInitialed, showPapers.length, isLoadingPapers, isLoadingFundPapers]);
 
   // reset all state when quit
   useEffect(() => {
@@ -81,7 +92,7 @@ function Search() {
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_BACKGROUND' });
-      searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+      // searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
       searchActor.send({ type: 'RESET_FETCH_RELATED' });
       searchActor.send({ type: 'RESET' });
     };
@@ -94,11 +105,15 @@ function Search() {
     searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
     searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
     searchActor.send({ type: 'RESET_FETCH_SUMMARY_BACKGROUND' });
-    searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
+    // searchActor.send({ type: 'RESET_FETCH_LITERATURE_REVIEW' });
     searchActor.send({ type: 'RESET_FETCH_RELATED' });
     searchActor.send({ type: 'RESET' });
     searchActor.send({ type: 'INIT_FETCH' });
-    searchActor.send({ type: 'FETCH_PAPERS' });
+    if (mode === 'fund') {
+      searchActor.send({ type: 'FETCH_FUND' });
+    } else {
+      searchActor.send({ type: 'FETCH_PAPERS' });
+    }
     searchActor.send({ type: 'FETCH_SUMMARY_CONCEPT' });
     searchActor.send({ type: 'FETCH_SUMMARY_QUERY_TERMS' });
     searchActor.send({ type: 'FETCH_SUMMARY_BACKGROUND' });
@@ -112,6 +127,12 @@ function Search() {
       searchActor.send({ type: 'FETCH_RESPONSE' });
     }
   }, [isFetchPapersSuccess]);
+
+  useEffect(() => {
+    if (isFetchFundPapersSuccess) {
+      searchActor.send({ type: 'FETCH_RESPONSE' });
+    }
+  }, [isFetchFundPapersSuccess]);
 
   useEffect(() => {
     if (isFetchRelatedSearchSuccess) {
@@ -172,8 +193,8 @@ function Search() {
           </div>
         </div>
         <div className={styles.search_content}>
-          <SearchTextArea isLoading={isLoadingList || isLoadingSummary} />
-          {isPapersEmptyErrorVisible && mode !== SearchMode.ZH_CN && (
+          <SearchTextArea isLoading={isLoadingPapers || isLoadingSummary} />
+          {isPapersEmptyErrorVisible && (
             <div className={styles.search_content_empty}>
               <div className={styles.search_content_empty_card}>
                 <div className={styles.text}>
@@ -190,7 +211,7 @@ function Search() {
             <>
               <MainSummary />
               <div className={styles.content_button}>
-                <ModeButtons disabled={isLoadingList || isLoadingSummary} />
+                <ModeButtons disabled={isLoadingPapers || isLoadingSummary} />
               </div>
               <div className={styles.search_content_data}>
                 <div className={styles.search_content_data_summary}>
@@ -200,7 +221,23 @@ function Search() {
                   <FAQList />
                 </div>
                 <div className={styles.search_content_data_papers}>
-                  {isLoadingList &&
+                  {mode !== 'fund' &&
+                    isLoadingPapers &&
+                    paperSkeletons.map((item) => (
+                      <div
+                        style={{
+                          background: 'white',
+                          margin: '0 0 10px',
+                          padding: '20px',
+                          borderRadius: '12px',
+                        }}
+                        key={item.id}
+                      >
+                        <Skeleton active />
+                      </div>
+                    ))}
+                  {mode === 'fund' &&
+                    isLoadingFundPapers &&
                     paperSkeletons.map((item) => (
                       <div
                         style={{
@@ -232,6 +269,7 @@ function Search() {
                       {showPapers.map((item) => {
                         return (
                           <ResultPaperItem
+                            mode={mode}
                             key={item.id}
                             data={item}
                             isBorderVisible={true}
@@ -239,7 +277,7 @@ function Search() {
                         );
                       })}
                       {isInitialed &&
-                        !isLoadingList &&
+                        !isLoadingPapers &&
                         !isPapersEmptyErrorVisible &&
                         showPapers.length > 0 && (
                           <div>

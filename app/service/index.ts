@@ -153,6 +153,19 @@ export const getPartPedia = async (params, lang) => {
   return fetch(`${FUNCTION_BASE_URL}${path}`, option);
 };
 
+export const getFund = async (query: string) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/fund/search`, option);
+};
+
 export const getLiteratureReview = async (params: {
   papers: any[];
   queryEn: string;

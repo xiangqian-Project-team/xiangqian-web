@@ -1,13 +1,10 @@
 import { useSelector } from '@xstate/react';
 import { Skeleton } from 'antd';
-import Image from 'next/image';
 import { useMemo } from 'react';
-import RefreshIcon from '../icons/refresh_icon.svg';
 import { searchActor } from '../models/searchMachine';
 import { getResponsePedia as getResponsePediaAsync } from '../service';
 import styles from './page.module.scss';
 import SummaryPopover from './summaryPopover';
-import PopoverItem from './summaryPopoverItem';
 
 export default function Summary(props: {
   setIsNoEnoughModalVisible: (isVisible: boolean) => void;
@@ -28,20 +25,20 @@ export default function Summary(props: {
       fetchingSummaryBulletPoints: 'fetching',
     },
   });
-  const isLoadingLiteratureReview = state.matches({
-    viewing: {
-      fetchingLiteratureReview: 'fetching',
-    },
-  });
+  // const isLoadingLiteratureReview = state.matches({
+  //   viewing: {
+  //     fetchingLiteratureReview: 'fetching',
+  //   },
+  // });
   const mode = useSelector(searchActor, (state) => state.context.mode);
-  const paperInfo = useSelector(
-    searchActor,
-    (state) => state.context.paperInfo
-  );
-  const paperZHInfo = useSelector(
-    searchActor,
-    (state) => state.context.paperZHInfo
-  );
+  // const paperInfo = useSelector(
+  //   searchActor,
+  //   (state) => state.context.paperInfo
+  // );
+  // const paperZHInfo = useSelector(
+  //   searchActor,
+  //   (state) => state.context.paperZHInfo
+  // );
   const summaryInfo = useSelector(
     searchActor,
     (state) => state.context.summaryInfo
@@ -50,16 +47,18 @@ export default function Summary(props: {
     searchActor,
     (state) => state.context.summaryZHInfo
   );
-  const summarySelectedInfo = useSelector(
-    searchActor,
-    (state) => state.context.summarySelectedInfo
-  );
+  // const summarySelectedInfo = useSelector(
+  //   searchActor,
+  //   (state) => state.context.summarySelectedInfo
+  // );
 
   const showSummary = useMemo(() => {
     switch (mode) {
       case 'en':
         return summaryInfo;
       case 'zh-cn':
+        return summaryZHInfo;
+      default:
         return summaryZHInfo;
     }
     // switch (mode) {
@@ -109,7 +108,7 @@ export default function Summary(props: {
       {
         <div>
           <div>
-            {mode === 'selected' &&
+            {/* {mode === 'selected' &&
               summarySelectedInfo.bulletPoints.length === 0 && (
                 <div className={styles.fetch_selected_summary_button_container}>
                   <button
@@ -135,16 +134,12 @@ export default function Summary(props: {
                     用选中的文章生成总结，以获取更优结果
                   </button>
                 </div>
-              )}
+              )} */}
             <div className={styles.content}>
               <div>
                 <Skeleton
                   active
-                  loading={
-                    isLoadingSummaryAnalysis ||
-                    isLoadingPapers ||
-                    isLoadingLiteratureReview
-                  }
+                  loading={isLoadingSummaryAnalysis || isLoadingPapers}
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
@@ -155,11 +150,7 @@ export default function Summary(props: {
                 </Skeleton>
                 <Skeleton
                   active
-                  loading={
-                    isLoadingSummaryBulletPoints ||
-                    isLoadingPapers ||
-                    isLoadingLiteratureReview
-                  }
+                  loading={isLoadingSummaryBulletPoints || isLoadingPapers}
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
@@ -175,7 +166,7 @@ export default function Summary(props: {
                   </ul>
                 </Skeleton>
               </div>
-              {mode === 'selected' &&
+              {/* {mode === 'selected' &&
                 summarySelectedInfo.bulletPoints.length > 0 && (
                   <div className={styles.content_summary}>
                     {summarySelectedInfo.bulletPoints.map((info) =>
@@ -188,7 +179,7 @@ export default function Summary(props: {
                       ))
                     )}
                   </div>
-                )}
+                )} */}
             </div>
           </div>
         </div>

@@ -256,7 +256,7 @@ export default function ResultPaperItem(props) {
     // selected,
   } = props.data;
 
-  const { isBorderVisible } = props;
+  const { isBorderVisible, mode } = props;
 
   // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
   // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
@@ -527,19 +527,30 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_footer_years}>{year || 2000}</div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_jcr}>{journalRank}</div>
-        <div className={styles.content_card_footer_division} />
-        <div className={styles.content_card_footer_citationCount}>
-          被引
-          <span className={styles.b}>{citationCount}</span>次
-        </div>
-        {isOpenAccess && (
+        {mode !== 'fund' && (
           <>
             <div className={styles.content_card_footer_division} />
-
-            <div className={styles.content_card_footer_openAccess}>
-              <Image src={LockIcon.src} width={12} height={12} alt="LockIcon" />
-              <span>open access</span>
+            <div className={styles.content_card_footer_citationCount}>
+              被引
+              <span className={styles.b}>{citationCount}</span>次
             </div>
+            <>
+              {isOpenAccess && (
+                <>
+                  <div className={styles.content_card_footer_division} />
+
+                  <div className={styles.content_card_footer_openAccess}>
+                    <Image
+                      src={LockIcon.src}
+                      width={12}
+                      height={12}
+                      alt="LockIcon"
+                    />
+                    <span>open access</span>
+                  </div>
+                </>
+              )}
+            </>
           </>
         )}
       </div>

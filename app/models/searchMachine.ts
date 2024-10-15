@@ -1,6 +1,7 @@
 import { produce } from 'immer';
 import { assign, createActor, fromPromise, setup } from 'xstate';
 import {
+  getFund,
   getLiteratureReview,
   getPartPedia,
   getRelatedSearch,
@@ -201,10 +202,12 @@ function calcShowPapers(data: {
   sortMode: string;
   papers: any[];
   papersZH: any[];
+  fundPapers: any[];
   pageIndex: number;
   pageSize: number;
 }) {
-  const { mode, sortMode, papers, pageIndex, papersZH, pageSize } = data;
+  const { mode, sortMode, papers, pageIndex, papersZH, pageSize, fundPapers } =
+    data;
   let newList = [];
   switch (mode) {
     case 'en':
@@ -213,9 +216,12 @@ function calcShowPapers(data: {
     case 'zh-cn':
       newList = [...papersZH];
       break;
-    case 'selected':
-      newList = [...papers, ...papersZH].filter((item) => item.selected);
+    case 'fund':
+      newList = [...fundPapers];
       break;
+    // case 'selected':
+    //   newList = [...papers, ...papersZH].filter((item) => item.selected);
+    //   break;
   }
 
   switch (sortMode) {
@@ -258,6 +264,16 @@ const fetchPartPedia = async ({
   //   queryZh: '',
   //   papers: ['test'],
   // };
+};
+
+const fetchFund = async ({ input }: { input: { question: string } }) => {
+  const res = await getFund(input.question);
+  if (!res.ok) {
+    throw new Error('Failed search');
+  }
+  const data = await res.json();
+
+  return data;
 };
 
 // const fetchSummaryAnswer = async ({
@@ -562,7 +578,8 @@ const fetchRelatedSearch = async ({
 export enum SearchMode {
   EN = 'en',
   ZH_CN = 'zh-cn',
-  SELECTED = 'selected',
+  FUND = 'fund',
+  // SELECTED = 'selected',
 }
 
 export enum SortMode {
@@ -571,6 +588,26 @@ export enum SortMode {
   TIME = 'time',
   LEVEL = 'level',
   QUOTE = 'quote',
+}
+
+interface IPaper {
+  authors: string[];
+  bibtex: null;
+  citationCount: number;
+  doi: null;
+  fetchedAbstract: boolean;
+  id: string;
+  isEn: boolean;
+  isOpenAccess: boolean;
+  journal: string;
+  journalRank: string;
+  openAccessPdf: null;
+  paperAbstract: null;
+  paperAbstractZh: null;
+  relevance: number;
+  response: null;
+  title: string;
+  year: number;
 }
 
 interface SearchContext {
@@ -585,12 +622,17 @@ interface SearchContext {
   summaryQueryTerms: string;
   summaryBackground: string;
   paperInfo: {
-    papers: any[];
+    papers: IPaper[];
     queryEn: string;
     queryZh: string;
   };
   paperZHInfo: {
-    papers: any[];
+    papers: IPaper[];
+    queryEn: string;
+    queryZh: string;
+  };
+  fundInfo: {
+    papers: IPaper[];
     queryEn: string;
     queryZh: string;
   };
@@ -659,6 +701,8 @@ const searchMachine = setup({
       | { type: 'INIT_FETCH' }
       | { type: 'FETCH_PAPERS' }
       | { type: 'RESET_FETCH_PAPERS' }
+      | { type: 'FETCH_FUND' }
+      | { type: 'RESET_FETCH_FUND' }
       // | { type: 'FETCH_SUMMARY_ANSWER' }
       // | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
       | { type: 'FETCH_SUMMARY_CONCEPT' }
@@ -674,10 +718,12 @@ const searchMachine = setup({
       // | { type: 'FETCH_SUMMARY_ZH' }
       // | { type: 'FETCH_SUMMARY' }
       | { type: 'CHANGE_MODE.EN' }
-      | { type: 'CHANGE_MODE.SELECTED' }
+      // | { type: 'CHANGE_MODE.SELECTED' }
       | { type: 'CHANGE_MODE.ZH_CN' }
+      | { type: 'CHANGE_MODE.FUND' }
       | { type: 'FETCH_RESPONSE' }
-      | { type: 'FETCH_LITERATURE_REVIEW' }
+      // | { type: 'RESET_FETCH_LITERATURE_REVIEW' }
+      // | { type: 'FETCH_LITERATURE_REVIEW' }
       | { type: 'UPDATE_RESPONSE'; value: any };
   },
   actors: {
@@ -690,6 +736,7 @@ const searchMachine = setup({
     fetchSummaryAnalysis: fromPromise(fetchSummaryAnalysis),
     fetchSummaryBulletPoints: fromPromise(fetchSummaryBulletPoints),
     fetchPapers: fromPromise(fetchPartPedia),
+    fetchFund: fromPromise(fetchFund),
     fetchResponsePedia: fromPromise(fetchResponsePedia),
     fetchRelatedSearch: fromPromise(fetchRelatedSearch),
   },
@@ -712,6 +759,11 @@ const searchMachine = setup({
       queryZh: '',
     },
     paperZHInfo: {
+      papers: [],
+      queryEn: '',
+      queryZh: '',
+    },
+    fundInfo: {
       papers: [],
       queryEn: '',
       queryZh: '',
@@ -804,6 +856,7 @@ const searchMachine = setup({
                               sortMode: context.sortMode,
                               papers: context.paperInfo.papers,
                               papersZH: event.output.papers,
+                              fundPapers: context.fundInfo.papers,
                               pageIndex: context.pageIndex,
                               pageSize: context.pageSize,
                             });
@@ -815,6 +868,7 @@ const searchMachine = setup({
                               sortMode: context.sortMode,
                               papers: event.output.papers,
                               papersZH: context.paperZHInfo.papers,
+                              fundPapers: context.fundInfo.papers,
                               pageIndex: context.pageIndex,
                               pageSize: context.pageSize,
                             });
@@ -850,6 +904,59 @@ const searchMachine = setup({
                   context.mode === 'zh-cn' &&
                   context.paperZHInfo.papers.length > 0
                 ) {
+                  return false;
+                }
+                return true;
+              },
+            },
+          },
+        },
+        fetchingFund: {
+          initial: 'idle',
+          states: {
+            idle: {},
+            fetching: {
+              invoke: {
+                src: 'fetchFund',
+                input: ({ context }) => ({
+                  question: context.question,
+                }),
+                onDone: [
+                  {
+                    target: 'success',
+                    actions: assign(({ context, event }) => {
+                      return produce(context, (draft) => {
+                        draft.fundInfo = event.output;
+                        draft.showPapers = calcShowPapers({
+                          mode: context.mode,
+                          sortMode: context.sortMode,
+                          papers: context.paperInfo.papers,
+                          papersZH: context.paperZHInfo.papers,
+                          fundPapers: event.output.papers,
+                          pageIndex: context.pageIndex,
+                          pageSize: context.pageSize,
+                        });
+                      });
+                    }),
+                  },
+                ],
+                onError: 'idle',
+              },
+            },
+            success: {},
+            fail: {},
+          },
+          on: {
+            RESET_FETCH_FUND: {
+              target: '.idle',
+            },
+            FETCH_FUND: {
+              target: '.fetching',
+              guard: ({ context }) => {
+                if (!context.question) {
+                  return false;
+                }
+                if (context.fundInfo.papers.length > 0) {
                   return false;
                 }
                 return true;
@@ -981,6 +1088,10 @@ const searchMachine = setup({
                           draft.summaryInfo.bulletPointsPrefix =
                             event.output.bulletPointsPrefix;
                           break;
+                        default:
+                          draft.summaryZHInfo.bulletPointsPrefix =
+                            event.output.bulletPointsPrefix;
+                          break;
                       }
                     });
                   }),
@@ -1094,46 +1205,46 @@ const searchMachine = setup({
         //     },
         //   },
         // },
-        fetchingLiteratureReview: {
-          initial: 'idle',
-          states: {
-            idle: {},
-            fetching: {
-              invoke: {
-                src: 'fetchLiteratureReview',
-                input: ({ context }) => ({
-                  papers: [
-                    ...context.paperInfo.papers,
-                    ...context.paperZHInfo.papers,
-                  ].filter((item) => item.selected),
-                  queryEn:
-                    context.paperInfo.queryEn || context.paperZHInfo.queryEn,
-                  queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
-                }),
-                onDone: {
-                  target: 'success',
-                  actions: assign(({ context, event }) => {
-                    return produce(context, (draft) => {
-                      draft.summarySelectedInfo.bulletPoints = event.output;
-                    });
-                  }),
-                },
-                onError: 'fail',
-              },
-            },
-            success: {},
-            fail: {},
-          },
-          on: {
-            RESET_FETCH_LITERATURE_REVIEW: {
-              target: '.idle',
-            },
-            FETCH_LITERATURE_REVIEW: {
-              target: '.fetching',
-            },
-          },
-        },
+        // fetchingLiteratureReview: {
+        //   initial: 'idle',
+        //   states: {
+        //     idle: {},
+        //     fetching: {
+        //       invoke: {
+        //         src: 'fetchLiteratureReview',
+        //         input: ({ context }) => ({
+        //           papers: [
+        //             ...context.paperInfo.papers,
+        //             ...context.paperZHInfo.papers,
+        //           ].filter((item) => item.selected),
+        //           queryEn:
+        //             context.paperInfo.queryEn || context.paperZHInfo.queryEn,
+        //           queryZh:
+        //             context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+        //         }),
+        //         onDone: {
+        //           target: 'success',
+        //           actions: assign(({ context, event }) => {
+        //             return produce(context, (draft) => {
+        //               draft.summarySelectedInfo.bulletPoints = event.output;
+        //             });
+        //           }),
+        //         },
+        //         onError: 'fail',
+        //       },
+        //     },
+        //     success: {},
+        //     fail: {},
+        //   },
+        //   on: {
+        //     RESET_FETCH_LITERATURE_REVIEW: {
+        //       target: '.idle',
+        //     },
+        //     FETCH_LITERATURE_REVIEW: {
+        //       target: '.fetching',
+        //     },
+        //   },
+        // },
         fetchingResponse: {
           initial: 'idle',
           states: {
@@ -1274,6 +1385,7 @@ const searchMachine = setup({
             sortMode: context.sortMode,
             papers: papers,
             papersZH: papersZH,
+            fundPapers: context.fundInfo.papers,
             pageIndex: context.pageIndex,
             pageSize: context.pageSize,
           });
@@ -1289,6 +1401,7 @@ const searchMachine = setup({
             sortMode: event.value,
             papers: context.paperInfo.papers,
             papersZH: context.paperZHInfo.papers,
+            fundPapers: context.fundInfo.papers,
             pageIndex: context.pageIndex,
             pageSize: context.pageSize,
           });
@@ -1304,6 +1417,7 @@ const searchMachine = setup({
             sortMode: context.sortMode,
             papers: context.paperInfo.papers,
             papersZH: context.paperZHInfo.papers,
+            fundPapers: context.fundInfo.papers,
             pageIndex: context.pageIndex,
             pageSize: context.pageSize,
           });
@@ -1319,29 +1433,46 @@ const searchMachine = setup({
             sortMode: context.sortMode,
             papers: context.paperInfo.papers,
             papersZH: context.paperZHInfo.papers,
+            fundPapers: context.fundInfo.papers,
             pageIndex: context.pageIndex,
             pageSize: context.pageSize,
           });
         },
       }),
     },
-    'CHANGE_MODE.SELECTED': {
+    'CHANGE_MODE.FUND': {
       actions: assign({
-        mode: () => SearchMode.SELECTED,
+        mode: () => SearchMode.FUND,
         showPapers: ({ context }) => {
-          return produce(context.showPapers, (draft) => {
-            draft = calcShowPapers({
-              mode: SearchMode.SELECTED,
-              sortMode: context.sortMode,
-              papers: context.paperInfo.papers,
-              papersZH: context.paperZHInfo.papers,
-              pageIndex: context.pageIndex,
-              pageSize: context.pageSize,
-            });
+          return calcShowPapers({
+            mode: SearchMode.ZH_CN,
+            sortMode: context.sortMode,
+            papers: context.paperInfo.papers,
+            papersZH: context.paperZHInfo.papers,
+            fundPapers: context.fundInfo.papers,
+            pageIndex: context.pageIndex,
+            pageSize: context.pageSize,
           });
         },
       }),
     },
+    // 'CHANGE_MODE.SELECTED': {
+    //   actions: assign({
+    //     mode: () => SearchMode.SELECTED,
+    //     showPapers: ({ context }) => {
+    //       return produce(context.showPapers, (draft) => {
+    //         draft = calcShowPapers({
+    //           mode: SearchMode.SELECTED,
+    //           sortMode: context.sortMode,
+    //           papers: context.paperInfo.papers,
+    //           papersZH: context.paperZHInfo.papers,
+    //           pageIndex: context.pageIndex,
+    //           pageSize: context.pageSize,
+    //         });
+    //       });
+    //     },
+    //   }),
+    // },
     CHANGE_PAGE_INDEX: {
       actions: assign({
         pageIndex: ({ event }) => event.value,
@@ -1351,6 +1482,7 @@ const searchMachine = setup({
             sortMode: context.sortMode,
             papers: context.paperInfo.papers,
             papersZH: context.paperZHInfo.papers,
+            fundPapers: context.fundInfo.papers,
             pageIndex: event.value,
             pageSize: context.pageSize,
           });
