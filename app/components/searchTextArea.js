@@ -36,7 +36,7 @@ function SearchTextArea(props) {
             searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
           }}
           onKeyDown={(e) => {
-            if (e.code === 'Enter') {
+            if (e.code === 'Enter' || e.code === 'NumpadEnter') {
               e.preventDefault();
               if (props.loading) {
                 return;

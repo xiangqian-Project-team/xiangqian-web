@@ -69,7 +69,7 @@ function HomeTextArea() {
           searchActor.send({ type: 'SET_QUESTION', value: e.target.value });
         }}
         onKeyDown={(e) => {
-          if (e.code === 'Enter') {
+          if (e.code === 'Enter' || e.code === 'NumpadEnter') {
             e.preventDefault();
             umami.track('search button', { item: searchValue });
             router.push(`./result?q=${searchValue}`);
