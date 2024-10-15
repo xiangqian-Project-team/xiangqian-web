@@ -11,11 +11,11 @@ import { getItem } from '../utils/storage';
 
 const BASE_URL = 'http://121.43.97.68:8091';
 
-// const FUNCTION_BASE_URL =
-//   'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
-
 const FUNCTION_BASE_URL =
-  'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
+  'https://gemmed-unctions-hvhludohph.ap-northeast-2.fcapp.run'; // PROD API
+
+// const FUNCTION_BASE_URL =
+//   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
 const request = async (
   url: string,

@@ -633,7 +633,7 @@ export default function ResultPaperItem(props) {
               if (!isEn) {
                 umami.track('zh source button');
                 window.open(
-                  `https://s.wanfangdata.com.cn/periodical?q=%E9%A2%98%E5%90%8D%3A${title}`,
+                  `https://kns.cnki.net/kns8s/defaultresult/index?classid=YSTT4HG0&korder=TI&kw=${title}`,
                   '_blank'
                 );
                 return;
