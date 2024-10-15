@@ -696,7 +696,7 @@ const searchMachine = setup({
 }).createMachine({
   id: 'search',
   context: {
-    mode: SearchMode.EN,
+    mode: SearchMode.ZH_CN,
     question: '',
     sortMode: SortMode.DEFAULT,
     pageIndex: 1,

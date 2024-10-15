@@ -51,8 +51,7 @@ export default function Home() {
         </div>
         <HomeTextArea />
         <div className={styles.home_search_tips}>
-          *Powered by Gemmed Search,
-          基于社科大数据的「推理式」文献搜索与回答引擎
+          *Powered by Gemmed Search, 更擅长社科文献的「解读式」搜索引擎
         </div>
 
         <div className={styles.home_search_recommend}>
@@ -194,12 +193,11 @@ export default function Home() {
                 社会科学专业期刊分级标注
               </div>
               <div className={styles.home_desc_list_item_h2}>
-                英文期刊提供JCR分区、A&HCI
-                索引，中文期刊提供南大/北大核心等期刊索引标识。
-                让权威期刊更醒目（如AMI权威、UTD24、FT50等），帮你快速定位高水平文献。
+                英文期刊提供SCI、SSCI等检索和分区，中文期刊提供南大/北大核心等期刊索引标识。
+                让权威期刊更醒目，帮你快速定位高水平文献。
               </div>
               <div className={styles.home_desc_list_item_h3}>
-                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文顶级/权威期刊综合参照中国社科院AMI评价、基金委重点期刊等正式来源标注。
+                *默认显示最高分级。英文TOP期刊为领域内前5%的期刊；中文CSSCI权威期刊参照中国社科院AMI评价、基金委重点期刊信息标注。
               </div>
             </div>
           </div>
@@ -232,7 +230,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       <HomeFAQList />
 
       <div className={styles.school_info}>
