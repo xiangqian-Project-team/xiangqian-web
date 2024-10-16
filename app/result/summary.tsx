@@ -15,6 +15,11 @@ export default function Summary(props: {
       fetchingPapers: 'fetching',
     },
   });
+  const isLoadingFundPapers = state.matches({
+    viewing: {
+      fetchingFund: 'fetching',
+    },
+  });
   const isLoadingSummaryAnalysis = state.matches({
     viewing: {
       fetchingSummaryAnalysis: 'fetching',
@@ -47,6 +52,10 @@ export default function Summary(props: {
     searchActor,
     (state) => state.context.summaryZHInfo
   );
+  const summaryFundInfo = useSelector(
+    searchActor,
+    (state) => state.context.summaryFundInfo
+  );
   // const summarySelectedInfo = useSelector(
   //   searchActor,
   //   (state) => state.context.summarySelectedInfo
@@ -58,6 +67,8 @@ export default function Summary(props: {
         return summaryInfo;
       case 'zh-cn':
         return summaryZHInfo;
+      case 'fund':
+        return summaryFundInfo;
       default:
         return summaryZHInfo;
     }
@@ -80,7 +91,7 @@ export default function Summary(props: {
     //     };
     // }
     // return {};
-  }, [mode, summaryInfo, summaryZHInfo]);
+  }, [mode, summaryFundInfo, summaryInfo, summaryZHInfo]);
 
   const getPopoverResponsePedia = async (paper: any, queryZh: string) => {
     if (!paper) {
@@ -139,7 +150,11 @@ export default function Summary(props: {
               <div>
                 <Skeleton
                   active
-                  loading={isLoadingSummaryAnalysis || isLoadingPapers}
+                  loading={
+                    isLoadingSummaryAnalysis ||
+                    isLoadingPapers ||
+                    isLoadingFundPapers
+                  }
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >
@@ -150,7 +165,11 @@ export default function Summary(props: {
                 </Skeleton>
                 <Skeleton
                   active
-                  loading={isLoadingSummaryBulletPoints || isLoadingPapers}
+                  loading={
+                    isLoadingSummaryBulletPoints ||
+                    isLoadingPapers ||
+                    isLoadingFundPapers
+                  }
                   style={{ padding: '20px' }}
                   paragraph={{ rows: 3 }}
                 >

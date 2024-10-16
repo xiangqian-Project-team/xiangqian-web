@@ -125,9 +125,12 @@ function Search() {
     if (isFetchPapersSuccess || isFetchFundPapersSuccess) {
       searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
       searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
-      searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
       searchActor.send({ type: 'FETCH_RESPONSE' });
     }
+    if (isFetchPapersSuccess && isFetchFundPapersSuccess) {
+      return;
+    }
+    searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
   }, [isFetchPapersSuccess, isFetchFundPapersSuccess]);
 
   useEffect(() => {

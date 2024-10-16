@@ -385,6 +385,11 @@ const fetchSummaryAnalysis = async ({
       queryEn: string;
       queryZh: string;
     };
+    fundInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
   };
 }) => {
   let { queryEn, queryZh, papers } = input.paperInfo;
@@ -392,6 +397,11 @@ const fetchSummaryAnalysis = async ({
     queryEn = input.paperZHInfo.queryEn;
     queryZh = input.paperZHInfo.queryZh;
     papers = input.paperZHInfo.papers;
+  }
+  if (input.mode === 'fund') {
+    queryEn = input.fundInfo.queryEn;
+    queryZh = input.fundInfo.queryZh;
+    papers = input.fundInfo.papers;
   }
   const res = await getSummaryAnalysis({
     papers,
@@ -422,6 +432,11 @@ const fetchSummaryBulletPoints = async ({
       queryEn: string;
       queryZh: string;
     };
+    fundInfo: {
+      papers: any[];
+      queryEn: string;
+      queryZh: string;
+    };
   };
 }) => {
   let { queryEn, queryZh, papers } = input.paperInfo;
@@ -429,6 +444,11 @@ const fetchSummaryBulletPoints = async ({
     queryEn = input.paperZHInfo.queryEn;
     queryZh = input.paperZHInfo.queryZh;
     papers = input.paperZHInfo.papers;
+  }
+  if (input.mode === 'fund') {
+    queryEn = input.fundInfo.queryEn;
+    queryZh = input.fundInfo.queryZh;
+    papers = input.fundInfo.papers;
   }
   const res = await getSummaryBulletPoints({
     papers,
@@ -1103,6 +1123,7 @@ const searchMachine = setup({
                   mode: context.mode,
                   paperInfo: context.paperInfo,
                   paperZHInfo: context.paperZHInfo,
+                  fundInfo: context.fundInfo,
                 }),
                 onDone: {
                   target: 'success',
@@ -1155,6 +1176,7 @@ const searchMachine = setup({
                   mode: context.mode,
                   paperInfo: context.paperInfo,
                   paperZHInfo: context.paperZHInfo,
+                  fundInfo: context.fundInfo,
                 }),
                 onDone: {
                   target: 'success',
