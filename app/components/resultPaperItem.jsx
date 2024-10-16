@@ -253,7 +253,7 @@ export default function ResultPaperItem(props) {
     fetchedAbstract,
     paperAbstractZh,
     paperAbstract,
-    // selected,
+    dataType,
   } = props.data;
 
   const { isBorderVisible, mode } = props;
@@ -630,7 +630,12 @@ export default function ResultPaperItem(props) {
           <button
             className={styles.content_card_btn_download}
             onClick={() => {
-              if (!isEn) {
+              if (dataType === 'fund_cn') {
+                umami.track('fund source button');
+                window.open(doi, '_blank');
+                return;
+              }
+              if (dataType === 'wf') {
                 umami.track('zh source button');
                 window.open(
                   `https://kns.cnki.net/kns8s/defaultresult/index?classid=YSTT4HG0&korder=TI&kw=${title}`,
@@ -638,15 +643,19 @@ export default function ResultPaperItem(props) {
                 );
                 return;
               }
-              if (openAccessPdf) {
-                umami.track('pdf button');
-                window.open(openAccessPdf.url, '_blank');
-              } else if (doi) {
-                umami.track('source button');
-                window.open(doi, '_blank');
-              } else {
-                alert('由于版权原因，本文暂不支持查看原文');
+              if (dataType === 's2') {
+                if (openAccessPdf) {
+                  umami.track('pdf button');
+                  window.open(openAccessPdf.url, '_blank');
+                } else if (doi) {
+                  umami.track('source button');
+                  window.open(doi, '_blank');
+                } else {
+                  alert('由于版权原因，本文暂不支持查看原文');
+                }
+                return;
               }
+              alert('由于版权原因，暂不支持查看原文');
             }}
           >
             {openAccessPdf ? (
