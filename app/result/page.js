@@ -89,6 +89,7 @@ function Search() {
   useEffect(() => {
     return () => {
       searchActor.send({ type: 'RESET_FETCH_PAPERS' });
+      searchActor.send({ type: 'RESET_FETCH_FUND' });
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
       searchActor.send({ type: 'RESET_FETCH_SUMMARY_BACKGROUND' });
@@ -101,6 +102,7 @@ function Search() {
   useEffect(() => {
     searchActor.send({ type: 'SET_QUESTION', value: question });
     searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+    searchActor.send({ type: 'RESET_FETCH_FUND' });
     searchActor.send({ type: 'RESET_FETCH_PAPERS' });
     searchActor.send({ type: 'RESET_FETCH_SUMMARY_CONCEPT' });
     searchActor.send({ type: 'RESET_FETCH_SUMMARY_QUERY_TERMS' });
@@ -120,19 +122,13 @@ function Search() {
   }, [question]);
 
   useEffect(() => {
-    if (isFetchPapersSuccess) {
+    if (isFetchPapersSuccess || isFetchFundPapersSuccess) {
       searchActor.send({ type: 'FETCH_SUMMARY_ANALYSIS' });
       searchActor.send({ type: 'FETCH_SUMMARY_BULLET_POINTS' });
       searchActor.send({ type: 'FETCH_RELATED_SEARCH' });
       searchActor.send({ type: 'FETCH_RESPONSE' });
     }
-  }, [isFetchPapersSuccess]);
-
-  useEffect(() => {
-    if (isFetchFundPapersSuccess) {
-      searchActor.send({ type: 'FETCH_RESPONSE' });
-    }
-  }, [isFetchFundPapersSuccess]);
+  }, [isFetchPapersSuccess, isFetchFundPapersSuccess]);
 
   useEffect(() => {
     if (isFetchRelatedSearchSuccess) {

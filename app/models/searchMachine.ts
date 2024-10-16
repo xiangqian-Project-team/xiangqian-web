@@ -650,6 +650,13 @@ interface SearchContext {
     bulletPoints: IPopoverInfo[];
     bulletPointsPrefix: string;
   };
+  summaryFundInfo: {
+    summary: string;
+    queryTerms: string;
+    background: string;
+    bulletPoints: IPopoverInfo[];
+    bulletPointsPrefix: string;
+  };
   summarySelectedInfo: {
     bulletPoints: IPopoverInfo[];
   };
@@ -782,6 +789,13 @@ const searchMachine = setup({
       bulletPoints: [],
       bulletPointsPrefix: '',
     },
+    summaryFundInfo: {
+      summary: '',
+      queryTerms: '',
+      background: '',
+      bulletPoints: [],
+      bulletPointsPrefix: '',
+    },
     summarySelectedInfo: {
       bulletPoints: [],
     },
@@ -808,6 +822,11 @@ const searchMachine = setup({
                   queryEn: '',
                   queryZh: '',
                 }),
+                fundInfo: () => ({
+                  papers: [],
+                  queryEn: '',
+                  queryZh: '',
+                }),
                 summaryInfo: () => ({
                   summary: '',
                   queryTerms: '',
@@ -816,6 +835,13 @@ const searchMachine = setup({
                   bulletPointsPrefix: '',
                 }),
                 summaryZHInfo: () => ({
+                  summary: '',
+                  queryTerms: '',
+                  background: '',
+                  bulletPoints: [],
+                  bulletPointsPrefix: '',
+                }),
+                summaryFundInfo: () => ({
                   summary: '',
                   queryTerms: '',
                   background: '',
@@ -956,7 +982,10 @@ const searchMachine = setup({
                 if (!context.question) {
                   return false;
                 }
-                if (context.fundInfo.papers.length > 0) {
+                if (
+                  context.mode === 'fund' &&
+                  context.fundInfo.papers.length > 0
+                ) {
                   return false;
                 }
                 return true;
@@ -1088,6 +1117,10 @@ const searchMachine = setup({
                           draft.summaryInfo.bulletPointsPrefix =
                             event.output.bulletPointsPrefix;
                           break;
+                        case 'fund':
+                          draft.summaryFundInfo.bulletPointsPrefix =
+                            event.output.bulletPointsPrefix;
+                          break;
                         default:
                           draft.summaryZHInfo.bulletPointsPrefix =
                             event.output.bulletPointsPrefix;
@@ -1134,6 +1167,10 @@ const searchMachine = setup({
                           break;
                         case 'en':
                           draft.summaryInfo.bulletPoints =
+                            event.output.bulletPoints;
+                          break;
+                        case 'fund':
+                          draft.summaryFundInfo.bulletPoints =
                             event.output.bulletPoints;
                           break;
                       }
@@ -1302,9 +1339,12 @@ const searchMachine = setup({
                 input: ({ context }) => ({
                   summary:
                     context.summaryInfo.summary ||
-                    context.summaryZHInfo.summary,
+                    context.summaryZHInfo.summary ||
+                    context.summaryFundInfo.summary,
                   queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                    context.paperInfo.queryZh ||
+                    context.paperZHInfo.queryZh ||
+                    context.fundInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',
@@ -1380,12 +1420,18 @@ const searchMachine = setup({
             }
             return item;
           });
+          const fundPapers = context.fundInfo.papers.map((item) => {
+            if (id === item.id) {
+              item = newPaper;
+            }
+            return item;
+          });
           return calcShowPapers({
             mode: context.mode,
             sortMode: context.sortMode,
             papers: papers,
             papersZH: papersZH,
-            fundPapers: context.fundInfo.papers,
+            fundPapers: fundPapers,
             pageIndex: context.pageIndex,
             pageSize: context.pageSize,
           });
@@ -1445,7 +1491,7 @@ const searchMachine = setup({
         mode: () => SearchMode.FUND,
         showPapers: ({ context }) => {
           return calcShowPapers({
-            mode: SearchMode.ZH_CN,
+            mode: SearchMode.FUND,
             sortMode: context.sortMode,
             papers: context.paperInfo.papers,
             papersZH: context.paperZHInfo.papers,
@@ -1512,7 +1558,8 @@ const searchMachine = setup({
           [
             ...draft.summaryInfo.bulletPoints.flat(),
             ...draft.summaryZHInfo.bulletPoints.flat(),
-            ...draft.summarySelectedInfo.bulletPoints.flat(),
+            ...draft.summaryFundInfo.bulletPoints.flat(),
+            // ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
             [...item.popoverList, ...item.expensionPopoverList].forEach(
               (element) => {
@@ -1535,6 +1582,7 @@ const searchMachine = setup({
           [
             ...draft.paperInfo.papers,
             ...draft.paperZHInfo.papers,
+            ...draft.fundInfo.papers,
             ...draft.showPapers,
           ].forEach((item) => {
             if (processedMap.has(item.id)) {
@@ -1552,12 +1600,14 @@ const searchMachine = setup({
           [
             ...draft.summaryInfo.bulletPoints.flat(),
             ...draft.summaryZHInfo.bulletPoints.flat(),
-            ...draft.summarySelectedInfo.bulletPoints.flat(),
+            ...draft.summaryFundInfo.bulletPoints.flat(),
+            // ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
             if (item.key === key) {
               item.expensionPopoverList = handlePopoverContentExtension(text, [
                 ...draft.paperInfo.papers,
                 ...draft.paperZHInfo.papers,
+                ...draft.fundInfo.papers,
                 ...draft.showPapers,
               ]);
             }
