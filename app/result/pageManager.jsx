@@ -19,15 +19,22 @@ export default function PageManager(props) {
         return context.paperInfo.papers.length;
       case 'zh-cn':
         return context.paperZHInfo.papers.length;
-      case 'selected':
-        return [
-          ...context.paperInfo.papers,
-          ...context.paperZHInfo.papers,
-        ].filter((item) => item.selected).length;
+      case 'fund':
+        return context.fundInfo.papers.length;
+      // case 'selected':
+      //   return [
+      //     ...context.paperInfo.papers,
+      //     ...context.paperZHInfo.papers,
+      //   ].filter((item) => item.selected).length;
       default:
         return 0;
     }
-  }, [context.mode, context.paperInfo.papers, context.paperZHInfo.papers]);
+  }, [
+    context.mode,
+    context.fundInfo.papers.length,
+    context.paperInfo.papers.length,
+    context.paperZHInfo.papers.length,
+  ]);
 
   const totalPage = useMemo(() => {
     return pageSize > 0 ? Math.ceil(total / pageSize) : 0;

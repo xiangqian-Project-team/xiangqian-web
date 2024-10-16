@@ -1405,6 +1405,17 @@ const searchMachine = setup({
             }),
           };
         },
+        fundInfo: ({ event, context }) => {
+          return {
+            ...context.fundInfo,
+            papers: context.fundInfo.papers.map((item) => {
+              if (item.id === event.value.id) {
+                return event.value;
+              }
+              return item;
+            }),
+          };
+        },
         showPapers: ({ event, context }) => {
           const id = event.value.id;
           const newPaper = event.value;
