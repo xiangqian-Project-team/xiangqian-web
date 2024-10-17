@@ -593,7 +593,7 @@ export default function ResultPaperItem(props) {
             }}
           >
             <Icon component={SimiliarIcon} />
-            相似文献
+            {dataType === 'fund_cn' ? '相关成果' : '相似文献'}
             {isSimiliarLoading && <LoadingOutlined />}
             {!isSimiliarLoading && contentStatus === 'similiar' && (
               <UpOutlined
