@@ -17,6 +17,8 @@ const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
+declare const umami: any;
+
 const request = async (
   url: string,
   method: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE',
@@ -150,6 +152,10 @@ export const getPartPedia = async (params, lang) => {
       Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
+  umami.track('search', {
+    query: params.query,
+    type: lang,
+  });
   return fetch(`${FUNCTION_BASE_URL}${path}`, option);
 };
 
@@ -163,6 +169,10 @@ export const getFund = async (query: string) => {
       Authorization: token ? `Bearer ${token}` : undefined,
     },
   };
+  umami.track('search', {
+    query: query,
+    type: 'fund_cn',
+  });
   return fetch(`${FUNCTION_BASE_URL}/fund/search`, option);
 };
 
