@@ -46,7 +46,8 @@ function HomeTextArea() {
   );
 
   useEffect(() => {
-    if (mode === 'selected') {
+    console.log(mode);
+    if (mode === 'fund') {
       searchActor.send({ type: 'CHANGE_MODE.EN' });
     }
   }, []);
