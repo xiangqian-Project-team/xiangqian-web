@@ -11,7 +11,6 @@ import Icon from '@ant-design/icons';
 import { useSelector } from '@xstate/react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next-nprogress-bar';
-import { useEffect } from 'react';
 import withTheme from '../../theme';
 import { searchActor } from '../models/searchMachine';
 import styles from './homeTextArea.module.scss';
@@ -44,13 +43,6 @@ function HomeTextArea() {
     searchActor,
     (state) => state.context.question
   );
-
-  useEffect(() => {
-    console.log(mode);
-    if (mode === 'fund') {
-      searchActor.send({ type: 'CHANGE_MODE.EN' });
-    }
-  }, []);
 
   return (
     <div className={styles.homeTextArea}>
@@ -109,6 +101,22 @@ function HomeTextArea() {
           checked={mode === 'zh-cn'}
           onChange={(e) => {
             searchActor.send({ type: 'CHANGE_MODE.ZH_CN' });
+          }}
+        />
+        <label
+          htmlFor="fund"
+          className={mode === 'fund' ? styles.lang_button_active : ''}
+        >
+          基金课题
+        </label>
+        <input
+          type="radio"
+          id="fund"
+          name="mode"
+          value="fund"
+          checked={mode === 'fund'}
+          onChange={(e) => {
+            searchActor.send({ type: 'CHANGE_MODE.FUND' });
           }}
         />
       </div>
