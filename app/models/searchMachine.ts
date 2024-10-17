@@ -1314,7 +1314,9 @@ const searchMachine = setup({
                 input: ({ context }) => ({
                   showPapers: context.showPapers,
                   queryZh:
-                    context.paperInfo.queryZh || context.paperZHInfo.queryZh,
+                    context.paperInfo.queryZh ||
+                    context.paperZHInfo.queryZh ||
+                    context.fundInfo.queryZh,
                 }),
                 onDone: {
                   target: 'success',
@@ -1327,6 +1329,7 @@ const searchMachine = setup({
                       [
                         ...draft.paperInfo.papers,
                         ...draft.paperZHInfo.papers,
+                        ...draft.fundInfo.papers,
                         ...draft.showPapers,
                       ].forEach((item) => {
                         if (processedMap.has(item.id)) {
