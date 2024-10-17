@@ -41,7 +41,6 @@ function SearchTextArea(props) {
               if (props.loading) {
                 return;
               }
-              umami.track('search button', { item: searchValue });
               router.push(`./result?q=${searchValue}`);
             }
           }}
@@ -55,7 +54,6 @@ function SearchTextArea(props) {
             icon={<ArrowRightOutlined style={{ color: '#194731' }} />}
             disabled={!searchValue}
             onClick={() => {
-              umami.track('search button', { item: searchValue });
               router.push(`./result?q=${searchValue}`);
             }}
           />

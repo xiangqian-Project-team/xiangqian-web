@@ -2,10 +2,6 @@ import { useSelector } from '@xstate/react';
 import { Button, ConfigProvider } from 'antd';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
-import LangCNIcon from '../icons/lang_cn.svg';
-import LangCNActiveIcon from '../icons/lang_cn_active.svg';
-import LangENIcon from '../icons/lang_en.svg';
-import LangENActiveIcon from '../icons/lang_en_active.svg';
 import SortIcon from '../icons/sort_icon.svg';
 import { SortMode, searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
@@ -53,7 +49,6 @@ export default function ModeButtons(props: IModeButtonsProps) {
       >
         {mode === 'en' ? (
           <Button className={styles.en_button_active} disabled={props.disabled}>
-            <Image src={LangENActiveIcon.src} width={18} height={18} alt={''} />
             英文文献
           </Button>
         ) : (
@@ -73,13 +68,11 @@ export default function ModeButtons(props: IModeButtonsProps) {
               searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
-            <Image src={LangENIcon.src} width={18} height={18} alt={''} />
             英文文献
           </Button>
         )}
         {mode === 'zh-cn' ? (
           <Button className={styles.cn_button_active} disabled={props.disabled}>
-            <Image src={LangCNActiveIcon.src} width={18} height={18} alt={''} />
             中文文献
           </Button>
         ) : (
@@ -96,7 +89,6 @@ export default function ModeButtons(props: IModeButtonsProps) {
               searchActor.send({ type: 'FETCH_PAPERS' });
             }}
           >
-            <Image src={LangCNIcon.src} width={18} height={18} alt={''} />
             中文文献
           </Button>
         )}

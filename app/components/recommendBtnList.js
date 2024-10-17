@@ -27,7 +27,6 @@ function RecommendBtnList() {
           key={q}
           onClick={() => {
             setSearchValue(q);
-            umami.track('search button', { item: q });
             router.push(`./result?q=${q}`);
           }}
         >
