@@ -736,24 +736,26 @@ export default function ResultPaperItem(props) {
             <span>由于版权问题，我们无法提供本文的摘要，建议查看原文。</span>
           ) : (
             <>
-              <div className={styles.content_card_abstract_switch}>
-                <label>
-                  {isEnAbstractVisible && (
-                    <Icon
-                      className={styles.content_card_abstract_switch_icon}
-                      component={CheckIcon}
+              {dataType === 's2' && (
+                <div className={styles.content_card_abstract_switch}>
+                  <label>
+                    {isEnAbstractVisible && (
+                      <Icon
+                        className={styles.content_card_abstract_switch_icon}
+                        component={CheckIcon}
+                      />
+                    )}
+                    <input
+                      type="checkbox"
+                      value={isEnAbstractVisible}
+                      onChange={(v) => {
+                        setIsEnAbstractVisible(v.target.checked);
+                      }}
                     />
-                  )}
-                  <input
-                    type="checkbox"
-                    value={isEnAbstractVisible}
-                    onChange={(v) => {
-                      setIsEnAbstractVisible(v.target.checked);
-                    }}
-                  />
-                  显示英文原文
-                </label>
-              </div>
+                    显示英文原文
+                  </label>
+                </div>
+              )}
               <div>
                 <div>
                   <span>{abstractZh}</span>
