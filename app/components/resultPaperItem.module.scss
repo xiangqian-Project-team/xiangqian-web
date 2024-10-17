@@ -294,7 +294,11 @@
     text-overflow: ellipsis; //溢出用省略号显示
     white-space: nowrap; //溢出不换行
   }
-
+  .content_card_footer_journal_text_fund {
+    overflow: hidden; //超出的文本隐藏
+    text-overflow: ellipsis; //溢出用省略号显示
+    white-space: nowrap; //溢出不换行
+  }
   .content_card_footer_years,
   .content_card_footer_jcr,
   .content_card_footer_authors,

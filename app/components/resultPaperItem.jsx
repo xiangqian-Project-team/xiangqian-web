@@ -483,21 +483,36 @@ export default function ResultPaperItem(props) {
         <div className={styles.content_card_footer_journal}>
           <Image src={BookIcon.src} width={16} height={16} alt="BookIcon" />
         </div>
-
-        <Tooltip title={journal}>
-          <div
-            className={styles.content_card_footer_journal_text}
-            onClick={() => {
-              if (!isGuideLoading) {
-                fetchJournalInfo(props.data);
-              }
-              setIsJournalInfoModalVisible(true);
-            }}
-          >
-            {journal}
-          </div>
-        </Tooltip>
-
+        {dataType != 'fund_cn' && (
+          <Tooltip title={journal}>
+            <div
+              className={styles.content_card_footer_journal_text}
+              onClick={() => {
+                if (!isGuideLoading) {
+                  fetchJournalInfo(props.data);
+                }
+                setIsJournalInfoModalVisible(true);
+              }}
+            >
+              {journal}
+            </div>
+          </Tooltip>
+        )}
+        {dataType === 'fund_cn' && (
+          <>
+            <div className={styles.content_card_footer_journal_text_fund}>
+              {journal}
+            </div>
+            {journalRank && (
+              <>
+                <div className={styles.content_card_footer_division} />
+                <div className={styles.content_card_footer_jcr}>
+                  {journalRank}
+                </div>
+              </>
+            )}
+          </>
+        )}
         <Modal
           title={journal}
           open={isJournalInfoModalVisible}
@@ -516,18 +531,17 @@ export default function ResultPaperItem(props) {
             <div>{journalInfo}</div>
           </Skeleton>
         </Modal>
-
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_authors}>
           <Image src={UserIcon.src} width={16} height={16} alt="UserIcon" />
-          {authors[0]}等
+          {dataType === 'fund_cn' ? authors[0] : authors[0] + '等'}
         </div>
         <div className={styles.content_card_footer_division} />
         <div className={styles.content_card_footer_years}>{year || 2000}</div>
-        <div className={styles.content_card_footer_division} />
-        <div className={styles.content_card_footer_jcr}>{journalRank}</div>
         {mode !== 'fund' && (
           <>
+            <div className={styles.content_card_footer_division} />
+            <div className={styles.content_card_footer_jcr}>{journalRank}</div>
             <div className={styles.content_card_footer_division} />
             <div className={styles.content_card_footer_citationCount}>
               被引
@@ -669,7 +683,7 @@ export default function ResultPaperItem(props) {
             ) : (
               <>
                 <Icon component={ArticleIcon} />
-                跳转原文
+                {dataType === 'fund_cn' ? '跳转官网' : '跳转原文'}
               </>
             )}
           </button>
