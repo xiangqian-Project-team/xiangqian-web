@@ -241,6 +241,8 @@ export default function ResultPaperItem(props) {
     citationCount,
     journal,
     journalRank,
+    fundGrantNumber,
+    affiliation,
     title,
     id,
     year,
@@ -511,6 +513,14 @@ export default function ResultPaperItem(props) {
                 </div>
               </>
             )}
+            <div className={styles.content_card_footer_division} />
+            <div className={styles.content_card_footer_fund_grant_number}>
+              {fundGrantNumber}
+            </div>
+            <div className={styles.content_card_footer_division} />
+            <div className={styles.content_card_footer_affiliation}>
+              {affiliation}
+            </div>
           </>
         )}
         <Modal
@@ -575,29 +585,29 @@ export default function ResultPaperItem(props) {
 
       <div className={styles.content_card_btn}>
         <div className={styles.content_card_btn_main}>
+          <button
+            className={`${styles.content_card_btn_related} ${contentStatus === 'similiar' && styles.content_card_btn_related_drop}`}
+            onClick={() => {
+              umami.track('similar button');
+              toggleSimiliarContent(props.data);
+            }}
+          >
+            <Icon component={SimiliarIcon} />
+            相似文献
+            {isSimiliarLoading && <LoadingOutlined />}
+            {!isSimiliarLoading && contentStatus === 'similiar' && (
+              <UpOutlined
+                className={styles.content_card_btn_related_drop_icon}
+              />
+            )}
+            {!isSimiliarLoading && contentStatus !== 'similiar' && (
+              <DownOutlined
+                className={styles.content_card_btn_related_drop_icon}
+              />
+            )}
+          </button>
           {dataType !== 'fund_cn' && (
             <>
-              <button
-                className={`${styles.content_card_btn_related} ${contentStatus === 'similiar' && styles.content_card_btn_related_drop}`}
-                onClick={() => {
-                  umami.track('similar button');
-                  toggleSimiliarContent(props.data);
-                }}
-              >
-                <Icon component={SimiliarIcon} />
-                相似文献
-                {isSimiliarLoading && <LoadingOutlined />}
-                {!isSimiliarLoading && contentStatus === 'similiar' && (
-                  <UpOutlined
-                    className={styles.content_card_btn_related_drop_icon}
-                  />
-                )}
-                {!isSimiliarLoading && contentStatus !== 'similiar' && (
-                  <DownOutlined
-                    className={styles.content_card_btn_related_drop_icon}
-                  />
-                )}
-              </button>
               <button
                 className={`${styles.content_card_btn_abstract} ${contentStatus === 'abstract' && styles.content_card_btn_abstract_drop}`}
                 onClick={() => {
@@ -710,7 +720,14 @@ export default function ResultPaperItem(props) {
                 <b>{index + 1}</b>
                 <span
                   onClick={() => {
-                    window.open(item.doi, '_blank');
+                    if (item.dataType === 'wf') {
+                      window.open(
+                        `https://kns.cnki.net/kns8s/defaultresult/index?classid=YSTT4HG0&korder=TI&kw=${item.title}`,
+                        '_blank'
+                      );
+                    } else {
+                      window.open(item.doi, '_blank');
+                    }
                   }}
                 >
                   {item.authors[0]}
