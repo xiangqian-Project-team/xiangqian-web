@@ -733,7 +733,7 @@ export default function ResultPaperItem(props) {
                   {item.authors[0]}
                   {item.authors.length > 1 && '等'}，{item.year}.
                 </span>{' '}
-                {item.response}
+                {item.dataType === 'wf' ? item.title : item.response}{' '}
                 <i>
                   被引{item.citationCount}次 | {item.journalRank}
                 </i>
