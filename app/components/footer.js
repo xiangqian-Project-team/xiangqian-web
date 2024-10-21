@@ -6,8 +6,6 @@
  * @FilePath: /xiangqian-web/app/components/footer.js
  * @Description:
  */
-// import Image from 'next/image';
-// import Logo2Icon from '../img/logo2.png';
 import styles from './footer.module.scss';
 
 export default function Footer(props) {

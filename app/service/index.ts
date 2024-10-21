@@ -134,7 +134,6 @@ export const getPedia = async (params) => {
     },
   };
   return fetch(`${FUNCTION_BASE_URL}/search`, option);
-  // return request(`${FUNCTION_BASE_URL}/search`, 'POST', params);
 };
 
 // 多步搜索

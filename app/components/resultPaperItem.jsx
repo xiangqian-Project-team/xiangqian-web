@@ -260,8 +260,6 @@ export default function ResultPaperItem(props) {
 
   const { isBorderVisible, mode } = props;
 
-  // const [currPaperAbstract, setCurrPaperAbstract] = useState('');
-  // const [currPaperAbstractZh, setCurrPaperAbstractZh] = useState('');
   const [isJournalInfoModalVisible, setIsJournalInfoModalVisible] =
     useState(false);
   const [isJournalInfoLoading, setIsJournalInfoLoading] = useState(false);
@@ -347,8 +345,6 @@ export default function ResultPaperItem(props) {
         type: 'UPDATE_RESPONSE',
         value: { ...data, fetchedAbstract: true },
       });
-      // setCurrPaperAbstract(data.paperAbstract);
-      // setCurrPaperAbstractZh(data.paperAbstractZh);
       return;
     } catch (error) {
       console.error(error);
@@ -412,74 +408,6 @@ export default function ResultPaperItem(props) {
         <Tooltip title={title}>
           <h4>{title}</h4>
         </Tooltip>
-        {/* {selected ? (
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#000',
-              },
-              components: {
-                Button: {
-                  paddingInlineSM: 34,
-                  defaultBorderColor: 'none',
-                  defaultColor: '#000',
-                  defaultBg: '#FFF',
-                  defaultHoverBg: '#99E0ED',
-                  defaultHoverBorderColor: '#EEE',
-                },
-              },
-            }}
-          >
-            <Button
-              className={styles.content_card_checked}
-              active
-              onClick={() => {
-                searchActor.send({ type: 'TOGGLE_SELECT', value: id });
-              }}
-            >
-              <Image
-                src={SelectedWhiteButtonIcon.src}
-                width={18}
-                height={18}
-                alt=""
-              />
-              已选中
-            </Button>
-          </ConfigProvider>
-        ) : (
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#000',
-              },
-              components: {
-                Button: {
-                  paddingInlineSM: 34,
-                  defaultBorderColor: 'none',
-                  defaultColor: '#000',
-                  defaultBg: '#FFF',
-                  defaultHoverBg: '#99E0ED',
-                  defaultHoverBorderColor: '#EEE',
-                },
-              },
-            }}
-          >
-            <Button
-              className={styles.content_card_check}
-              onClick={() => {
-                searchActor.send({ type: 'TOGGLE_SELECT', value: id });
-              }}
-            >
-              <Image
-                src={SelectedActiveButtonIcon.src}
-                width={18}
-                height={18}
-                alt=""
-              />
-              选中本文
-            </Button>
-          </ConfigProvider>
-        )} */}
       </div>
 
       <div className={styles.content_card_footer}>

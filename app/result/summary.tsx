@@ -30,20 +30,7 @@ export default function Summary(props: {
       fetchingSummaryBulletPoints: 'fetching',
     },
   });
-  // const isLoadingLiteratureReview = state.matches({
-  //   viewing: {
-  //     fetchingLiteratureReview: 'fetching',
-  //   },
-  // });
   const mode = useSelector(searchActor, (state) => state.context.mode);
-  // const paperInfo = useSelector(
-  //   searchActor,
-  //   (state) => state.context.paperInfo
-  // );
-  // const paperZHInfo = useSelector(
-  //   searchActor,
-  //   (state) => state.context.paperZHInfo
-  // );
   const summaryInfo = useSelector(
     searchActor,
     (state) => state.context.summaryInfo
@@ -56,10 +43,6 @@ export default function Summary(props: {
     searchActor,
     (state) => state.context.summaryFundInfo
   );
-  // const summarySelectedInfo = useSelector(
-  //   searchActor,
-  //   (state) => state.context.summarySelectedInfo
-  // );
 
   const showSummary = useMemo(() => {
     switch (mode) {
@@ -72,25 +55,6 @@ export default function Summary(props: {
       default:
         return summaryZHInfo;
     }
-    // switch (mode) {
-    //   case 'en':
-    //     return {
-    //       summary,
-    //       bulletPoints,
-    //       bulletPointsPrefix,
-    //     };
-    //   case 'zh-cn':
-    //     return {
-    //       summary: summaryZh,
-    //       bulletPoints: bulletPointsZH,
-    //       bulletPointsPrefix: bulletPointsZHPrefix,
-    //     };
-    //   case 'selected':
-    //     return {
-    //       summary: selectedSummary,
-    //     };
-    // }
-    // return {};
   }, [mode, summaryFundInfo, summaryInfo, summaryZHInfo]);
 
   const getPopoverResponsePedia = async (paper: any, queryZh: string) => {
@@ -119,33 +83,6 @@ export default function Summary(props: {
       {
         <div>
           <div>
-            {/* {mode === 'selected' &&
-              summarySelectedInfo.bulletPoints.length === 0 && (
-                <div className={styles.fetch_selected_summary_button_container}>
-                  <button
-                    onClick={() => {
-                      const thePapers = [
-                        ...paperInfo.papers,
-                        ...paperZHInfo.papers,
-                      ].filter((item) => item.selected);
-                      if (thePapers.length < 10) {
-                        props.setIsNoEnoughModalVisible(true);
-                        return;
-                      }
-                      searchActor.send({ type: 'FETCH_LITERATURE_REVIEW' });
-                    }}
-                  >
-                    <Image
-                      alt=""
-                      className={styles.fetch_selected_summary_button_icon}
-                      width={18}
-                      height={18}
-                      src={RefreshIcon.src}
-                    />
-                    用选中的文章生成总结，以获取更优结果
-                  </button>
-                </div>
-              )} */}
             <div className={styles.content}>
               <div>
                 <Skeleton
@@ -185,20 +122,6 @@ export default function Summary(props: {
                   </ul>
                 </Skeleton>
               </div>
-              {/* {mode === 'selected' &&
-                summarySelectedInfo.bulletPoints.length > 0 && (
-                  <div className={styles.content_summary}>
-                    {summarySelectedInfo.bulletPoints.map((info) =>
-                      info.popoverList.map((item) => (
-                        <PopoverItem
-                          key={item.key}
-                          item={item}
-                          getPopoverResponsePedia={getPopoverResponsePedia}
-                        />
-                      ))
-                    )}
-                  </div>
-                )} */}
             </div>
           </div>
         </div>
