@@ -674,7 +674,9 @@ export default function ResultPaperItem(props) {
             ))
           ) : (
             <li>
-              抱歉，未找到相似文献，我们正在努力完善中，可以试试其他文献～
+              {dataType === 'fund_cn'
+                ? '暂未查询到该项目的成果，深度搜索功能正在开发中…'
+                : '抱歉，未找到相似文献，我们正在努力完善中，可以试试其他文献～'}
             </li>
           )}
         </ul>
