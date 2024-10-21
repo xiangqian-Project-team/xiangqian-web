@@ -219,9 +219,6 @@ function calcShowPapers(data: {
     case 'fund':
       newList = [...fundPapers];
       break;
-    // case 'selected':
-    //   newList = [...papers, ...papersZH].filter((item) => item.selected);
-    //   break;
   }
 
   switch (sortMode) {
@@ -259,11 +256,6 @@ const fetchPartPedia = async ({
       return item;
     }),
   };
-  // return {
-  //   queryEn: '',
-  //   queryZh: '',
-  //   papers: ['test'],
-  // };
 };
 
 const fetchFund = async ({ input }: { input: { question: string } }) => {
@@ -275,43 +267,6 @@ const fetchFund = async ({ input }: { input: { question: string } }) => {
 
   return data;
 };
-
-// const fetchSummaryAnswer = async ({
-//   input,
-// }: {
-//   input: {
-//     mode: string;
-//     paperInfo: {
-//       papers: any[];
-//       queryEn: string;
-//       queryZh: string;
-//     };
-//     paperZHInfo: {
-//       papers: any[];
-//       queryEn: string;
-//       queryZh: string;
-//     };
-//   };
-// }) => {
-//   let { queryEn, queryZh, papers } = input.paperInfo;
-//   if (input.mode === 'zh-cn') {
-//     queryEn = input.paperZHInfo.queryEn;
-//     queryZh = input.paperZHInfo.queryZh;
-//     papers = input.paperZHInfo.papers;
-//   }
-//   const res = await getSummaryAnswer({
-//     papers,
-//     queryEn,
-//     queryZh,
-//   });
-//   if (!res.ok) {
-//     throw new Error('Failed get summary answer');
-//   }
-//   const data = await res.json();
-//   return {
-//     summary: data as string,
-//   };
-// };
 
 const fetchSummaryConcept = async ({
   input,
@@ -469,54 +424,6 @@ const fetchSummaryBulletPoints = async ({
   };
 };
 
-// const fetchAnalysisPedia = async ({
-//   input,
-// }: {
-//   input: {
-//     mode: string;
-//     paperInfo: {
-//       papers: any[];
-//       queryEn: string;
-//       queryZh: string;
-//     };
-//     paperZHInfo: {
-//       papers: any[];
-//       queryEn: string;
-//       queryZh: string;
-//     };
-//   };
-// }) => {
-//   let { queryEn, queryZh, papers } = input.paperInfo;
-//   if (input.mode === 'zh-cn') {
-//     queryEn = input.paperZHInfo.queryEn;
-//     queryZh = input.paperZHInfo.queryZh;
-//     papers = input.paperZHInfo.papers;
-//   }
-//   const res = await getAnalysisPedia({
-//     papers,
-//     queryEn,
-//     queryZh,
-//   });
-//   if (!res.ok) {
-//     throw new Error('Failed get summary');
-//   }
-//   const data = await res.json();
-
-//   const formattedBulletPoints = initPopoverContent(data.bltpts, [...papers]);
-
-//   return {
-//     summary: data.answer as string,
-//     bulletPoints: formattedBulletPoints,
-//     bulletPointsPrefix: data.bltptsPrefix,
-//   };
-
-//   // return {
-//   //   summary: 'data.answer',
-//   //   bulletPoints: ['data.bltpts'],
-//   //   bulletPointsPrefix: 'data.bltptsPrefix',
-//   // };
-// };
-
 const fetchLiteratureReview = async ({
   input,
 }: {
@@ -599,7 +506,6 @@ export enum SearchMode {
   EN = 'en',
   ZH_CN = 'zh-cn',
   FUND = 'fund',
-  // SELECTED = 'selected',
 }
 
 export enum SortMode {
@@ -729,8 +635,6 @@ const searchMachine = setup({
       | { type: 'RESET_FETCH_PAPERS' }
       | { type: 'FETCH_FUND' }
       | { type: 'RESET_FETCH_FUND' }
-      // | { type: 'FETCH_SUMMARY_ANSWER' }
-      // | { type: 'RESET_FETCH_SUMMARY_ANSWER' }
       | { type: 'FETCH_SUMMARY_CONCEPT' }
       | { type: 'RESET_FETCH_SUMMARY_CONCEPT' }
       | { type: 'FETCH_SUMMARY_QUERY_TERMS' }
@@ -741,21 +645,14 @@ const searchMachine = setup({
       | { type: 'RESET_FETCH_SUMMARY_ANALYSIS' }
       | { type: 'FETCH_SUMMARY_BULLET_POINTS' }
       | { type: 'RESET_FETCH_SUMMARY_BULLET_POINTS' }
-      // | { type: 'FETCH_SUMMARY_ZH' }
-      // | { type: 'FETCH_SUMMARY' }
       | { type: 'CHANGE_MODE.EN' }
-      // | { type: 'CHANGE_MODE.SELECTED' }
       | { type: 'CHANGE_MODE.ZH_CN' }
       | { type: 'CHANGE_MODE.FUND' }
       | { type: 'FETCH_RESPONSE' }
-      // | { type: 'RESET_FETCH_LITERATURE_REVIEW' }
-      // | { type: 'FETCH_LITERATURE_REVIEW' }
       | { type: 'UPDATE_RESPONSE'; value: any };
   },
   actors: {
     fetchLiteratureReview: fromPromise(fetchLiteratureReview),
-    // fetchSummary: fromPromise(fetchAnalysisPedia),
-    // fetchSummaryAnswer: fromPromise(fetchSummaryAnswer),
     fetchSummaryConcept: fromPromise(fetchSummaryConcept),
     fetchSummaryQueryTerms: fromPromise(fetchSummaryQueryTerms),
     fetchSummaryBackground: fromPromise(fetchSummaryBackground),
@@ -1213,96 +1110,6 @@ const searchMachine = setup({
             },
           },
         },
-        // fetchingSummary: {
-        //   initial: 'idle',
-        //   states: {
-        //     idle: {},
-        //     fetching: {
-        //       invoke: {
-        //         src: 'fetchSummary',
-        //         input: ({ context }) => ({
-        //           mode: context.mode,
-        //           paperInfo: context.paperInfo,
-        //           paperZHInfo: context.paperZHInfo,
-        //         }),
-        //         onDone: {
-        //           target: 'success',
-        //           actions: assign(({ context, event }) => {
-        //             return produce(context, (draft) => {
-        //               switch (context.mode) {
-        //                 case 'zh-cn':
-        //                   draft.summaryZHInfo.summary = event.output.summary;
-        //                   draft.summaryZHInfo.bulletPoints =
-        //                     event.output.bulletPoints;
-        //                   draft.summaryZHInfo.bulletPointsPrefix =
-        //                     event.output.bulletPointsPrefix;
-        //                   break;
-        //                 case 'en':
-        //                   draft.summaryInfo.summary = event.output.summary;
-        //                   draft.summaryInfo.bulletPoints =
-        //                     event.output.bulletPoints;
-        //                   draft.summaryInfo.bulletPointsPrefix =
-        //                     event.output.bulletPointsPrefix;
-        //                   break;
-        //               }
-        //             });
-        //           }),
-        //         },
-        //         onError: 'fail',
-        //       },
-        //     },
-        //     success: {},
-        //     fail: {},
-        //   },
-        //   on: {
-        //     RESET_FETCH_SUMMARY: {
-        //       target: '.idle',
-        //     },
-        //     FETCH_SUMMARY: {
-        //       target: '.fetching',
-        //     },
-        //   },
-        // },
-        // fetchingLiteratureReview: {
-        //   initial: 'idle',
-        //   states: {
-        //     idle: {},
-        //     fetching: {
-        //       invoke: {
-        //         src: 'fetchLiteratureReview',
-        //         input: ({ context }) => ({
-        //           papers: [
-        //             ...context.paperInfo.papers,
-        //             ...context.paperZHInfo.papers,
-        //           ].filter((item) => item.selected),
-        //           queryEn:
-        //             context.paperInfo.queryEn || context.paperZHInfo.queryEn,
-        //           queryZh:
-        //             context.paperInfo.queryZh || context.paperZHInfo.queryZh,
-        //         }),
-        //         onDone: {
-        //           target: 'success',
-        //           actions: assign(({ context, event }) => {
-        //             return produce(context, (draft) => {
-        //               draft.summarySelectedInfo.bulletPoints = event.output;
-        //             });
-        //           }),
-        //         },
-        //         onError: 'fail',
-        //       },
-        //     },
-        //     success: {},
-        //     fail: {},
-        //   },
-        //   on: {
-        //     RESET_FETCH_LITERATURE_REVIEW: {
-        //       target: '.idle',
-        //     },
-        //     FETCH_LITERATURE_REVIEW: {
-        //       target: '.fetching',
-        //     },
-        //   },
-        // },
         fetchingResponse: {
           initial: 'idle',
           states: {
@@ -1537,23 +1344,6 @@ const searchMachine = setup({
         },
       }),
     },
-    // 'CHANGE_MODE.SELECTED': {
-    //   actions: assign({
-    //     mode: () => SearchMode.SELECTED,
-    //     showPapers: ({ context }) => {
-    //       return produce(context.showPapers, (draft) => {
-    //         draft = calcShowPapers({
-    //           mode: SearchMode.SELECTED,
-    //           sortMode: context.sortMode,
-    //           papers: context.paperInfo.papers,
-    //           papersZH: context.paperZHInfo.papers,
-    //           pageIndex: context.pageIndex,
-    //           pageSize: context.pageSize,
-    //         });
-    //       });
-    //     },
-    //   }),
-    // },
     CHANGE_PAGE_INDEX: {
       actions: assign({
         pageIndex: ({ event }) => event.value,
@@ -1594,7 +1384,6 @@ const searchMachine = setup({
             ...draft.summaryInfo.bulletPoints.flat(),
             ...draft.summaryZHInfo.bulletPoints.flat(),
             ...draft.summaryFundInfo.bulletPoints.flat(),
-            // ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
             [...item.popoverList, ...item.expensionPopoverList].forEach(
               (element) => {
@@ -1636,7 +1425,6 @@ const searchMachine = setup({
             ...draft.summaryInfo.bulletPoints.flat(),
             ...draft.summaryZHInfo.bulletPoints.flat(),
             ...draft.summaryFundInfo.bulletPoints.flat(),
-            // ...draft.summarySelectedInfo.bulletPoints.flat(),
           ].forEach((item) => {
             if (item.key === key) {
               item.expensionPopoverList = handlePopoverContentExtension(text, [

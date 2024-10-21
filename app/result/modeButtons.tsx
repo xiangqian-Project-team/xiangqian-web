@@ -56,9 +56,6 @@ export default function ModeButtons(props: IModeButtonsProps) {
             className={styles.en_button}
             disabled={props.disabled}
             onClick={() => {
-              // setMode('en');
-              // setSortMode('default');
-              // props.onModeChangeClick();
               searchActor.send({ type: 'CHANGE_MODE.EN' });
               searchActor.send({
                 type: 'CHANGE_SORT_MODE',
@@ -116,48 +113,6 @@ export default function ModeButtons(props: IModeButtonsProps) {
             基金课题
           </Button>
         )}
-        {/* {mode === 'selected' ? (
-          <Button
-            className={styles.selected_button_active}
-            disabled={props.disabled}
-          >
-            <Image
-              src={SelectedActiveButtonIcon.src}
-              width={18}
-              height={18}
-              alt={''}
-            />
-            我选中的
-          </Button>
-        ) : (
-          <Button
-            className={styles.selected_button}
-            disabled={props.disabled}
-            onClick={() => {
-              // setMode('selected');
-              // setSortMode('default');
-              // props.onModeChangeClick();
-              // searchActor.send({
-              //   type: 'CHANGE_MODE',
-              //   value: SearchMode.SELECTED,
-              // });
-              searchActor.send({ type: 'CHANGE_MODE.SELECTED' });
-              searchActor.send({
-                type: 'CHANGE_SORT_MODE',
-                value: SortMode.DEFAULT,
-              });
-              searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
-            }}
-          >
-            <Image
-              src={SelectedButtonIcon.src}
-              width={18}
-              height={18}
-              alt={''}
-            />
-            我选中的
-          </Button>
-        )} */}
         <Button
           className={styles.sort_button}
           disabled={props.disabled}

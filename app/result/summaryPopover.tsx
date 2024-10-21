@@ -53,56 +53,6 @@ export default function SummaryPopover(props: {
     }
   };
 
-  // const splitText = useMemo(() => {
-  //   const pattern = /(\[.*?\])/g;
-  //   const splitText = (text || '').split(pattern);
-  //   return splitText;
-  // }, [text]);
-
-  // if (list.length <= 1) {
-  //   return (
-  //     <div
-  //       onClick={() => {
-  //         setIsOpen(!isOpen);
-  //       }}
-  //     >
-  //       {isOpen ? (
-  //         <DownOutlined
-  //           className={styles.down_icon_active}
-  //           onPointerEnterCapture={undefined}
-  //           onPointerLeaveCapture={undefined}
-  //           onClick={() => {
-  //             setIsOpen(!isOpen);
-  //           }}
-  //         />
-  //       ) : (
-  //         <DownOutlined
-  //           className={styles.down_icon}
-  //           onPointerEnterCapture={undefined}
-  //           onPointerLeaveCapture={undefined}
-  //           onClick={() => {
-  //             setIsOpen(!isOpen);
-  //             fetchBulletPointsExpansion();
-  //           }}
-  //         />
-  //       )}
-  //       {list.map((item) => item.text)}
-  //       {isOpen && (
-  //         <div className={styles.expension_text}>
-  //           <Skeleton
-  //             active
-  //             title={false}
-  //             style={{ width: '80%' }}
-  //             loading={isLoading}
-  //           >
-  //             {expensionText}
-  //           </Skeleton>
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className={styles.summary_item_container_bg}>
       <div

@@ -8,17 +8,13 @@
  */
 'use client';
 import { Button } from 'antd';
-import { useAtom } from 'jotai';
 import { useRouter } from 'next-nprogress-bar';
 import withTheme from '../../theme';
 import { RECOMMEND_LIST } from '../config';
-import { searchValueAtom } from '../models/search';
 import styles from './recommendBtnList.module.scss';
 
 function RecommendBtnList() {
   const router = useRouter();
-
-  const [searchValue, setSearchValue] = useAtom(searchValueAtom);
 
   return (
     <div className={styles.recommendBtnList}>
@@ -26,7 +22,6 @@ function RecommendBtnList() {
         <Button
           key={q}
           onClick={() => {
-            setSearchValue(q);
             router.push(`./result?q=${q}`);
           }}
         >

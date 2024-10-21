@@ -12,7 +12,6 @@ export default function PageManager(props) {
   );
   const pageSize = useSelector(searchActor, (state) => state.context.pageSize);
   const context = useSelector(searchActor, (state) => state.context);
-  // const { pageIndex, total, pageSize, setPageIndex } = props;
   const total = useMemo(() => {
     switch (context.mode) {
       case 'en':
@@ -21,11 +20,6 @@ export default function PageManager(props) {
         return context.paperZHInfo.papers.length;
       case 'fund':
         return context.fundInfo.papers.length;
-      // case 'selected':
-      //   return [
-      //     ...context.paperInfo.papers,
-      //     ...context.paperZHInfo.papers,
-      //   ].filter((item) => item.selected).length;
       default:
         return 0;
     }
@@ -138,7 +132,6 @@ export default function PageManager(props) {
           if (pageIndex + 1 > totalPage) {
             return;
           }
-          // setPageIndex(pageIndex + 1);
           searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: pageIndex + 1 });
           searchActor.send({ type: 'FETCH_RESPONSE' });
         }}
