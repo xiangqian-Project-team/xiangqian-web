@@ -175,8 +175,6 @@ export default function ModeButtons(props: IModeButtonsProps) {
                 sortMode === 'default' ? styles.popup_sort_button_active : ''
               }
               onClick={() => {
-                // setSortMode('default');
-                // props.onModeChangeClick();
                 searchActor.send({
                   type: 'CHANGE_SORT_MODE',
                   value: SortMode.DEFAULT,
@@ -187,22 +185,26 @@ export default function ModeButtons(props: IModeButtonsProps) {
             >
               推荐排序
             </button>
-            <button
-              className={
-                sortMode === 'relevance' ? styles.popup_sort_button_active : ''
-              }
-              onClick={() => {
-                searchActor.send({
-                  type: 'CHANGE_SORT_MODE',
-                  value: SortMode.RELEVANCE,
-                });
-                setIsSortMenuVisible(false);
-                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
-                searchActor.send({ type: 'FETCH_RESPONSE' });
-              }}
-            >
-              相关程度
-            </button>
+            {mode !== 'fund' && (
+              <button
+                className={
+                  sortMode === 'relevance'
+                    ? styles.popup_sort_button_active
+                    : ''
+                }
+                onClick={() => {
+                  searchActor.send({
+                    type: 'CHANGE_SORT_MODE',
+                    value: SortMode.RELEVANCE,
+                  });
+                  setIsSortMenuVisible(false);
+                  searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+                  searchActor.send({ type: 'FETCH_RESPONSE' });
+                }}
+              >
+                相关程度
+              </button>
+            )}
             <button
               className={
                 sortMode === 'time' ? styles.popup_sort_button_active : ''
@@ -219,33 +221,24 @@ export default function ModeButtons(props: IModeButtonsProps) {
             >
               发表时间
             </button>
-            {/* <button
-              className={
-                sortMode === 'level' ? styles.popup_sort_button_active : ''
-              }
-              onClick={() => {
-                setSortMode('level');
-                setIsSortMenuVisible(false);
-              }}
-            >
-              期刊级别
-            </button> */}
-            <button
-              className={
-                sortMode === 'quote' ? styles.popup_sort_button_active : ''
-              }
-              onClick={() => {
-                searchActor.send({
-                  type: 'CHANGE_SORT_MODE',
-                  value: SortMode.QUOTE,
-                });
-                setIsSortMenuVisible(false);
-                searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
-                searchActor.send({ type: 'FETCH_RESPONSE' });
-              }}
-            >
-              引用数量
-            </button>
+            {mode !== 'fund' && (
+              <button
+                className={
+                  sortMode === 'quote' ? styles.popup_sort_button_active : ''
+                }
+                onClick={() => {
+                  searchActor.send({
+                    type: 'CHANGE_SORT_MODE',
+                    value: SortMode.QUOTE,
+                  });
+                  setIsSortMenuVisible(false);
+                  searchActor.send({ type: 'CHANGE_PAGE_INDEX', value: 1 });
+                  searchActor.send({ type: 'FETCH_RESPONSE' });
+                }}
+              >
+                引用数量
+              </button>
+            )}
           </div>
         )}
       </ConfigProvider>
