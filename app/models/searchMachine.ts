@@ -617,7 +617,6 @@ interface IPaper {
   doi: null;
   fetchedAbstract: boolean;
   id: string;
-  isEn: boolean;
   isOpenAccess: boolean;
   journal: string;
   journalRank: string;
