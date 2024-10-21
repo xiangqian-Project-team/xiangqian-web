@@ -243,6 +243,7 @@ export default function ResultPaperItem(props) {
     journalRank,
     fundGrantNumber,
     affiliation,
+    subject,
     title,
     id,
     year,
@@ -513,6 +514,10 @@ export default function ResultPaperItem(props) {
                 </div>
               </>
             )}
+            <div className={styles.content_card_footer_division} />
+            <div className={styles.content_card_footer_fund_grant_number}>
+              {subject}
+            </div>
             <div className={styles.content_card_footer_division} />
             <div className={styles.content_card_footer_fund_grant_number}>
               {fundGrantNumber}

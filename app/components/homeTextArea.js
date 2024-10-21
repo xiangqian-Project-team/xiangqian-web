@@ -130,7 +130,6 @@ function HomeTextArea() {
             border: 'none',
           }}
           onClick={() => {
-            umami.track('recommended search button', { item: searchValue });
             router.push(`./result?q=${searchValue}`);
           }}
         >
