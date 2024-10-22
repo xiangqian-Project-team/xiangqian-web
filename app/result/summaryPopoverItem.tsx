@@ -4,8 +4,6 @@ import ResultPaperItem from '../components/resultPaperItem';
 import { searchActor } from '../models/searchMachine';
 import styles from './page.module.scss';
 
-declare const umami: any;
-
 export default function PopoverItem(props: {
   item: {
     type: 'text' | 'popover';

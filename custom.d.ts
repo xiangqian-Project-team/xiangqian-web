@@ -11,6 +11,7 @@ declare global {
       href: string;
     });
   }
+  const umami: any;
 }
 
 export default global;

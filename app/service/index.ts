@@ -17,8 +17,6 @@ const BASE_URL = 'http://121.43.97.68:8091';
 const FUNCTION_BASE_URL =
   'https://gemmed-unctions-lewhoxyzwh.ap-northeast-2.fcapp.run'; // TEST API
 
-declare const umami: any;
-
 const request = async (
   url: string,
   method: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE',
@@ -120,6 +118,22 @@ export const getBulletPointsExpansion = async (params: {
     },
   };
   return fetch(`${FUNCTION_BASE_URL}/bltpt_expansion`, option);
+};
+
+export const getBulletPointsLiteraturePreview = async (params: {
+  bltpt: string;
+  papers: any[];
+}) => {
+  const token = getItem('token');
+  const option = {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  };
+  return fetch(`${FUNCTION_BASE_URL}/bltpt_literature_review`, option);
 };
 
 //  搜索

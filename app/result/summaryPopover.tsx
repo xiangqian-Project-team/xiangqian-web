@@ -1,13 +1,14 @@
 import { DownOutlined } from '@ant-design/icons';
 import { useSelector } from '@xstate/react';
-import { Skeleton } from 'antd';
+import { Button, ConfigProvider, Modal, Skeleton } from 'antd';
 import { useState } from 'react';
 import { IPopoverInfo, searchActor } from '../models/searchMachine';
-import { getBulletPointsExpansion } from '../service';
+import {
+  getBulletPointsExpansion,
+  getBulletPointsLiteraturePreview,
+} from '../service';
 import styles from './page.module.scss';
 import PopoverItem from './summaryPopoverItem';
-
-declare const umami: any;
 
 export default function SummaryPopover(props: {
   data: IPopoverInfo;
@@ -18,9 +19,41 @@ export default function SummaryPopover(props: {
   const expensionPopoverList = data.expensionPopoverList;
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+  const [preview, setPreview] = useState('');
   const allPapers = useSelector(searchActor, (state) =>
     state.context.paperInfo.papers.concat(state.context.paperZHInfo.papers)
   );
+
+  const fetchBulletPointsLiteraturePreview = async () => {
+    if (preview) {
+      setIsPreviewVisible(true);
+      return;
+    }
+
+    try {
+      setIsLoadingPreview(true);
+
+      const idSet = new Set((data.paperList || []).map((item) => item.id));
+      const thePapers = allPapers.filter((item) => {
+        return idSet.has(`${item.id}`);
+      });
+      const res = await getBulletPointsLiteraturePreview({
+        bltpt: `${data.title.text}:${data.desc.text}`,
+        papers: thePapers,
+      });
+      if (!res.ok) {
+        throw new Error('Failed get literature preview');
+      }
+      const resData: string = await res.json();
+
+      setPreview(resData);
+      setIsPreviewVisible(true);
+    } finally {
+      setIsLoadingPreview(false);
+    }
+  };
 
   const fetchBulletPointsExpansion = async () => {
     if (expensionPopoverList.length) {
@@ -71,19 +104,17 @@ export default function SummaryPopover(props: {
         {data.title.text !== '其他' && (
           <>
             {isOpen ? (
+              // @ts-ignore
               <DownOutlined
                 className={styles.down_icon_active}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
                 onClick={() => {
                   setIsOpen(!isOpen);
                 }}
               />
             ) : (
+              // @ts-ignore
               <DownOutlined
                 className={styles.down_icon}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
                 onClick={() => {
                   setIsOpen(!isOpen);
                   fetchBulletPointsExpansion();
@@ -104,24 +135,58 @@ export default function SummaryPopover(props: {
         </div>
         <div>{data.desc.text}</div>
         {isOpen && (
-          <div className={styles.expension_text}>
-            <Skeleton
-              active
-              title={false}
-              style={{ width: '80%' }}
-              loading={isLoading}
-            >
-              {expensionPopoverList.map((item) => (
-                <PopoverItem
-                  key={item.key}
-                  item={item}
-                  getPopoverResponsePedia={getPopoverResponsePedia}
-                />
-              ))}
-            </Skeleton>
-          </div>
+          <>
+            <div className={styles.expension_text}>
+              <Skeleton
+                active
+                title={false}
+                style={{ width: '80%' }}
+                loading={isLoading}
+              >
+                {expensionPopoverList.map((item) => (
+                  <PopoverItem
+                    key={item.key}
+                    item={item}
+                    getPopoverResponsePedia={getPopoverResponsePedia}
+                  />
+                ))}
+              </Skeleton>
+            </div>
+            <div className={styles.generate_review}>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: '#6F9EC1',
+                    borderRadius: 50,
+                    colorBorder: '#000',
+                  },
+                }}
+              >
+                <Button
+                  loading={isLoadingPreview}
+                  onClick={async () => {
+                    fetchBulletPointsLiteraturePreview();
+                  }}
+                >
+                  生成综述
+                </Button>
+              </ConfigProvider>
+            </div>
+          </>
         )}
       </div>
+      <Modal
+        title="综述"
+        open={isPreviewVisible}
+        onCancel={() => {
+          setIsPreviewVisible(false);
+        }}
+        footer={null}
+        width={552}
+        wrapClassName={styles.previewModal}
+      >
+        <div>{preview}</div>
+      </Modal>
     </div>
   );
 }
