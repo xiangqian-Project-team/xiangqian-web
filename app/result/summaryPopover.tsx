@@ -1,12 +1,13 @@
 import { DownOutlined } from '@ant-design/icons';
 import { useSelector } from '@xstate/react';
 import { Button, ConfigProvider, Modal, Skeleton } from 'antd';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IPopoverInfo, searchActor } from '../models/searchMachine';
 import {
   getBulletPointsExpansion,
   getBulletPointsLiteraturePreview,
 } from '../service';
+import { handlePopoverContentExtension } from '../utils/dataHandler';
 import styles from './page.module.scss';
 import PopoverItem from './summaryPopoverItem';
 
@@ -25,6 +26,10 @@ export default function SummaryPopover(props: {
   const allPapers = useSelector(searchActor, (state) =>
     state.context.paperInfo.papers.concat(state.context.paperZHInfo.papers)
   );
+
+  const previewPopoverList = useMemo(() => {
+    return handlePopoverContentExtension(preview, allPapers);
+  }, [allPapers, preview]);
 
   const fetchBulletPointsLiteraturePreview = async () => {
     if (preview) {
@@ -185,7 +190,15 @@ export default function SummaryPopover(props: {
         width={552}
         wrapClassName={styles.previewModal}
       >
-        <div>{preview}</div>
+        <div>
+          {previewPopoverList.map((item) => (
+            <PopoverItem
+              key={item.key}
+              item={item}
+              getPopoverResponsePedia={getPopoverResponsePedia}
+            />
+          ))}
+        </div>
       </Modal>
     </div>
   );

@@ -14,6 +14,7 @@ import UserIcon from '../img/user.png';
 import { searchActor } from '../models/searchMachine';
 import {
   fetchAbstractAndTranslation as fetchAbstractAndTranslationAsync,
+  fetchFundSimiliar as fetchFundSimiliarAsync,
   fetchJournalInfo as fetchJournalInfoAsync,
   fetchReadingGuide as fetchReadingGuideAsync,
   fetchSimiliar as fetchSimiliarAsync,
@@ -294,10 +295,10 @@ export default function ResultPaperItem(props) {
 
   const { isBorderVisible, mode } = props;
 
-  const [
-    isFundOrAchievementSimiliarLoading,
-    setIsFundOrAchievementSimiliarLoading,
-  ] = useState(false);
+  const [fundSimiliarContent, setFundSimiliarContent] = useState([]);
+  const [isFundSimiliarLoading, setIsFundSimiliarLoading] = useState(false);
+  const [isAchievementSimiliarLoading, setIsAchievementSimiliarLoading] =
+    useState(false);
   const [isJournalInfoModalVisible, setIsJournalInfoModalVisible] =
     useState(false);
   const [isJournalInfoLoading, setIsJournalInfoLoading] = useState(false);
@@ -332,26 +333,26 @@ export default function ResultPaperItem(props) {
         return;
       }
       setContentStatus('fund-similiar');
-      if (isFundOrAchievementSimiliarLoading) {
+      if (isFundSimiliarLoading) {
         return;
       }
-      if (similiarContent.length) {
+      if (fundSimiliarContent.length) {
         return;
       }
 
-      setIsFundOrAchievementSimiliarLoading(true);
+      setIsFundSimiliarLoading(true);
 
-      const res = await fetchSimiliarAsync(paper);
+      const res = await fetchFundSimiliarAsync(paper);
       if (!res.ok) {
         throw new Error('Failed search');
       }
       const content = await res.json();
-      setSimiliarContent(content);
+      setFundSimiliarContent(content);
       return;
     } catch (error) {
       console.error(error);
     } finally {
-      setIsFundOrAchievementSimiliarLoading(false);
+      setIsFundSimiliarLoading(false);
     }
   };
 
@@ -362,14 +363,14 @@ export default function ResultPaperItem(props) {
         return;
       }
       setContentStatus('achievement-similiar');
-      if (isFundOrAchievementSimiliarLoading) {
+      if (isAchievementSimiliarLoading) {
         return;
       }
       if (similiarContent.length) {
         return;
       }
 
-      setIsFundOrAchievementSimiliarLoading(true);
+      setIsAchievementSimiliarLoading(true);
 
       const res = await fetchSimiliarAsync(paper);
       if (!res.ok) {
@@ -381,7 +382,7 @@ export default function ResultPaperItem(props) {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsFundOrAchievementSimiliarLoading(false);
+      setIsAchievementSimiliarLoading(false);
     }
   };
 
@@ -627,17 +628,19 @@ export default function ResultPaperItem(props) {
               >
                 <Icon component={FundSimiliarIcon} />
                 相似课题
-                {isSimiliarLoading && <LoadingOutlined />}
-                {!isSimiliarLoading && contentStatus === 'fund-similiar' && (
-                  <UpOutlined
-                    className={styles.content_card_btn_related_drop_icon}
-                  />
-                )}
-                {!isSimiliarLoading && contentStatus !== 'fund-similiar' && (
-                  <DownOutlined
-                    className={styles.content_card_btn_related_drop_icon}
-                  />
-                )}
+                {isFundSimiliarLoading && <LoadingOutlined />}
+                {!isFundSimiliarLoading &&
+                  contentStatus === 'fund-similiar' && (
+                    <UpOutlined
+                      className={styles.content_card_btn_related_drop_icon}
+                    />
+                  )}
+                {!isFundSimiliarLoading &&
+                  contentStatus !== 'fund-similiar' && (
+                    <DownOutlined
+                      className={styles.content_card_btn_related_drop_icon}
+                    />
+                  )}
               </button>
               <button
                 className={`${styles.content_card_btn_related} ${contentStatus === 'achievement-similiar' && styles.content_card_btn_related_drop}`}
@@ -648,14 +651,14 @@ export default function ResultPaperItem(props) {
               >
                 <Icon component={AchievementSimiliarIcon} />
                 相关成果
-                {isSimiliarLoading && <LoadingOutlined />}
-                {!isSimiliarLoading &&
+                {isAchievementSimiliarLoading && <LoadingOutlined />}
+                {!isAchievementSimiliarLoading &&
                   contentStatus === 'achievement-similiar' && (
                     <UpOutlined
                       className={styles.content_card_btn_related_drop_icon}
                     />
                   )}
-                {!isSimiliarLoading &&
+                {!isAchievementSimiliarLoading &&
                   contentStatus !== 'achievement-similiar' && (
                     <DownOutlined
                       className={styles.content_card_btn_related_drop_icon}
@@ -791,9 +794,45 @@ export default function ResultPaperItem(props) {
         </div>
       </div>
 
-      {(contentStatus === 'fund-similiar' ||
-        contentStatus === 'achievement-similiar') &&
-        !isFundOrAchievementSimiliarLoading && (
+      {contentStatus === 'fund-similiar' && !isFundSimiliarLoading && (
+        <ul className={styles.content_card_paper_similiar}>
+          {fundSimiliarContent.length > 0 ? (
+            fundSimiliarContent.map((item, index) => (
+              <li key={item.id}>
+                <b>{index + 1}</b>
+                <span
+                  onClick={() => {
+                    if (item.dataType === 'wf') {
+                      window.open(
+                        `https://kns.cnki.net/kns8s/defaultresult/index?classid=YSTT4HG0&korder=TI&kw=${item.title}`,
+                        '_blank'
+                      );
+                    } else {
+                      window.open(item.doi, '_blank');
+                    }
+                  }}
+                >
+                  {item.authors[0]}
+                  {item.authors.length > 1 && '等'}，{item.year}.
+                </span>{' '}
+                {item.dataType === 'wf' ? item.title : item.response}{' '}
+                <i>
+                  被引{item.citationCount}次 | {item.journalRank}
+                </i>
+              </li>
+            ))
+          ) : (
+            <li>
+              {dataType === 'fund_cn'
+                ? '暂未查询到该项目的成果，深度搜索功能正在开发中…'
+                : '抱歉，未找到相似文献，我们正在努力完善中，可以试试其他文献～'}
+            </li>
+          )}
+        </ul>
+      )}
+
+      {contentStatus === 'achievement-similiar' &&
+        !isAchievementSimiliarLoading && (
           <ul className={styles.content_card_paper_similiar}>
             {similiarContent.length > 0 ? (
               similiarContent.map((item, index) => (
