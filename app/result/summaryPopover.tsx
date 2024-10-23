@@ -157,26 +157,28 @@ export default function SummaryPopover(props: {
                 ))}
               </Skeleton>
             </div>
-            <div className={styles.generate_review}>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorPrimary: '#6F9EC1',
-                    borderRadius: 50,
-                    colorBorder: '#000',
-                  },
-                }}
-              >
-                <Button
-                  loading={isLoadingPreview}
-                  onClick={async () => {
-                    fetchBulletPointsLiteraturePreview();
+            {!isLoading && (
+              <div className={styles.generate_review}>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: '#6F9EC1',
+                      borderRadius: 50,
+                      colorBorder: '#000',
+                    },
                   }}
                 >
-                  生成综述
-                </Button>
-              </ConfigProvider>
-            </div>
+                  <Button
+                    loading={isLoadingPreview}
+                    onClick={async () => {
+                      fetchBulletPointsLiteraturePreview();
+                    }}
+                  >
+                    生成综述
+                  </Button>
+                </ConfigProvider>
+              </div>
+            )}
           </>
         )}
       </div>
