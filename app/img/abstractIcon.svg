@@ -1,0 +1,39 @@
+<svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M4.64789 9H3L5.51091 2H7.49264L10 9H8.35211L6.53019 3.59961H6.47336L4.64789 9ZM4.5449 6.24854H8.43734V7.40381H4.5449V6.24854Z"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="11"
+      y="6"
+      width="4"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="3"
+      y="10"
+      width="12"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+    <rect
+      opacity="0.4"
+      x="3"
+      y="13"
+      width="12"
+      height="2"
+      rx="1"
+      fill="#00A7EA"
+    />
+  </svg>
